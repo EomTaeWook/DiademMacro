@@ -14,31 +14,39 @@ namespace Macro.Infrastructure.Manager
     {
         private readonly HttpRequester _httpRequester = new HttpRequester();
 
-        public VersionNote GetLatestVersion()
+
+        public TResponse Request<TResponse>(IAPIRequest request)
+            where TResponse : IAPIResponse
         {
-            VersionNote versionNote = null;
-            var requestUrl = ConstHelper.VersionUrl;
+            var baseUri = ConstHelper.MacroUri;
 #if DEBUG
-            requestUrl = "http://localhost:9100/macro/GetMacroLatestVersion";
+            baseUri = "http://localhost:9100/macro";
 #endif
-            versionNote = Task.Run(async () =>
+            var response = Task.Run<TResponse>(async () =>
             {
                 try
                 {
-                    var responseJson = await _httpRequester.PostByJsonAsync(requestUrl, "{}");
-                    var response = JsonHelper.DeserializeObject<GetMacroLatestVersionResponse>(responseJson);
-
-                    return response.VersionNote;
+                    var url = $"{baseUri}/{(request.GetType().Name)}";
+                    var requestBody = JsonHelper.SerializeObject(request);
+                    var responseJson = await _httpRequester.PostByJsonAsync(url, requestBody);
+                    return JsonHelper.DeserializeObject<TResponse>(responseJson);
                 }
                 catch (Exception ex)
                 {
                     LogHelper.Error(ex);
                 }
-                return null;
+                return default;
 
             }).GetResult();
 
-            return versionNote;
+            return response;
+        }
+
+        public TResponse Request<TRequest, TResponse>(TRequest request)
+            where TRequest : IAPIRequest
+            where TResponse : IAPIResponse
+        {
+            return Request<TResponse>(request);
         }
     }
 }

@@ -5,6 +5,7 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
+using Macro.Models.Protocols;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -439,11 +440,12 @@ namespace Macro
 
             var webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
 
-            var latestNote = webApiManager.GetLatestVersion();
-            if (latestNote == null)
+            var response = webApiManager.Request<GetMacroLatestVersionResponse>(new GetMacroLatestVersion());
+            if (response == null)
             {
                 return false;
             }
+            var latestNote = response.VersionNote;
 
             if (latestNote.Version > VersionNote.CurrentVersion)
             {

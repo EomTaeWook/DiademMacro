@@ -24,7 +24,7 @@ namespace Utils
         public static readonly short WheelDelta = 120;
         public static readonly int DefaultMaxSameImageCount = 5;
 
-        public static readonly string VersionUrl = @"https://itdah.com/macro/GetMacroLatestVersion";
+        public static readonly string MacroUri = @"https://itdah.com/macro";
 
         public static readonly string VersionInfoPageUrl = @"https://itdah.com/MacroVersion";
 

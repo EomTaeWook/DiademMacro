@@ -257,6 +257,7 @@
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessResult.cs" />
     <Compile Include="Models\ProcessResultModel.cs" />
+    <Compile Include="Models\Protocols\Protocol.C.S.cs" />
     <Compile Include="Models\Protocols\Protocol.S.C.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
