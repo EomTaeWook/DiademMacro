@@ -68,6 +68,11 @@
 
         Max
     }
+    public enum MacroModeType
+    {
+        SequentialMode, // 순차 모드
+        BatchMode       // 배치 모드
+    }
 
     public enum InitialTab
     {

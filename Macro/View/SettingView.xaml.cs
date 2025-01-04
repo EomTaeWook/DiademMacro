@@ -33,6 +33,9 @@ namespace Macro.View
             var languages = Enum.GetValues(typeof(LanguageType)).Cast<LanguageType>().Where(r => r != LanguageType.Max);
             comboLanguage.ItemsSource = languages;
 
+            var macroModeValues = Enum.GetValues(typeof(MacroModeType)).Cast<MacroModeType>();
+            comboMacroMode.ItemsSource = macroModeValues;
+
             DataContext = ServiceDispatcher.Resolve<SettingViewModel>();
         }
         private void SettingView_Loaded(object sender, RoutedEventArgs e)
@@ -66,8 +69,6 @@ namespace Macro.View
             {
                 UIManager.Instance.ClosePopup(this);
             }
-
-
         }
         private void Save(Config model)
         {

@@ -346,5 +346,11 @@
     "Name": "1057",
     "Kor": "일반",
     "Eng": "Common"
+  },
+  {
+    "Id": 1058,
+    "Name": "1058",
+    "Kor": "MacroMode",
+    "Eng": "MacroMode"
   }
 ]

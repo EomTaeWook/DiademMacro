@@ -193,6 +193,10 @@ namespace Macro.Models
         {
             get => GetString(1050);
         }
+        public string MacroMode
+        {
+            get => GetString(1058);
+        }
         private string GetString(int templateId)
         {
             var template = TemplateContainer<LabelTemplate>.Find(templateId);

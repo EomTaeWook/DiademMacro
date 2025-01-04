@@ -6,5 +6,7 @@
   "DragDelay": "10",
   "Similarity": "75",
   "SearchImageResultDisplay": true,
-  "VersionCheck": true
+  "VersionCheck": true,
+  "MacroMode": "SequentialMode",
+  "AccessKey": ""
 }

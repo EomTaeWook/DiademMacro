@@ -15,10 +15,11 @@ namespace Macro.Models
         private bool _searchImageResultDisplay = true;
         private int _dragDelay = ConstHelper.MinDragDelay;
         private bool _versionCheck = true;
-        private InitialTab _initialTab = InitialTab.Common;
         private int _processLocationX;
         private int _processLocationY;
         private string _accessKey;
+
+        private MacroModeType _macroMode;
 
         public Config()
         {
@@ -97,15 +98,7 @@ namespace Macro.Models
                 OnPropertyChanged("DragDelay");
             }
         }
-        public InitialTab InitialTab
-        {
-            get => _initialTab;
-            set
-            {
-                _initialTab = value;
-                OnPropertyChanged("InitialTab");
-            }
-        }
+
         public int ProcessLocationX
         {
             get => _processLocationX;
@@ -133,6 +126,17 @@ namespace Macro.Models
             {
                 _accessKey = value;
                 OnPropertyChanged("AccessKey");
+            }
+        }
+
+        public MacroModeType MacroMode
+        {
+            get => _macroMode;
+
+            set
+            {
+                _macroMode = value;
+                OnPropertyChanged("MacroMode");
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

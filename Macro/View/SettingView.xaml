@@ -26,6 +26,7 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                             <RowDefinition Height="50" ></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -78,9 +79,12 @@
                                 <mah:NumericUpDown Grid.Column="1" Name="numProcessLocationY" Value="{Binding Path=Config.ProcessLocationY, Mode=TwoWay}"></mah:NumericUpDown>
                             </Grid>
                         </DockPanel>
-                        
-                        <Button Name="btnSave" Grid.Row ="9" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
-                        <Button Name="btnClose" Grid.Row ="9" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Close, Source={StaticResource LabelLocator}}" Background="DarkGray"></Button>
+                        <Label Grid.Row="9" Grid.Column="0" Content="{Binding Path=MacroMode, Source={StaticResource LabelLocator}}"></Label>
+                        <ComboBox Name="comboMacroMode" Grid.Row="9" Grid.Column="1" SelectedValue="{Binding Path=Config.MacroMode, Mode=TwoWay}">
+                        </ComboBox>
+
+                        <Button Name="btnSave" Grid.Row ="10" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
+                        <Button Name="btnClose" Grid.Row ="10" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Close, Source={StaticResource LabelLocator}}" Background="DarkGray"></Button>
                     </Grid>
                 </DockPanel>
             </Grid>
