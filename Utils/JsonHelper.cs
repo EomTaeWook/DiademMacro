@@ -18,8 +18,9 @@ namespace Utils
         {
             var setting = new Newtonsoft.Json.JsonSerializerSettings()
             {
-                Converters = new List<Newtonsoft.Json.JsonConverter> {
-                        new Newtonsoft.Json.Converters.StringEnumConverter()
+                Converters = new List<Newtonsoft.Json.JsonConverter>
+                {
+                    new Newtonsoft.Json.Converters.StringEnumConverter()
                 }
             };
             var formatting = pretty ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;

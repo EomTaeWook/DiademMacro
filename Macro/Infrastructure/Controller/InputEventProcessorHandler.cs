@@ -49,6 +49,7 @@ namespace Macro.Infrastructure.Controller
             var currentProcessLocation = model.ProcessInfo.Position -
 processLocation;
 
+
             if (model.HardClick == false)
             {
                 matchedLocation.X = applicationTemplate.OffsetX;
@@ -62,7 +63,7 @@ processLocation;
                     X = model.MouseTriggerInfo.StartPoint.X - currentProcessLocation.Left,
                     Y = model.MouseTriggerInfo.StartPoint.Y - currentProcessLocation.Top
                 };
-                HardClickProcess(clickPoint);
+                HardClickProcess(clickPoint, model.MouseTriggerInfo.MouseInfoEventType);
             }
         }
 
@@ -106,7 +107,7 @@ processLocation;
                 };
                 clickPoint.X += processLocation.Left + model.MouseTriggerInfo.StartPoint.X;
                 clickPoint.Y += processLocation.Top + model.MouseTriggerInfo.StartPoint.Y;
-                HardClickProcess(clickPoint);
+                HardClickProcess(clickPoint, MouseEventType.LeftClick);
             }
         }
 
@@ -126,15 +127,30 @@ processLocation;
             Task.Delay(10).GetResult();
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
         }
-        public void HardClickProcess(Point clickPoint)
+        public void HardClickProcess(Point clickPoint, MouseEventType mouseEventType)
         {
             var currentPosition = NativeHelper.GetCursorPosition();
 
-            _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
-            _inputController.Mouse.LeftButtonDown();
-            Task.Delay(10).GetResult();
-            _inputController.Mouse.LeftButtonUp();
-            _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+            if (mouseEventType == MouseEventType.LeftClick)
+            {
+                _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+                _inputController.Mouse.LeftButtonDown();
+                Task.Delay(10).GetResult();
+                _inputController.Mouse.LeftButtonUp();
+                _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+            }
+            else if (mouseEventType == MouseEventType.RightClick)
+            {
+                _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+                _inputController.Mouse.RightButtonDown();
+                Task.Delay(10).GetResult();
+                _inputController.Mouse.RightButtonUp();
+                _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+            }
+            else
+            {
+                LogHelper.Error($"unsupported MouseEventType: {mouseEventType}");
+            }
         }
         public void SameImageMouseDragTriggerProcess(IntPtr hWnd,
                                             Point start,
