@@ -18,6 +18,7 @@ namespace Macro.Models
         private InitialTab _initialTab = InitialTab.Common;
         private int _processLocationX;
         private int _processLocationY;
+        private string _accessKey;
 
         public Config()
         {
@@ -121,6 +122,17 @@ namespace Macro.Models
             {
                 _processLocationY = value;
                 OnPropertyChanged("ProcessLocationY");
+            }
+        }
+
+        public string AccessKey
+        {
+            get => _accessKey;
+
+            set
+            {
+                _accessKey = value;
+                OnPropertyChanged("AccessKey");
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

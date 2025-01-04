@@ -41,6 +41,7 @@ namespace Macro
         private CloseButtonWindow _closeButtonWindow;
         private CoroutineHandler _coroutineHandler = new CoroutineHandler();
         private bool _isShutdownHandled;
+        private WebApiManager _webApiManager;
         public MainWindow()
         {
             InitializeComponent();
@@ -58,11 +59,23 @@ namespace Macro
                 AdOverlay.Visibility = Visibility.Collapsed;
             });
 
-            if (VersionCheck() == false)
+            if (CheckVersion() == false && CheckSponsor() == false)
             {
                 _coroutineHandler.Start(ShowAd(true));
             }
             ApplicationManager.Instance.Init();
+        }
+        private bool CheckSponsor()
+        {
+            var response = _webApiManager.Request<CheckSponsorshipResponse>(new CheckSponsorship()
+            {
+                AccessKey = _config.AccessKey
+            });
+            if (response == null)
+            {
+                return false;
+            }
+            return false;
         }
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -120,6 +133,8 @@ namespace Macro
 
         private void Init()
         {
+            _webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
+
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
             {
                 if (Environment.OSVersion.Version >= new System.Version(10, 0, 15063))
@@ -160,9 +175,10 @@ namespace Macro
                 fileInfo.Directory.Create();
             }
 
-            _processes = Process.GetProcesses().Where(r => r.MainWindowHandle != IntPtr.Zero)
-                                                .Select(r => new KeyValuePair<string, Process>($"{r.ProcessName}:{r.Id}", r))
-                                                .OrderBy(r => r.Key).ToArray();
+            _processes = Process.GetProcesses()
+                .Where(r => r.MainWindowHandle != IntPtr.Zero)
+                .Select(r => new KeyValuePair<string, Process>($"{r.ProcessName}:{r.Id}", r))
+                .OrderBy(r => r.Key).ToArray();
 
             comboProcess.ItemsSource = _processes;
             comboProcess.DisplayMemberPath = "Key";
@@ -401,7 +417,8 @@ namespace Macro
 
             if (_fixProcess == null)
             {
-                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>().Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
+                var pair = comboProcess.Items.Cast<KeyValuePair<string, Process>>()
+                    .Where(r => r.Key == model.ProcessInfo.ProcessName).FirstOrDefault();
                 comboProcess.SelectedValue = pair.Value;
             }
             else
@@ -431,16 +448,13 @@ namespace Macro
             LoadSaveFile(GetSaveFilePath());
             ApplicationManager.HideProgressbar();
         }
-        private bool VersionCheck()
+        private bool CheckVersion()
         {
             if (_config.VersionCheck == false)
             {
                 return false;
             }
-
-            var webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
-
-            var response = webApiManager.Request<GetMacroLatestVersionResponse>(new GetMacroLatestVersion());
+            var response = _webApiManager.Request<GetMacroLatestVersionResponse>(new GetMacroLatestVersion());
             if (response == null)
             {
                 return false;

@@ -25,7 +25,6 @@ namespace Macro
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-
             DispatcherUnhandledException += (s, ex) =>
             {
                 ex.Handled = true;

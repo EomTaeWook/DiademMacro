@@ -12,4 +12,11 @@ namespace Macro.Models.Protocols
 
         public VersionNote VersionNote { get; set; }
     }
+
+    public class CheckSponsorshipResponse : IAPIResponse
+    {
+        public bool Ok { get; set; }
+        public bool IsSponsor { get; set; }
+        public string ErrorMessage { get; set; }
+    }
 }

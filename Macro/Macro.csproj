@@ -398,8 +398,6 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
 xcopy /S/Y "$(SolutionDir)Dll\*.dll" "$(SolutionDir)Release\exe\"
-xcopy /S/Y "$(SolutionDir)Dll\*.config" "$(TargetDir)"
-xcopy /S/Y "$(SolutionDir)Dll\*.config" "$(SolutionDir)Release\exe\"
 
 IF $(ConfigurationName) == Release (
 xcopy /S/Y "$(TargetDir)*.dll" "$(SolutionDir)Release\exe\"
