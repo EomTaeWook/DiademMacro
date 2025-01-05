@@ -7,13 +7,12 @@ using System.Drawing.Imaging;
 using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
-using Rectangle = Utils.Infrastructure.Rectangle;
 
 namespace Macro.Infrastructure.Manager
 {
     public class DisplayHelper
     {
-        public static Rect ApplyMonitorDPI(Rectangle rect, MonitorInfo monitorInfo)
+        public static Rect ApplyMonitorDPI(InnerRectangle rect, MonitorInfo monitorInfo)
         {
             var factor = NativeHelper.GetSystemDPI();
             var factorX = 1.0F * factor.X / monitorInfo.Dpi.X;
@@ -42,7 +41,7 @@ namespace Macro.Infrastructure.Manager
                         Index = index++,
                         Dpi = NativeHelper.GetMonitorDPI(hMonitor)
                     });
-                return true;
+                    return true;
                 }
             ), 0);
             return monitors;
@@ -71,11 +70,10 @@ namespace Macro.Infrastructure.Manager
                 return null;
             }
         }
-        
+
 
         public static bool ProcessCaptureV2(Process process,
                                             IntPtr destHandle,
-
                                             out Bitmap bmp)
         {
             try
@@ -86,7 +84,7 @@ namespace Macro.Infrastructure.Manager
                     bmp = null;
                     return false;
                 }
-                
+
                 if (NativeHelper.DwmRegisterThumbnail(destHandle, targetHandle, out IntPtr thumbHandle) == 0)
                 {
                     NativeHelper.DwmQueryThumbnailSourceSize(thumbHandle, out InterSize size);
@@ -166,7 +164,7 @@ namespace Macro.Infrastructure.Manager
                 }
                 var factorX = 1.0F;
                 var factorY = 1.0F;
-                if(isDynamic)
+                if (isDynamic)
                 {
                     foreach (var monitor in MonitorInfo())
                     {
@@ -189,7 +187,7 @@ namespace Macro.Infrastructure.Manager
                 }
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogHelper.Error(ex);
                 bmp = null;

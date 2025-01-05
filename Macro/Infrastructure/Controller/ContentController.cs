@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TemplateContainers;
 using Utils;
-using Point = System.Windows.Point;
+using Utils.Infrastructure;
 
 namespace Macro.Infrastructure.Controller
 {
@@ -85,8 +85,16 @@ namespace Macro.Infrastructure.Controller
                 _cancellationToken = _cts.Token;
             }
 
-            var _ = Task.Run(() => ProcessEventLoop());
+            if (_config.MacroMode == MacroModeType.SequentialMode)
+            {
+                var _ = Task.Run(() => ProcessEventLoop());
+            }
+            else
+            {
+                var _ = Task.Run(() => ProcessEventLoop());
+            }
         }
+
         private void ProcessEventLoop()
         {
             ArrayQueue<EventTriggerModel> models = new ArrayQueue<EventTriggerModel>();
@@ -154,10 +162,10 @@ namespace Macro.Infrastructure.Controller
         }
 
 
-        private Tuple<int, Point> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventTriggerModel eventTriggerModel)
+        private Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventTriggerModel eventTriggerModel)
         {
             var similarity = 0;
-            Point matchedLocation = new Point(0, 0);
+            Point2D matchedLocation = new Point2D(0, 0);
 
             if (eventTriggerModel.RoiData.IsExists() == true)
             {
@@ -269,7 +277,7 @@ namespace Macro.Infrastructure.Controller
 
             var matchResult = CalculateSimilarityAndLocation(model.Image, sourceBmp, model);
             var similarity = matchResult.Item1;
-            Point matchedLocation = matchResult.Item2;
+            Point2D matchedLocation = matchResult.Item2;
 
             this._contentView.DrawCaptureImage(sourceBmp);
             LogHelper.Debug($"Similarity : {matchResult.Item1} % max Loc : X : {matchedLocation.X} Y: {matchedLocation.Y}");
@@ -291,12 +299,12 @@ namespace Macro.Infrastructure.Controller
                     if (locations.Count > 1)
                     {
                         this._contentView.DrawCaptureImage(sourceBmp);
-                        var startPoint = new Point(locations[0].X + model.Image.Width / 2, locations[0].Y + model.Image.Height / 2);
+                        var startPoint = new Point2D(locations[0].X + model.Image.Width / 2, locations[0].Y + model.Image.Height / 2);
 
                         startPoint.X += _eventProcessorHandler.GetRandomValue(0, model.Image.Width / 2);
                         startPoint.Y += _eventProcessorHandler.GetRandomValue(0, model.Image.Height / 2);
 
-                        var endPoint = new Point(locations[1].X + model.Image.Width / 2, locations[1].Y + model.Image.Width / 2);
+                        var endPoint = new Point2D(locations[1].X + model.Image.Width / 2, locations[1].Y + model.Image.Width / 2);
                         endPoint.X += _eventProcessorHandler.GetRandomValue(0, model.Image.Width / 2);
                         endPoint.Y += _eventProcessorHandler.GetRandomValue(0, model.Image.Height / 2);
 

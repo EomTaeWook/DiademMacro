@@ -219,13 +219,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Extensions\MessageTemplateExtensions.cs" />
+    <Compile Include="Extensions\InnerPointExtensions.cs" />
     <Compile Include="Extensions\StringTemplateExtensions.cs" />
+    <Compile Include="Infrastructure\Controller\MacroModeControllerBase.cs" />
+    <Compile Include="Infrastructure\Controller\SequentialModeController.cs" />
+    <Compile Include="Infrastructure\Interface\IMacroModeController.cs" />
+    <Compile Include="Infrastructure\Controller\BatchModeController.cs" />
     <Compile Include="Infrastructure\Controller\ContentController.cs" />
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
     <Compile Include="Infrastructure\Controller\InputEventProcessorHandler.cs" />
+    <Compile Include="Infrastructure\ImageProcessingHelper.cs" />
     <Compile Include="Infrastructure\Manager\AdManager.cs" />
     <Compile Include="Infrastructure\Manager\WebApiManager.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />

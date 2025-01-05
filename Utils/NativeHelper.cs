@@ -46,7 +46,7 @@ namespace Utils
         private static extern bool EnumChildWindows(IntPtr hwnd, EnumWindowProcDelegate callback, IntPtr lParam);
         private delegate bool EnumWindowProcDelegate(IntPtr hwnd, IntPtr lParam);
 
-        public static IList<Tuple<string,IntPtr>> GetChildHandles(IntPtr mainWindowHandle)
+        public static IList<Tuple<string, IntPtr>> GetChildHandles(IntPtr mainWindowHandle)
         {
             var childHandles = new List<Tuple<string, IntPtr>>();
             var gcHandle = GCHandle.Alloc(childHandles);
@@ -59,7 +59,7 @@ namespace Utils
                     {
                         return false;
                     }
-                        
+
                     if (lParamHwnd.Target is List<Tuple<string, IntPtr>> list)
                     {
                         var sb = new StringBuilder();
@@ -75,7 +75,7 @@ namespace Utils
                 {
                     gcHandle.Free();
                 }
-                    
+
             }
             return childHandles;
         }
@@ -98,10 +98,10 @@ namespace Utils
         public static extern int SetCursorPos(int x, int y);
 
         [DllImport("user32.dll")]
-        private static extern bool GetCursorPos(out InterPoint lpPoint);
+        private static extern bool GetCursorPos(out Point2D lpPoint);
         public static Point GetCursorPosition()
         {
-            GetCursorPos(out InterPoint point);
+            GetCursorPos(out Point2D point);
             return point;
         }
 

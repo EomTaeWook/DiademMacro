@@ -3,6 +3,7 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Utils.Infrastructure;
 using Color = System.Drawing.Color;
 using Point = OpenCvSharp.Point;
 using Rect = Utils.Infrastructure.Rect;
@@ -11,25 +12,25 @@ namespace Macro.Infrastructure
 {
     public class OpenCVHelper
     {
-        public static int Search(Bitmap source, Bitmap target, out System.Windows.Point location,  bool isResultDisplay = false)
+        public static int Search(Bitmap source, Bitmap target, out Point2D location, bool isResultDisplay = false)
         {
             var sourceMat = BitmapConverter.ToMat(source);
             var targetMat = BitmapConverter.ToMat(target);
             if (sourceMat.Cols <= targetMat.Cols || sourceMat.Rows <= targetMat.Rows)
             {
-                location = new System.Windows.Point();
+                location = new Point2D();
                 return 0;
             }
 
             var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
             Cv2.MinMaxLoc(match, out _, out double max, out _, out Point maxLoc);
 
-            location = new System.Windows.Point()
+            location = new Point2D()
             {
                 X = maxLoc.X,
                 Y = maxLoc.Y
             };
-            if(isResultDisplay)
+            if (isResultDisplay)
             {
                 using (var g = Graphics.FromImage(source))
                 {
@@ -41,7 +42,7 @@ namespace Macro.Infrastructure
             }
             return Convert.ToInt32(max * 100);
         }
-        public static List<System.Windows.Point> MultipleSearch(Bitmap source, Bitmap target, int similarity, int maxSameRepeatCount, bool isResultDisplay = false)
+        public static List<Point> MultipleSearch(Bitmap source, Bitmap target, int similarity, int maxSameRepeatCount, bool isResultDisplay = false)
         {
             var searchAndCopyImage = source.Clone() as Bitmap;
 
@@ -50,10 +51,10 @@ namespace Macro.Infrastructure
 
             if (sourceMat.Cols <= targetMat.Cols || sourceMat.Rows <= targetMat.Rows)
             {
-                return new List<System.Windows.Point>();
+                return new List<Point>();
             }
-            List<System.Windows.Point> locations = new List<System.Windows.Point>();
-            while(maxSameRepeatCount-- > 0)
+            List<Point> locations = new List<Point>();
+            while (maxSameRepeatCount-- > 0)
             {
                 sourceMat = BitmapConverter.ToMat(searchAndCopyImage);
                 var match = sourceMat.MatchTemplate(targetMat, TemplateMatchModes.CCoeffNormed);
@@ -61,11 +62,11 @@ namespace Macro.Infrastructure
                 max *= 100;
                 if (similarity < max)
                 {
-                    locations.Add(new System.Windows.Point()
+                    locations.Add(new Point()
                     {
                         X = maxLoc.X,
                         Y = maxLoc.Y
-                    }); 
+                    });
                     using (var g = Graphics.FromImage(searchAndCopyImage))
                     {
                         using (var brush = new SolidBrush(Color.Black))
@@ -96,7 +97,7 @@ namespace Macro.Infrastructure
         {
             var sourceMat = BitmapConverter.ToMat(source);
 
-            if(source.Width <= roiRect.Width || source.Height <= roiRect.Height)
+            if (source.Width <= roiRect.Width || source.Height <= roiRect.Height)
             {
                 return source;
             }
@@ -121,12 +122,12 @@ namespace Macro.Infrastructure
             return destBitmap;
         }
 
-        public static int SearchImagePercentage(Bitmap source, Tuple<double, double ,double> lower, Tuple<double, double, double> upper)
+        public static int SearchImagePercentage(Bitmap source, Tuple<double, double, double> lower, Tuple<double, double, double> upper)
         {
             var sourceMat = BitmapConverter.ToMat(source);
             var colorMat = sourceMat.CvtColor(ColorConversionCodes.RGB2HSV);
             var thresholded = new Mat();
-            
+
             Cv2.InRange(colorMat,
                         new Scalar(lower.Item3, lower.Item1, lower.Item2),
                         new Scalar(upper.Item3, upper.Item1, upper.Item2),
