@@ -2,12 +2,15 @@
   <Version>
     <Major>2</Major>
     <Minor>6</Minor>
-    <Build>19</Build>
+    <Build>20</Build>
   </Version>
-  <Description>세이브 파일 하위 호환성
-  Save File Backward Compatibility
-  2.6.18
-  아이템 후 딜레이 버그 및 반복 이벤트 수정
-  Item post-delay bug fixes and repeat event adjustments
+  <Description>
+  설정에 매크로 모드가 추가되었습니다.
+    - 순회 모드 : 아이템 리스트를 순회하면서 프로세스 화면을 캡처하고 비교 이미지 찾음 -> 이벤트 발생
+    - 배치 모드(기본) : 프로세스 화면을 캡처 하고 저장한 아이템 리스트 순회하면서 이미지 찾음 -> 이벤트 발생
+
+  A macro mode has been added to the settings. 
+    - Sequential Mode : Iterates through the item list while capturing the process screen and searching for comparison images -> triggers an event.
+    - Batch Mode(default) : Captures the process screen and iterates through the saved item list to find matching images -> triggers an event.
   </Description>
 </VersionNote>

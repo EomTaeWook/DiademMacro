@@ -122,7 +122,110 @@ OS 버전
 
     8.프로세스 위치 이동 : 해당 프로세스를 해당 좌표로 이동시킵니다. 즉 모니터 밖으로 프로세스 위치를 이동시키는 것이 가능합니다.
 
+    9.매크로 모드 : 
+    
+        - 순회 모드 : 아이템 리스트를 순회하면서 프로세스 화면을 캡처하고 비교 이미지 찾음 -> 이벤트 발생
+
+        - 배치 모드(기본) : 프로세스 화면을 캡처 하고 저장한 아이템 리스트 순회하면서 이미지 찾음 -> 이벤트 발생
+
 
 버그 레포팅
 
     enter0917@naver.com
+
+
+
+**Instructions**
+
+### 1. Save Trigger
+
+#### 1.1 Capture the desired image using the **Capture Screen** button.
+
+#### 1.2 Select the type of event: **Image**, **Mouse**, **Keyboard**, **RelativeToImage**, or **PhysicalClick**.
+
+- **1.2.1 Image**: Clicks on the detected image.
+    - Performs random clicks within the detected image to avoid patterned coordinates.
+    - Prioritize this over mouse events with fixed coordinates.
+
+- **1.2.2 Mouse**: Specify coordinates and perform actions such as left click, right click, or drag.
+
+- **1.2.3 Keyboard**: Add combination keys, e.g., `Ctrl + C + V`.
+
+- **1.2.4 RelativeToImage**: Click at a relative distance (+/- offset) from the detected image. *(Idea by Ko9ma7)*
+
+- **1.2.5 PhysicalClick**: The mouse physically moves to the specified position and clicks. *(Idea by Ko9ma7)*
+
+#### 1.3 Select the process to execute where images will be captured.
+
+#### 1.4 Post-action delay
+- Use this to delay the next action after completing the current one. *(Idea by Ko9ma7)*
+- Example: Click a button -> Wait for a popup to appear -> Click the confirmation button.
+
+#### 1.5 Item repetition
+- **Once**: Executes only once.
+- **Count**: Executes for a specified number of repetitions.
+- **Until no search results**: Repeats as long as at least one sub-item executes. Moves to the next item if none execute.
+- **Until search image found**: Repeats sub-events until the parent image is found. Proceeds to the next item once found.
+
+#### 1.6 Shortcut *(Idea by Ko9ma7)*:
+- Jump directly to a specified event.
+
+#### 1.7 Save your configuration.
+
+---
+
+### 2. Rearrange Tree Nodes via Drag-and-Drop
+
+#### 2.1 Drag and drop under a parent item to add as a child node.
+
+#### 2.2 Drag a child item outside the parent focus to make it a top-level node.
+- Drop to the right scroll area, bottom, or tree column.
+
+---
+
+### 3. Save Multiple Game Files
+If you want to save files for different games, set a unique save path in the **settings**.
+
+---
+
+### 4. Linked Process List
+- If the process is not listed, terminated, or newly executed, press the **Refresh** button.
+- If you pin a process, searches will only occur within the pinned process instead of across all saved processes. *(Supports multiple Nox instances)*
+
+---
+
+### Image Combination Events
+Refer to the image below:
+![picture](/Release/Resource/imageCombination.png)
+
+---
+
+### **Configuration (Config.json or Program Settings)**
+
+1. **Language**: [Eng], [Kor]
+
+2. **SavePath**: Path to save the configuration list.
+
+3. **ProcessPeriod**: Delay after all tasks are completed.
+   - Default: 1ms (0.001 seconds)
+
+4. **ItemDelay**: Delay between the completion of a trigger item and the next task (global setting).
+   - Default: 0ms (0 seconds)
+
+5. **Similarity**: Image processing similarity threshold.
+
+6. **SearchResultDisplay**: [true], [false] - Show or hide image search results.
+
+7. **VersionCheck**: [true], [false] - Check for updates when launching the program.
+
+8. **Process Position Movement**: Move a process to a specified coordinate (can move the process outside the monitor).
+
+9. **Macro Mode**:
+   - **Sequential Mode**: Iterates through the item list while capturing the process screen and searching for matching images -> triggers an event.
+   - **Batch Mode** (default): Captures the process screen and iterates through the saved item list to find matching images -> triggers an event.
+
+---
+
+### **Bug Reporting**
+Email: enter0917@naver.com
+

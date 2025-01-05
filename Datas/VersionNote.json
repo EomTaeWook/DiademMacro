@@ -2,7 +2,7 @@
   "Version": {
     "Major": 2,
     "Minor": 6,
-    "Build": 19
+    "Build": 20
   },
-  "Desc": "세이브 파일 하위 호환성 유지. Maintaining Save File Backward Compatibility"
+  "Desc": "설정에 매크로 모드가 추가되었습니다. A macro mode has been added to the settings."
 }
