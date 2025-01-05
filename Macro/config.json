@@ -7,6 +7,6 @@
   "Similarity": "75",
   "SearchImageResultDisplay": true,
   "VersionCheck": true,
-  "MacroMode": "SequentialMode",
+  "MacroMode": "BatchMode",
   "AccessKey": ""
 }

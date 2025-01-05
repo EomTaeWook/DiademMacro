@@ -18,8 +18,7 @@ namespace Macro.Models
         private int _processLocationX;
         private int _processLocationY;
         private string _accessKey;
-
-        private MacroModeType _macroMode;
+        private MacroModeType _macroMode = MacroModeType.BatchMode;
 
         public Config()
         {
