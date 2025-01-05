@@ -70,8 +70,8 @@
     }
     public enum MacroModeType
     {
-        SequentialMode, // 순차 모드
-        BatchMode       // 배치 모드
+        SequentialMode,
+        BatchMode
     }
 
     public enum InitialTab

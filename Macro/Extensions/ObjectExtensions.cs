@@ -1,10 +1,6 @@
-﻿using Macro.View;
-using MahApps.Metro.Controls;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -38,7 +34,7 @@ namespace Macro.Extensions
             {
                 yield break;
             }
-                
+
             if (parent is ContentElement || parent is FrameworkElement)
             {
                 foreach (object obj in LogicalTreeHelper.GetChildren(parent))
@@ -74,7 +70,6 @@ namespace Macro.Extensions
         }
         public static int MakeWParam(int low, int high) => (low & 0xFFFF) | (high << 16);
 
-        public static int ToLParam(this Point point) => (int)point.X & 0xFFFF | ((int)point.Y << 0x10);
 
         public static Bitmap Resize(this Bitmap source, int width, int height)
         {
@@ -107,7 +102,7 @@ namespace Macro.Extensions
             if (parentObject == null)
             {
                 return null;
-            }   
+            }
             if (parentObject is T obj)
             {
                 return obj;
@@ -116,7 +111,7 @@ namespace Macro.Extensions
             {
                 return TryFindParent<T>(parentObject);
             }
-                
+
         }
         private static DependencyObject GetParentObject(DependencyObject child)
         {
@@ -124,7 +119,7 @@ namespace Macro.Extensions
             {
                 return null;
             }
-                
+
             if (child is ContentElement contentElement)
             {
                 DependencyObject parent = ContentOperations.GetParent(contentElement);
@@ -149,7 +144,7 @@ namespace Macro.Extensions
                 return target;
             }
 
-            for (int i=0; i< control.Items.Count; ++i)
+            for (int i = 0; i < control.Items.Count; ++i)
             {
                 if (control.ItemContainerGenerator.ContainerFromIndex(i) is T subControl)
                 {
@@ -174,11 +169,11 @@ namespace Macro.Extensions
         }
         public static T DataContext<T>(this ItemsControl control) where T : class
         {
-            if(control.DataContext is T context)
+            if (control.DataContext is T context)
             {
                 return context;
             }
-               
+
             return null;
         }
 
@@ -188,7 +183,7 @@ namespace Macro.Extensions
             {
                 return null;
             }
-            else if(VisualTreeHelper.GetParent(@object) is T)
+            else if (VisualTreeHelper.GetParent(@object) is T)
             {
                 return VisualTreeHelper.GetParent(@object) as T;
             }

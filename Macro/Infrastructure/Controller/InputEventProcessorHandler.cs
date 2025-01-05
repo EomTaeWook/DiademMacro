@@ -7,10 +7,11 @@ using Macro.Extensions;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using Utils;
+using Utils.Extensions;
 using Utils.Infrastructure;
 
 namespace Macro.Infrastructure.Controller
@@ -39,7 +40,7 @@ namespace Macro.Infrastructure.Controller
         }
         public void HandleMouseEvent(IntPtr hWnd,
             EventTriggerModel model,
-            Point matchedLocation,
+            Point2D matchedLocation,
             ApplicationTemplate applicationTemplate,
             int dragDelay)
         {
@@ -58,7 +59,7 @@ processLocation;
             }
             else
             {
-                var clickPoint = new Point
+                var clickPoint = new Point2D
                 {
                     X = model.MouseTriggerInfo.StartPoint.X - currentProcessLocation.Left,
                     Y = model.MouseTriggerInfo.StartPoint.Y - currentProcessLocation.Top
@@ -82,7 +83,7 @@ processLocation;
 
         public void HandleImageEvent(IntPtr hWnd,
             EventTriggerModel model,
-            Point matchedLocation,
+            Point2D matchedLocation,
             ApplicationTemplate applicationTemplate)
         {
             var percentageX = _randomGenerator.NextDouble();
@@ -100,7 +101,7 @@ processLocation;
                 var processLocation = new Utils.Infrastructure.Rect();
                 NativeHelper.GetWindowRect(hWnd, ref processLocation);
 
-                var clickPoint = new Point()
+                var clickPoint = new Point2D()
                 {
                     X = matchedLocation.X,
                     Y = matchedLocation.Y
@@ -115,11 +116,8 @@ processLocation;
                                         Point location,
                                         EventTriggerModel model)
         {
-            var position = new Point()
-            {
-                X = location.X + model.MouseTriggerInfo.StartPoint.X,
-                Y = location.Y + model.MouseTriggerInfo.StartPoint.Y
-            };
+            var position = new Point2D(location.X + model.MouseTriggerInfo.StartPoint.X,
+                location.Y + model.MouseTriggerInfo.StartPoint.Y);
 
             LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
 
@@ -153,8 +151,8 @@ processLocation;
             }
         }
         public void SameImageMouseDragTriggerProcess(IntPtr hWnd,
-                                            Point start,
-                                            Point arrive,
+                                            Point2D start,
+                                            Point2D arrive,
                                             EventTriggerModel model,
                                             int dragDelay)
         {
@@ -165,10 +163,10 @@ processLocation;
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, start.ToLParam());
             Task.Delay(10).GetResult();
 
-            Point mousePosition;
+            Point2D mousePosition;
             for (int i = 0; i < middlePoints.Count; ++i)
             {
-                mousePosition = new Point()
+                mousePosition = new Point2D()
                 {
                     X = Math.Abs(model.ProcessInfo.Position.Left + middlePoints[i].X * -1),
                     Y = Math.Abs(model.ProcessInfo.Position.Top + middlePoints[i].Y * -1)
@@ -177,7 +175,7 @@ processLocation;
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(dragDelay).GetResult();
             }
-            mousePosition = new Point()
+            mousePosition = new Point2D()
             {
                 X = Math.Abs(model.ProcessInfo.Position.Left + arrive.X * -1),
                 Y = Math.Abs(model.ProcessInfo.Position.Top + arrive.Y * -1)
@@ -187,16 +185,16 @@ processLocation;
             NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             LogHelper.Debug($">>>>Same Drag End Mouse Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
         }
-        private List<Point> GetIntevalDragMiddlePoint(Point start, Point arrive, int interval)
+        private List<Point2D> GetIntevalDragMiddlePoint(Point2D start, Point2D arrive, int interval)
         {
-            List<Point> middlePosition = new List<Point>();
+            List<Point2D> middlePosition = new List<Point2D>();
 
-            Point recent = new Point(start.X, start.Y);
+            Point2D recent = new Point2D(start.X, start.Y);
             middlePosition.Add(recent);
 
-            while (Point.Subtract(recent, arrive).Length > interval)
+            while (recent.Subtract(arrive).Length > interval)
             {
-                LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {Point.Subtract(recent, arrive).Length}");
+                LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {recent.Subtract(arrive).Length}");
                 double middleX;
                 if (recent.X > arrive.X)
                 {
@@ -225,7 +223,7 @@ processLocation;
                     middleY = recent.Y;
                 }
 
-                recent = new Point(middleX, middleY);
+                recent = new Point2D(middleX, middleY);
                 middlePosition.Add(recent);
             }
 
@@ -233,11 +231,8 @@ processLocation;
         }
         private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model, int dragDelay)
         {
-            var mousePosition = new Point()
-            {
-                X = Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1),
-                Y = Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1)
-            };
+            var mousePosition = new Point2D(Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1),
+                Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1));
 
             if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
             {
@@ -261,19 +256,20 @@ processLocation;
                 Task.Delay(10).GetResult();
                 for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
                 {
-                    mousePosition = new Point()
-                    {
-                        X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1),
-                        Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1)
-                    };
+                    var x = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1);
+                    var y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1);
+                    mousePosition = new Point2D(x, y);
+
                     NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                     Task.Delay(dragDelay).GetResult();
                 }
-                mousePosition = new Point()
+
                 {
-                    X = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1),
-                    Y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1)
-                };
+                    var x = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1);
+                    var y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1);
+                    mousePosition = new Point2D(x, y);
+                }
+
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(10).GetResult();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());

@@ -348,6 +348,7 @@ namespace Macro
                 {
                     Process = item.Value,
                 });
+
                 var savedPosition = CacheDataManager.Instance.GetData<Rect>(item.Value);
 
                 if (savedPosition.Equals(default) == false)

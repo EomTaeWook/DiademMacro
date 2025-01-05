@@ -103,7 +103,7 @@
     <Compile Include="Infrastructure\InputStruct.cs" />
     <Compile Include="Infrastructure\KeyCode.cs" />
     <Compile Include="Infrastructure\MonitorInfo.cs" />
-    <Compile Include="Infrastructure\Point.cs" />
+    <Compile Include="Infrastructure\Point2D.cs" />
     <Compile Include="Infrastructure\Rect.cs" />
     <Compile Include="Infrastructure\TaskBuilder.cs" />
     <Compile Include="Infrastructure\TaskQueue.cs" />

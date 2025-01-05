@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils.Infrastructure
 {
@@ -57,7 +52,7 @@ namespace Utils.Infrastructure
         public int Height { get => Bottom - Top; }
         public static implicit operator Rectangle(Rect rect)
         {
-            return new Rectangle() 
+            return new Rectangle()
             {
                 Left = rect.Left,
                 Top = rect.Top,
