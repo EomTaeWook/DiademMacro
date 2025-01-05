@@ -42,7 +42,7 @@ namespace Utils.Infrastructure
     }
 
     [Serializable]
-    public class InnerRectangle
+    public class Rectangle
     {
         public int Left { get; set; }
         public int Top { get; set; }
@@ -50,9 +50,9 @@ namespace Utils.Infrastructure
         public int Bottom { get; set; }
         public int Width { get => Right - Left; }
         public int Height { get => Bottom - Top; }
-        public static implicit operator InnerRectangle(Rect rect)
+        public static implicit operator Rectangle(Rect rect)
         {
-            return new InnerRectangle()
+            return new Rectangle()
             {
                 Left = rect.Left,
                 Top = rect.Top,
@@ -60,9 +60,9 @@ namespace Utils.Infrastructure
                 Right = rect.Right
             };
         }
-        public static InnerRectangle operator -(InnerRectangle r1, InnerRectangle r2)
+        public static Rectangle operator -(Rectangle r1, Rectangle r2)
         {
-            return new InnerRectangle()
+            return new Rectangle()
             {
                 Left = r1.Left - r2.Left,
                 Right = r1.Right - r2.Right,
@@ -70,9 +70,9 @@ namespace Utils.Infrastructure
                 Top = r1.Top - r2.Top
             };
         }
-        public static InnerRectangle operator +(InnerRectangle r1, InnerRectangle r2)
+        public static Rectangle operator +(Rectangle r1, Rectangle r2)
         {
-            return new InnerRectangle()
+            return new Rectangle()
             {
                 Left = r1.Left + r2.Left,
                 Right = r1.Right + r2.Right,

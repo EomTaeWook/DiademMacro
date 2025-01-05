@@ -7,6 +7,7 @@ using Utils.Infrastructure;
 using Color = System.Drawing.Color;
 using Point = OpenCvSharp.Point;
 using Rect = Utils.Infrastructure.Rect;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Macro.Infrastructure
 {

@@ -12,7 +12,7 @@ namespace Macro.Infrastructure.Manager
 {
     public class DisplayHelper
     {
-        public static Rect ApplyMonitorDPI(InnerRectangle rect, MonitorInfo monitorInfo)
+        public static Rect ApplyMonitorDPI(Utils.Infrastructure.Rectangle rect, MonitorInfo monitorInfo)
         {
             var factor = NativeHelper.GetSystemDPI();
             var factorX = 1.0F * factor.X / monitorInfo.Dpi.X;

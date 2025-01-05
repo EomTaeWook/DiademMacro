@@ -20,19 +20,19 @@ namespace Macro.Infrastructure.Controller
     internal class BatchModeController : MacroModeControllerBase
     {
         private readonly InputEventProcessorHandler _eventProcessorHandler;
-        private Action<Bitmap> _drawImageCallback;
+
         public BatchModeController(Config config,
             InputEventProcessorHandler inputEventProcessorHandler) : base(config)
         {
             _eventProcessorHandler = inputEventProcessorHandler;
         }
 
-        public override void Execute(Action<Bitmap> drawImageCallback,
+
+        public override void Execute(
             ArrayQueue<Process> processes,
             ArrayQueue<EventTriggerModel> eventTriggerModels,
             CancellationToken cancellationToken)
         {
-            _drawImageCallback = drawImageCallback;
             for (int i = 0; i < processes.Count; ++i)
             {
                 var process = processes[i];
@@ -220,7 +220,6 @@ namespace Macro.Infrastructure.Controller
                     ApplicationManager.Instance.GetDrawWindowHandle(),
                     out Bitmap sourceBmp) == false)
             {
-                TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
                 return;
             }
 

@@ -231,7 +231,6 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
     <Compile Include="Infrastructure\Controller\InputEventProcessorHandler.cs" />
-    <Compile Include="Infrastructure\ImageProcessingHelper.cs" />
     <Compile Include="Infrastructure\Manager\AdManager.cs" />
     <Compile Include="Infrastructure\Manager\WebApiManager.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
@@ -310,7 +309,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Infrastructure\DocumentHelper.cs" />
     <Compile Include="Extensions\ImageExtensions.cs" />
     <Compile Include="View\WebViewControl.xaml.cs">
       <DependentUpon>WebViewControl.xaml</DependentUpon>

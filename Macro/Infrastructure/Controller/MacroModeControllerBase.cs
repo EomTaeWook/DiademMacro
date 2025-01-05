@@ -14,14 +14,20 @@ namespace Macro.Infrastructure.Controller
     internal abstract class MacroModeControllerBase : IMacroModeController
     {
         protected Config _config;
+        protected Action<Bitmap> _drawImageCallback;
         public MacroModeControllerBase(Config config)
         {
             _config = config;
         }
-        public abstract void Execute(Action<Bitmap> drawImageCallback,
+        public abstract void Execute(
             ArrayQueue<Process> processes,
             ArrayQueue<EventTriggerModel> eventTriggerModels,
             CancellationToken cancellationToken);
+
+        public void SetDrawImageCallback(Action<Bitmap> drawImageCallback)
+        {
+            _drawImageCallback = drawImageCallback;
+        }
 
         protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventTriggerModel eventTriggerModel)
         {

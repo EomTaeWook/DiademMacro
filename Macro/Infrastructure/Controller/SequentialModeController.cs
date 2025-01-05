@@ -20,7 +20,6 @@ namespace Macro.Infrastructure.Controller
     internal class SequentialModeController : MacroModeControllerBase
     {
         private readonly InputEventProcessorHandler _eventProcessorHandler;
-        private Action<Bitmap> _drawImageCallback;
 
         public SequentialModeController(Config config,
             InputEventProcessorHandler inputEventProcessor) : base(config)
@@ -28,13 +27,11 @@ namespace Macro.Infrastructure.Controller
             _eventProcessorHandler = inputEventProcessor;
         }
 
-        public override void Execute(Action<Bitmap> drawImageCallback,
+        public override void Execute(
             ArrayQueue<Process> processes,
             ArrayQueue<EventTriggerModel> eventTriggerModels,
             CancellationToken cancellationToken)
         {
-            _drawImageCallback = drawImageCallback;
-
             for (int i = 0; i < processes.Count; ++i)
             {
                 var process = processes[i];

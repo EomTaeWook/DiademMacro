@@ -40,7 +40,7 @@ namespace Macro.Infrastructure.Controller
         }
         public void HandleMouseEvent(IntPtr hWnd,
             EventTriggerModel model,
-            Point matchedLocation,
+            Point2D matchedLocation,
             ApplicationTemplate applicationTemplate,
             int dragDelay)
         {
@@ -59,10 +59,10 @@ processLocation;
             }
             else
             {
-                var clickPoint = new Point
+                var clickPoint = new Point2D
                 {
-                    X = (int)model.MouseTriggerInfo.StartPoint.X - currentProcessLocation.Left,
-                    Y = (int)model.MouseTriggerInfo.StartPoint.Y - currentProcessLocation.Top
+                    X = model.MouseTriggerInfo.StartPoint.X - currentProcessLocation.Left,
+                    Y = model.MouseTriggerInfo.StartPoint.Y - currentProcessLocation.Top
                 };
                 HardClickProcess(clickPoint, model.MouseTriggerInfo.MouseInfoEventType);
             }
@@ -106,8 +106,8 @@ processLocation;
                     X = matchedLocation.X,
                     Y = matchedLocation.Y
                 };
-                clickPoint.X += (processLocation.Left + model.MouseTriggerInfo.StartPoint.X);
-                clickPoint.Y += (processLocation.Top + model.MouseTriggerInfo.StartPoint.Y);
+                clickPoint.X += processLocation.Left + model.MouseTriggerInfo.StartPoint.X;
+                clickPoint.Y += processLocation.Top + model.MouseTriggerInfo.StartPoint.Y;
                 HardClickProcess(clickPoint, MouseEventType.LeftClick);
             }
         }
