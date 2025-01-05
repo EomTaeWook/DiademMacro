@@ -6,7 +6,7 @@ namespace Macro.Infrastructure
     {
         public static readonly int Major = 2;
         public static readonly int Minor = 6;
-        public static readonly int Build = 19;
+        public static readonly int Build = 20;
     }
 
     public class VersionNote
