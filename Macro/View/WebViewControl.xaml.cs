@@ -16,6 +16,10 @@ namespace Macro.View
         }
         public async Task LoadUrlAsync(string url)
         {
+            if (string.IsNullOrEmpty(url))
+            {
+                return;
+            }
             try
             {
                 if (webViewControl.CoreWebView2 == null)

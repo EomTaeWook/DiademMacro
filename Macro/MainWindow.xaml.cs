@@ -42,6 +42,7 @@ namespace Macro
         private CoroutineHandler _coroutineHandler = new CoroutineHandler();
         private bool _isShutdownHandled;
         private WebApiManager _webApiManager;
+        private AdManager _adManager;
         public MainWindow()
         {
             InitializeComponent();
@@ -59,11 +60,14 @@ namespace Macro
                 AdOverlay.Visibility = Visibility.Collapsed;
             });
 
+            ApplicationManager.Instance.Init();
+            _adManager = ServiceDispatcher.Resolve<AdManager>();
+            _adManager.InitializeAdUrls();
             if (CheckVersion() == false && CheckSponsor() == false)
             {
                 _coroutineHandler.Start(ShowAd(true));
             }
-            ApplicationManager.Instance.Init();
+
         }
         private bool CheckSponsor()
         {
@@ -134,6 +138,7 @@ namespace Macro
         private void Init()
         {
             _webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
+
 
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
             {
@@ -485,9 +490,7 @@ namespace Macro
             {
                 AdOverlay.Visibility = Visibility.Visible;
 
-                var adManager = ServiceDispatcher.Resolve<AdManager>();
-
-                await EmbeddedWebView.LoadUrlAsync(adManager.GetRandomAdUrl());
+                await EmbeddedWebView.LoadUrlAsync(_adManager.GetRandomAdUrl());
             });
 
             yield return new DelayInSeconds(3.5F);

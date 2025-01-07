@@ -51,6 +51,7 @@
     <Compile Include="Generated\TemplateContainer.cs" />
     <Compile Include="Generated\TemplateLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShareModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

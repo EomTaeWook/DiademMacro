@@ -11,4 +11,8 @@
     {
         public string AccessKey { get; set; }
     }
+
+    public class GetAdUrlList : IAPIRequest
+    {
+    }
 }
