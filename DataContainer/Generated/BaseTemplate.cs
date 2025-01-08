@@ -1,4 +1,4 @@
-﻿namespace TemplateContainers
+﻿namespace DataContainer.Generated
 {
     public class TemplateBase
     {

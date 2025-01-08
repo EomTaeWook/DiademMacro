@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
-using TemplateContainers;
 
 namespace Macro.Infrastructure.Serialize
 {

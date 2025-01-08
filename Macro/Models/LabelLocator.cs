@@ -1,7 +1,6 @@
 ﻿using DataContainer.Generated;
 using Macro.Extensions;
 using Macro.Infrastructure;
-using TemplateContainers;
 
 namespace Macro.Models
 {

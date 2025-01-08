@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-namespace TemplateContainers
+namespace DataContainer.Generated
 {
     public partial class TemplateContainer<T> where T : TemplateBase, new ()
     {
         public static IEnumerable<T> Values => _dataToMap.Values;
         private static readonly Dictionary<int, T> _dataToMap = new Dictionary<int, T>();
         private static readonly Dictionary<string, T> _nameKeyToMap = new Dictionary<string, T>();
+
         public static T Find(int id)
         {
             if (_dataToMap.ContainsKey(id) == false)
@@ -21,7 +22,7 @@ namespace TemplateContainers
         {
             if (_nameKeyToMap.ContainsKey(name) == false)
             {
-               return new T();
+                return new T();
             }
             return _nameKeyToMap[name];
         }
@@ -31,7 +32,8 @@ namespace TemplateContainers
             using (var stream = new StreamReader(File.OpenRead(fullPath)))
             {
                 var content = stream.ReadToEnd();
-                var templateDatas = JsonConvert.DeserializeObject<List<T>>(content);
+                var templateDatas = DeserializeTemplates(content);
+
                 foreach (var template in templateDatas)
                 {
                     _dataToMap.Add(template.Id, template);
@@ -42,7 +44,8 @@ namespace TemplateContainers
         public static void Load(string fileName, Func<string, string> funcLoadJson)
         {
             var json = funcLoadJson(fileName);
-            var templateDatas = JsonConvert.DeserializeObject<List<T>>(json);
+            var templateDatas = DeserializeTemplates(json);
+
             foreach (var template in templateDatas)
             {
                 _dataToMap.Add(template.Id, template);
@@ -51,17 +54,21 @@ namespace TemplateContainers
         }
         public static void MakeRefTemplate()
         {
-            foreach(var template in _dataToMap.Values)
+            foreach (var template in _dataToMap.Values)
             {
                 template.MakeRefTemplate();
             }
         }
         public static void Combine()
         {
-            foreach(var template in _dataToMap.Values)
+            foreach (var template in _dataToMap.Values)
             {
                 template.Combine();
             }
+        }
+        private static List<T> DeserializeTemplates(string json)
+        {
+            return JsonConvert.DeserializeObject<List<T>>(json);
         }
     }
 }
