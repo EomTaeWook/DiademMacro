@@ -1,5 +1,6 @@
 ﻿using System;
 using Utils.Infrastructure;
+using Utils.Models;
 
 namespace Macro.Models
 {

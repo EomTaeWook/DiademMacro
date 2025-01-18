@@ -5,7 +5,8 @@
     "NeedFocus": "FALSE",
     "HandleName": null,
     "OffsetX": 0,
-    "OffsetY": 0
+    "OffsetY": 0,
+    "UseMonitorDPI": false
   },
   {
     "Id": 1001,
@@ -13,7 +14,8 @@
     "NeedFocus": "FALSE",
     "HandleName": "TheRender",
     "OffsetX": 0,
-    "OffsetY": -35
+    "OffsetY": -35,
+    "UseMonitorDPI": false
   },
   {
     "Id": 1002,
@@ -21,7 +23,8 @@
     "NeedFocus": "FALSE",
     "HandleName": "kaopu001_tiantianplayer_opengl_wndWindow",
     "OffsetX": 0,
-    "OffsetY": -35
+    "OffsetY": -35,
+    "UseMonitorDPI": false
   },
   {
     "Id": 1003,
@@ -29,7 +32,8 @@
     "NeedFocus": "FALSE",
     "HandleName": "BlueStacks Android PluginAndroid",
     "OffsetX": 0,
-    "OffsetY": 0
+    "OffsetY": 0,
+    "UseMonitorDPI": false
   },
   {
     "Id": 1004,
@@ -37,7 +41,8 @@
     "NeedFocus": "FALSE",
     "HandleName": "HD-Player",
     "OffsetX": 0,
-    "OffsetY": 0
+    "OffsetY": 0,
+    "UseMonitorDPI": false
   },
   {
     "Id": 1005,
@@ -45,6 +50,7 @@
     "NeedFocus": "TRUE",
     "HandleName": null,
     "OffsetX": 0,
-    "OffsetY": 0
+    "OffsetY": 0,
+    "UseMonitorDPI": false
   }
 ]

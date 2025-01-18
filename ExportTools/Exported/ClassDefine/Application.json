@@ -64,5 +64,16 @@
     "RefTemplateField": null,
     "ConditionField": null,
     "Conditions": []
+  },
+  {
+    "Name": "UseMonitorDPI",
+    "Count": 1,
+    "Required": true,
+    "DataType": "Bool",
+    "Members": [],
+    "RefTemplate": null,
+    "RefTemplateField": null,
+    "ConditionField": null,
+    "Conditions": []
   }
 ]

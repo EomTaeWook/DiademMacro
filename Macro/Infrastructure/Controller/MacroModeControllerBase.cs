@@ -15,9 +15,11 @@ namespace Macro.Infrastructure.Controller
     {
         protected Config _config;
         protected Action<Bitmap> _drawImageCallback;
+        protected ScreenCaptureManager _screenCaptureManager;
         public MacroModeControllerBase(Config config)
         {
             _config = config;
+            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
         }
         public abstract void Execute(
             ArrayQueue<Process> processes,
@@ -36,7 +38,7 @@ namespace Macro.Infrastructure.Controller
 
             if (eventTriggerModel.RoiData.IsExists() == true)
             {
-                var newRect = DisplayHelper.ApplyMonitorDPI(eventTriggerModel.RoiData.RoiRect, eventTriggerModel.RoiData.MonitorInfo);
+                var newRect = _screenCaptureManager.AdjustRectForDPI(eventTriggerModel.RoiData.RoiRect, eventTriggerModel.RoiData.MonitorInfo);
 
                 int imageWidth = sourceBmp.Width;
                 int imageHeight = sourceBmp.Height;
@@ -77,7 +79,6 @@ namespace Macro.Infrastructure.Controller
             {
                 similarity = OpenCVHelper.Search(sourceBmp, searchImage, out matchedLocation, _config.SearchImageResultDisplay);
             }
-
             return Tuple.Create(similarity, matchedLocation);
         }
     }

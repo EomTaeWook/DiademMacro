@@ -1,11 +1,12 @@
-﻿using Dignus.Framework;
+﻿using Dignus.Collections;
+using Dignus.Framework;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace Macro.Infrastructure.Manager
 {
@@ -41,25 +42,18 @@ namespace Macro.Infrastructure.Manager
 
         private readonly ChildWindow _drawWindow = new ChildWindow();
 
-        private readonly List<CaptureView> _captureViews = new List<CaptureView>();
-        private readonly List<MousePositionView> _mousePointViews = new List<MousePositionView>();
+        private readonly ArrayQueue<CaptureView> _captureViews = new ArrayQueue<CaptureView>();
+        private readonly ArrayQueue<MousePositionView> _mousePointViews = new ArrayQueue<MousePositionView>();
         private IntPtr _drawWindowHandle;
-
+        private ScreenCaptureManager _screenCaptureManager;
         public ApplicationManager()
         {
             _mainWindow = Application.Current.MainWindow as MetroWindow;
-
             _progress = new ProgressView
             {
                 Owner = _mainWindow,
                 RenderSize = _mainWindow.RenderSize
             };
-
-            foreach (var item in DisplayHelper.MonitorInfo())
-            {
-                _captureViews.Add(new CaptureView(item));
-                _mousePointViews.Add(new MousePositionView(item));
-            }
         }
 
         public Window GetDrawWindow()
@@ -73,15 +67,39 @@ namespace Macro.Infrastructure.Manager
         public void Init()
         {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
+            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
             _drawWindow.Opacity = 0;
-            _drawWindow.Show();
 #if DEBUG
-            //_drawWindow.Opacity = 1;
+            _drawWindow.Opacity = 1;
+            _drawWindow.Background = Brushes.White;
+            _drawWindow.Left = 0;
+            _drawWindow.Top = 0;
 #endif
+            _drawWindow.Show();
+            ResetMonitorViews();
+
             _drawWindowHandle = new WindowInteropHelper(_drawWindow).Handle;
             SchedulerManager.Instance.Start();
         }
+        private void ResetMonitorViews()
+        {
+            foreach (var item in _captureViews)
+            {
+                item.Close();
+            }
+            foreach (var item in _mousePointViews)
+            {
+                item.Close();
+            }
+            _captureViews.Clear();
+            _mousePointViews.Clear();
 
+            foreach (var item in _screenCaptureManager.GetMonitorInfo())
+            {
+                _captureViews.Add(new CaptureView(item));
+                _mousePointViews.Add(new MousePositionView(item));
+            }
+        }
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             Dispose();
@@ -103,6 +121,8 @@ namespace Macro.Infrastructure.Manager
 
         public void ShowImageCaptureView()
         {
+            ResetMonitorViews();
+
             foreach (var item in _captureViews)
             {
                 item.ShowActivate(CaptureModeType.ImageCapture);

@@ -53,7 +53,8 @@ namespace Macro.Infrastructure.Controller
                     break;
                 }
 
-                if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetDrawWindowHandle(), out Bitmap sourceBmp) == false)
+                if (_screenCaptureManager.CaptureProcessWindow(process,
+                    out Bitmap sourceBmp) == false)
                 {
                     break;
                 }
@@ -81,7 +82,7 @@ namespace Macro.Infrastructure.Controller
 
                 if (model.RepeatInfo.RepeatType == RepeatType.SearchParent)
                 {
-                    if (DisplayHelper.ProcessCaptureV2(process, ApplicationManager.Instance.GetDrawWindowHandle(), out sourceBmp) == false)
+                    if (_screenCaptureManager.CaptureProcessWindow(process, out sourceBmp) == false)
                     {
                         break;
                     }
@@ -215,8 +216,7 @@ namespace Macro.Infrastructure.Controller
             ArrayQueue<EventTriggerModel> eventTriggerModels,
             CancellationToken cancellationToken)
         {
-            if (DisplayHelper.ProcessCaptureV2(process,
-                    ApplicationManager.Instance.GetDrawWindowHandle(),
+            if (_screenCaptureManager.CaptureProcessWindow(process,
                     out Bitmap sourceBmp) == false)
             {
                 return;

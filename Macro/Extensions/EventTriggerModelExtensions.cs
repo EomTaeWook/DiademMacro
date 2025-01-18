@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Utils.Infrastructure;
+using Utils.Models;
 
 namespace Macro.Extensions
 {

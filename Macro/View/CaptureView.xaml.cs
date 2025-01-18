@@ -1,8 +1,9 @@
-﻿using Macro.Extensions;
+﻿using Dignus.Log;
+using Macro.Extensions;
 using Macro.Infrastructure;
-using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,11 +29,9 @@ namespace Macro.View
         private Point _factor;
 
         private CaptureModeType _captureMode;
-
         public CaptureView(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
-
             _dummyCaptureBorder = new Border
             {
                 BorderBrush = Brushes.Blue,
@@ -54,7 +53,7 @@ namespace Macro.View
 
             var systemDPI = NativeHelper.GetSystemDPI();
             _factor.X = 1.0F * monitorInfo.Dpi.X / systemDPI.X;
-            _factor.Y = 1.0F *monitorInfo.Dpi.Y / systemDPI.Y;
+            _factor.Y = 1.0F * monitorInfo.Dpi.Y / systemDPI.Y;
             InitializeComponent();
             Loaded += CaptureView_Loaded;
         }
@@ -92,15 +91,15 @@ namespace Macro.View
         private void Clear()
         {
             captureZone.Children.Clear();
-            if(this._captureMode == CaptureModeType.ImageCapture)
+            if (this._captureMode == CaptureModeType.ImageCapture)
             {
                 _dragBorder = _dummyCaptureBorder.Clone();
             }
-            else if(this._captureMode == CaptureModeType.ROICapture)
+            else if (this._captureMode == CaptureModeType.ROICapture)
             {
                 _dragBorder = _dummyRoiBorder.Clone();
             }
-            
+
             captureZone.Children.Add(_dragBorder);
             WindowState = WindowState.Normal;
         }
@@ -115,10 +114,10 @@ namespace Macro.View
         }
         private void CaptureView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 e.Handled = true;
-                if(this._captureMode == CaptureModeType.ImageCapture)
+                if (this._captureMode == CaptureModeType.ImageCapture)
                 {
                     NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBind, new CaptureEventArgs()
                     {
@@ -163,7 +162,7 @@ namespace Macro.View
             {
                 Canvas.SetLeft(_dragBorder, origin.X);
             }
-                
+
 
             if (origin.Y - current.Y > 0)
             {
@@ -173,7 +172,7 @@ namespace Macro.View
             {
                 Canvas.SetTop(_dragBorder, origin.Y);
             }
-                
+
 
             if (current.X > origin.X)
             {
@@ -183,7 +182,7 @@ namespace Macro.View
             {
                 _dragBorder.Width = origin.X - current.X;
             }
-                
+
 
             if (current.Y > origin.Y)
             {
@@ -194,6 +193,30 @@ namespace Macro.View
                 _dragBorder.Height = origin.Y - current.Y;
             }
         }
+        private Bitmap CaptureScreenRegion(MonitorInfo monitor, Rect rect)
+        {
+            try
+            {
+                var factor = NativeHelper.GetSystemDPI();
+                var factorX = 1.0F * factor.X / ConstHelper.DefaultDPI;
+                var factorY = 1.0F * factor.Y / ConstHelper.DefaultDPI;
+
+                Bitmap bmp = new Bitmap((int)Math.Truncate(rect.Width * factorX), (int)Math.Truncate(rect.Height * factorY));
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.CopyFromScreen(monitor.Rect.Left, monitor.Rect.Top,
+                       (int)Math.Truncate(rect.Left * -1.0F * factorX), (int)Math.Truncate(rect.Top * -1.0F * factorY),
+                        new System.Drawing.Size(monitor.Rect.Width, monitor.Rect.Height),
+                        CopyPixelOperation.SourceCopy);
+                }
+                return bmp;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(ex);
+                return null;
+            }
+        }
 
         private void CaptureZone_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -202,7 +225,7 @@ namespace Macro.View
                 WindowState = WindowState.Minimized;
                 int left = (int)(Canvas.GetLeft(_dragBorder) * _factor.X);
                 int top = (int)(Canvas.GetTop(_dragBorder) * _factor.Y);
-                int width = (int)(_dragBorder.Width *  _factor.X);
+                int width = (int)(_dragBorder.Width * _factor.X);
                 int height = (int)(_dragBorder.Height * _factor.Y);
                 var rect = new Rect
                 {
@@ -211,9 +234,9 @@ namespace Macro.View
                     Bottom = top + height,
                     Top = top
                 };
-                if(_captureMode == CaptureModeType.ImageCapture)
+                if (_captureMode == CaptureModeType.ImageCapture)
                 {
-                    var image = DisplayHelper.Capture(_monitorInfo, rect);
+                    var image = CaptureScreenRegion(_monitorInfo, rect);
                     NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBind, new CaptureEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
@@ -221,7 +244,7 @@ namespace Macro.View
                         Position = rect
                     });
                 }
-                else if(_captureMode == CaptureModeType.ROICapture)
+                else if (_captureMode == CaptureModeType.ROICapture)
                 {
                     NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureDataBind, new ROICaptureEventArgs()
                     {
@@ -229,7 +252,7 @@ namespace Macro.View
                         RoiRect = rect
                     });
                 }
-                
+
                 e.Handled = true;
             }
             _isDrag = false;

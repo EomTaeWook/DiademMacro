@@ -234,7 +234,7 @@
     <Compile Include="Infrastructure\Manager\AdManager.cs" />
     <Compile Include="Infrastructure\Manager\WebApiManager.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
-    <Compile Include="Infrastructure\DisplayHelper.cs" />
+    <Compile Include="Infrastructure\Manager\ScreenCaptureManager.cs" />
     <Compile Include="Infrastructure\FileService.cs" />
     <Compile Include="Infrastructure\Converter\BooleanToValueConverter.cs" />
     <Compile Include="Infrastructure\Converter\WidthConverter.cs" />

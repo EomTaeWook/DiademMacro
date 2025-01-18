@@ -42,6 +42,7 @@ namespace Macro
         private bool _isShutdownHandled;
         private WebApiManager _webApiManager;
         private AdManager _adManager;
+        private ScreenCaptureManager _screenCaptureManager;
         public MainWindow()
         {
             InitializeComponent();
@@ -51,6 +52,7 @@ namespace Macro
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             _contentController = ServiceDispatcher.Resolve<ContentController>();
+            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
             _config = ServiceDispatcher.Resolve<Config>();
             InitEvent();
             Init();
@@ -248,7 +250,7 @@ namespace Macro
                 {
                     return;
                 }
-                foreach (var monitor in DisplayHelper.MonitorInfo())
+                foreach (var monitor in _screenCaptureManager.GetMonitorInfo())
                 {
                     if (monitor.Rect.IsContain(rect))
                     {

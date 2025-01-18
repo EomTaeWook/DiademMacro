@@ -12,5 +12,6 @@ namespace DataContainer.Generated
         public string HandleName { get; set; }
         public int OffsetX { get; set; }
         public int OffsetY { get; set; }
+        public bool UseMonitorDPI { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using Utils.Infrastructure;
+using Utils.Models;
 
 namespace Utils
 {
@@ -108,9 +109,9 @@ namespace Utils
         [DllImport("gdi32.dll")]
         private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
         [DllImport("user32.dll")]
-        private static extern IntPtr GetDC(IntPtr hWnd);
+        public static extern IntPtr GetDC(IntPtr hWnd);
         [DllImport("user32.dll")]
-        private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+        public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
         public static Point GetSystemDPI()
         {
             Point result = new Point();
@@ -149,6 +150,29 @@ namespace Utils
         {
             GetDpiForMonitor(hMonitor, DpiFlags.Effective, out uint dpiX, out uint dpiY);
             return new Point((int)dpiX, (int)dpiY);
+        }
+
+        [DllImport("user32.dll")]
+        public static extern bool IsIconic(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DisplayDevice lpDisplayDevice, uint dwFlags);
+
+        public static bool IsAnyMonitorPoweredOn()
+        {
+            DisplayDevice displayDevice = new DisplayDevice();
+            displayDevice.cb = Marshal.SizeOf(displayDevice);
+            uint monitorIndex = 0;
+            while (EnumDisplayDevices(null, monitorIndex, ref displayDevice, 0))
+            {
+                if ((displayDevice.StateFlags & 0x00000001) != 0)
+                {
+                    return true;
+                }
+                monitorIndex++;
+            }
+            return false;
+
         }
     }
 }
