@@ -64,11 +64,11 @@ namespace Macro
             ApplicationManager.Instance.Init();
             _adManager = ServiceDispatcher.Resolve<AdManager>();
             _adManager.InitializeAdUrls();
-            if (CheckVersion() == false && CheckSponsor() == false)
+            if (CheckSponsor() == false)
             {
                 _coroutineHandler.Start(ShowAd(true));
             }
-
+            CheckVersion();
         }
         private bool CheckSponsor()
         {
@@ -455,17 +455,19 @@ namespace Macro
             LoadSaveFile(GetSaveFilePath());
             ApplicationManager.HideProgressbar();
         }
-        private bool CheckVersion()
+        private void CheckVersion()
         {
             if (_config.VersionCheck == false)
             {
-                return false;
+                return;
             }
+
             var response = _webApiManager.Request<GetMacroLatestVersionResponse>(new GetMacroLatestVersion());
             if (response == null)
             {
-                return false;
+                return;
             }
+
             var latestNote = response.VersionNote;
 
             if (latestNote.Version > VersionNote.CurrentVersion)
@@ -476,10 +478,7 @@ namespace Macro
                 {
                     Process.Start(ConstHelper.VersionInfoPageUrl);
                 }
-
-                return true;
             }
-            return false;
         }
         private IEnumerator ShowAd(bool isCloseButtonShow)
         {
@@ -490,7 +489,6 @@ namespace Macro
             Dispatcher.Invoke(async () =>
             {
                 AdOverlay.Visibility = Visibility.Visible;
-
                 await EmbeddedWebView.LoadUrlAsync(_adManager.GetRandomAdUrl());
             });
 
