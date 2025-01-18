@@ -1,8 +1,8 @@
 {
   "Version": {
     "Major": 2,
-    "Minor": 6,
-    "Build": 20
+    "Minor": 7,
+    "Build": 0
   },
-  "Desc": "설정에 매크로 모드가 추가되었습니다. A macro mode has been added to the settings."
+  "Desc": "모니터 전원 꺼짐 지원, Monitor Power-Off Support"
 }
