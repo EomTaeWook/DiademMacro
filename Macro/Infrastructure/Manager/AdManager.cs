@@ -19,42 +19,22 @@ namespace Macro.Infrastructure.Manager
         }
         public void InitializeAdUrls()
         {
-            var resonse = _webApiManager.Request<GetAdUrlListResponse>(new GetAdUrlList());
-
-            if (resonse == null)
-            {
-                LogHelper.Error($"failed to initialize AdManager: response is null.");
-                return;
-            }
-            _adUrls.AddRange(resonse.AdUrls);
         }
         public string GetRandomAdUrl()
         {
-            if (_adUrls.Count == 0)
+            var response = _webApiManager.Request<OnePickAdUrlResponse>(new OnePickAdUrl());
+
+            if (response == null)
             {
                 return string.Empty;
             }
-            var totalProbability = 0;
 
-            foreach (var item in _adUrls)
+            if (string.IsNullOrEmpty(response.AdUrl))
             {
-                totalProbability += item.Probability;
+                LogHelper.Fatal($"ad Url is empty.");
             }
 
-            var probability = _randomGenerator.Next(0, totalProbability) + 1;
-
-            var cumulativeProbability = 0;
-            foreach (var item in _adUrls)
-            {
-                cumulativeProbability += item.Probability;
-                if (probability <= cumulativeProbability)
-                {
-                    return item.Url;
-                }
-            }
-
-            LogHelper.Error("no matching Ad URL found.");
-            return string.Empty;
+            return response.AdUrl;
         }
     }
 }

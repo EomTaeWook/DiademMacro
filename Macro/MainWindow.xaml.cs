@@ -397,7 +397,6 @@ namespace Macro
                     {
                         _fixProcess = new KeyValuePair<string, Process>(item.Key, item.Value);
                         _contentController.SetFixProcess(item.Value);
-
                     }
                 }
                 else

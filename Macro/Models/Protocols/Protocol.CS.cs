@@ -15,4 +15,7 @@
     public class GetAdUrlList : IAPIRequest
     {
     }
+    public class OnePickAdUrl : IAPIRequest
+    {
+    }
 }

@@ -30,4 +30,11 @@ namespace Macro.Models.Protocols
         public List<AdData> AdUrls { get; set; } = new List<AdData>();
         public string ErrorMessage { get; set; }
     }
+    public class OnePickAdUrlResponse : IAPIResponse
+    {
+        public bool Ok { get; set; }
+
+        public string ErrorMessage { get; set; }
+        public string AdUrl { get; set; }
+    }
 }
