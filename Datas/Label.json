@@ -352,5 +352,11 @@
     "Name": "1058",
     "Kor": "MacroMode",
     "Eng": "MacroMode"
+  },
+  {
+    "Id": 1059,
+    "Name": "1059",
+    "Kor": "키보드 딜레이(ms)",
+    "Eng": "KeyboardDelay(ms)"
   }
 ]

@@ -196,6 +196,10 @@ namespace Macro.Models
         {
             get => GetString(1058);
         }
+        public string KeyBoardDelay
+        {
+            get => GetString(1059);
+        }
         private string GetString(int templateId)
         {
             var template = TemplateContainer<LabelTemplate>.Find(templateId);
