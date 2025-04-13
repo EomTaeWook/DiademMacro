@@ -254,6 +254,9 @@
     <Compile Include="Infrastructure\TaskHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindowV2.xaml.cs">
+      <DependentUpon>MainWindowV2.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ColorModel.cs" />
@@ -314,6 +317,10 @@
       <DependentUpon>WebViewControl.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindowV2.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
