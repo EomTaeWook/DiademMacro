@@ -19,7 +19,6 @@ namespace Macro.Models
         private int _processLocationY;
         private string _accessKey;
         private MacroModeType _macroMode = MacroModeType.BatchMode;
-        private int _keyboardDelay { get; set; } = ConstHelper.MinItemDelay;
 
         public Config()
         {
@@ -140,16 +139,6 @@ namespace Macro.Models
             }
         }
 
-        public int KeyboardDelay
-        {
-            get => _keyboardDelay;
-
-            set
-            {
-                _keyboardDelay = value;
-                OnPropertyChanged("KeyboardDelay");
-            }
-        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

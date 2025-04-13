@@ -22,15 +22,6 @@ namespace Macro.Infrastructure
             NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
             return this;
         }
-        public IKeyboardInput KeyUp(params KeyCode[] keyCodes)
-        {
-            if (keyCodes != null)
-            {
-                KeyUp(keyCodes);
-            }
-                
-            return this;
-        }
 
         public IKeyboardInput KeyUp(IEnumerable<KeyCode> keyCodes)
         {
@@ -40,29 +31,11 @@ namespace Macro.Infrastructure
             return this;
         }
 
-        public IKeyboardInput KeyDown(params KeyCode[] keyCodes)
-        {
-            if (keyCodes != null)
-            {
-                KeyDown(keyCodes);
-            }
-            return this;
-        }
-
         public IKeyboardInput KeyDown(IEnumerable<KeyCode> keyCodes)
         {
             var builder = new InputBuilder();
             KeyDown(builder, keyCodes);
             NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
-            return this;
-        }
-
-        public IKeyboardInput KeyPress(params KeyCode[] keyCodes)
-        {
-            if (keyCodes != null)
-            {
-                KeyPress(keyCodes);
-            }
             return this;
         }
 
@@ -80,12 +53,12 @@ namespace Macro.Infrastructure
             {
                 return this;
             }
-                
+
             foreach (var key in keyCodes)
             {
                 builder.AddKeyDown(key);
             }
-                
+
             return this;
         }
 
@@ -95,7 +68,7 @@ namespace Macro.Infrastructure
             {
                 return;
             }
-                
+
             foreach (var key in keyCodes)
             {
                 builder.AddKeyPress(key);
@@ -107,7 +80,7 @@ namespace Macro.Infrastructure
             {
                 return;
             }
-                
+
             foreach (var key in keyCodes)
             {
                 builder.AddKeyUp(key);

@@ -8,13 +8,10 @@ namespace Macro.Infrastructure.Interface
         IKeyboardInput ModifiedKeyStroke(KeyCode modifierKeyCodes, KeyCode keyCodes);
         IKeyboardInput ModifiedKeyStroke(IEnumerable<KeyCode> modifierKeyCodes, IEnumerable<KeyCode> keyCodes);
 
-        IKeyboardInput KeyUp(params KeyCode[] keyCodes);
         IKeyboardInput KeyUp(IEnumerable<KeyCode> keyCodes);
 
-        IKeyboardInput KeyDown(params KeyCode[] keyCodes);
         IKeyboardInput KeyDown(IEnumerable<KeyCode> keyCodes);
 
-        IKeyboardInput KeyPress(params KeyCode[] keyCodes);
         IKeyboardInput KeyPress(IEnumerable<KeyCode> keyCodes);
     }
 }

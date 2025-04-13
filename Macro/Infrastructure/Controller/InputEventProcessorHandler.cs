@@ -292,8 +292,6 @@ processLocation;
         public void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
         {
             var hWndActive = NativeHelper.GetForegroundWindow();
-            Task.Delay(10).GetResult();
-
             NativeHelper.SetForegroundWindow(hWnd);
             var inputs = model.KeyboardCmd.ToUpper().Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries);
             var modifiedKey = inputs.Where(r =>
@@ -340,7 +338,6 @@ processLocation;
             }).ToArray();
 
             _inputController.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
-            Task.Delay(10).GetResult();
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }

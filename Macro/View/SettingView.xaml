@@ -7,7 +7,7 @@
              xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:util="clr-namespace:Utils;assembly=Utils" xmlns:viewmodel="clr-namespace:Macro.Models.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:SettingViewModel}"
-             mc:Ignorable="d" Width="798" Height="445">
+             mc:Ignorable="d" Width="798" Height="440">
     <StackPanel>
         <StackPanel>
             <Label Content="{Binding Path=Preferences, Source={StaticResource LabelLocator} }"></Label>
@@ -84,11 +84,8 @@
                         <ComboBox Name="comboMacroMode" Grid.Row="9" Grid.Column="1" SelectedValue="{Binding Path=Config.MacroMode, Mode=TwoWay}">
                         </ComboBox>
 
-                        <Label Grid.Row="10" Grid.Column="0" Content="{Binding Path=KeyBoardDelay, Source={StaticResource LabelLocator}}"></Label>
-                        <mah:NumericUpDown Grid.Row="10" Grid.Column="1" Minimum="0" Name="numKeyboardDelay" Value="{Binding Path=Config.KeyboardDelay, Mode=TwoWay}"></mah:NumericUpDown>
-                        
-                        <Button Name="btnSave" Grid.Row ="11" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
-                        <Button Name="btnClose" Grid.Row ="11" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Close, Source={StaticResource LabelLocator}}" Background="DarkGray"></Button>
+                        <Button Name="btnSave" Grid.Row ="10" Grid.Column="0"  Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
+                        <Button Name="btnClose" Grid.Row ="10" Grid.Column="1" Style="{DynamicResource MahApps.Styles.Button.Square}" Content="{Binding Path=Close, Source={StaticResource LabelLocator}}" Background="DarkGray"></Button>
                     </Grid>
                 </DockPanel>
             </Grid>
