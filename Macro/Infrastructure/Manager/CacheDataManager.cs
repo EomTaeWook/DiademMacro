@@ -1,10 +1,11 @@
-﻿using Dignus.Framework;
+﻿using Dignus.DependencyInjection.Attributes;
 using Macro.Models;
 using System.Collections.Generic;
 
 namespace Macro.Infrastructure.Manager
 {
-    public class CacheDataManager : Singleton<CacheDataManager>
+    [Injectable(Dignus.DependencyInjection.LifeScope.Singleton)]
+    public class CacheDataManager
     {
         private ulong _currentIndex;
         public object _lockObj = new object();

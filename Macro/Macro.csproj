@@ -252,11 +252,11 @@
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
+    <Compile Include="MainWindowOld.xaml.cs">
+      <DependentUpon>MainWindowOld.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindowV2.xaml.cs">
-      <DependentUpon>MainWindowV2.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\ColorModel.cs" />
@@ -316,11 +316,11 @@
     <Compile Include="View\WebViewControl.xaml.cs">
       <DependentUpon>WebViewControl.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Page Include="MainWindowOld.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainWindowV2.xaml">
+    <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>

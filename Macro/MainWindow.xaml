@@ -49,19 +49,13 @@
                                 <ColumnDefinition Width="8*"></ColumnDefinition>
                                 <ColumnDefinition Width="2*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="5,0,0,0" Width="50"></CheckBox>
-                            <Button x:Name="btnMoveProcessLocation" Grid.Column="1" Content="{Binding Path=MoveProcessLocation, Source={StaticResource LabelLocator}}" Width="240" Height="35" Visibility="Visible"></Button>
-                            <Button x:Name="btnRestoreMoveProcessLocation" Grid.Column="1" Content="{Binding Path=RestoreMoveProcessLocation, Source={StaticResource LabelLocator}}" Width="240" Height="35"  Visibility="Collapsed"></Button>
-                            <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="40" Height="40" >
+                            <CheckBox x:Name="checkFix" Grid.Column="0" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="5,0,0,0" Width="50"></CheckBox>                            <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="40" Height="40" >
                                 <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
                             </Button>
                         </Grid>
                     </Grid>
                 </DockPanel>
             </Border>
-            <DockPanel>
-                <view:ContentView x:Name="contentView"/>
-            </DockPanel>
         </DockPanel>
 
         <Grid x:Name="AdOverlay" Visibility="Collapsed" Background="#80000000">

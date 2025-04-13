@@ -19,11 +19,13 @@ namespace Macro.Infrastructure.Controller
     internal class BatchModeController : MacroModeControllerBase
     {
         private readonly InputEventProcessorHandler _eventProcessorHandler;
-
+        private CacheDataManager _cacheDataManager;
         public BatchModeController(Config config,
-            InputEventProcessorHandler inputEventProcessorHandler) : base(config)
+            InputEventProcessorHandler inputEventProcessorHandler,
+            CacheDataManager cacheDataManager) : base(config)
         {
             _eventProcessorHandler = inputEventProcessorHandler;
+            _cacheDataManager = cacheDataManager;
         }
 
 
@@ -196,7 +198,7 @@ namespace Macro.Infrastructure.Controller
 
                 if (eventTriggerModel.EventToNext > 0 && eventTriggerModel.TriggerIndex != eventTriggerModel.EventToNext)
                 {
-                    nextModel = CacheDataManager.Instance.GetEventTriggerModel(eventTriggerModel.EventToNext);
+                    nextModel = _cacheDataManager.GetEventTriggerModel(eventTriggerModel.EventToNext);
 
                     if (nextModel != null)
                     {

@@ -19,11 +19,13 @@ namespace Macro.Infrastructure.Controller
     internal class SequentialModeController : MacroModeControllerBase
     {
         private readonly InputEventProcessorHandler _eventProcessorHandler;
-
+        private CacheDataManager _cacheDataManager;
         public SequentialModeController(Config config,
-            InputEventProcessorHandler inputEventProcessor) : base(config)
+            InputEventProcessorHandler inputEventProcessor,
+            CacheDataManager cacheDataManager) : base(config)
         {
             _eventProcessorHandler = inputEventProcessor;
+            _cacheDataManager = cacheDataManager;
         }
 
         public override void Execute(
@@ -139,7 +141,7 @@ namespace Macro.Infrastructure.Controller
 
                 if (eventTriggerModel.EventToNext > 0 && eventTriggerModel.TriggerIndex != eventTriggerModel.EventToNext)
                 {
-                    nextModel = CacheDataManager.Instance.GetEventTriggerModel(eventTriggerModel.EventToNext);
+                    nextModel = _cacheDataManager.GetEventTriggerModel(eventTriggerModel.EventToNext);
 
                     if (nextModel != null)
                     {

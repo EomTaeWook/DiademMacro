@@ -41,7 +41,6 @@ namespace Macro
             };
             LogBuilder.Configuration(LogConfigXmlReader.Load("DignusLog.config"));
             LogBuilder.Build();
-            MovePatcherFile();
             Init();
             base.OnStartup(e);
         }
@@ -93,14 +92,11 @@ namespace Macro
             serviceContainer.RegisterType(config);
 
             serviceContainer.RegisterType<FileService, FileService>();
-
             serviceContainer.RegisterType<IKeyboardInput, KeyboardInput>();
             serviceContainer.RegisterType<IMouseInput, MouseInput>();
-            serviceContainer.RegisterType(CacheDataManager.Instance);
 
             serviceContainer.RegisterType<EventSettingViewModel, EventSettingViewModel>();
             serviceContainer.RegisterType<SettingViewModel, SettingViewModel>();
-
             ServiceDispatcher.SetContainer(serviceContainer);
 
             serviceContainer.Build();
