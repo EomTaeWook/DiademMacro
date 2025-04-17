@@ -183,6 +183,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
+                        
                         <GridViewColumn Header="Index" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.08*, UpdateSourceTrigger=PropertyChanged}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>

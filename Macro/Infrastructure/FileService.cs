@@ -31,6 +31,12 @@ namespace Macro.Infrastructure.Manager
 
         public List<T> Load<T>(string path)
         {
+            if(File.Exists(path) == false)
+            {
+                LogHelper.Info($"not found file. path : {path}");
+                return null;
+            }
+
             try
             {
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))

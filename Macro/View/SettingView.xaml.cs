@@ -6,6 +6,7 @@ using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -71,7 +72,7 @@ namespace Macro.View
         }
         private void Save(Config model)
         {
-            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
+            var path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
             var fileService = ServiceDispatcher.Resolve<FileService>();
             var saved = fileService.SaveJson(path, model);
 

@@ -263,6 +263,7 @@
     <Compile Include="Models\EventFactorModel.cs" />
     <Compile Include="Models\EventResult.cs" />
     <Compile Include="Models\PointModel.cs" />
+    <Compile Include="Models\ProcessItem.cs" />
     <Compile Include="Models\ProcessResult.cs" />
     <Compile Include="Models\ProcessResultModel.cs" />
     <Compile Include="Models\Protocols\Protocol.CS.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiModel.cs" />
     <Compile Include="Models\LabelLocator.cs" />
+    <Compile Include="Models\ViewModel\EventListViewModel.cs" />
     <Compile Include="Models\ViewModel\MainViewModel.cs" />
     <Compile Include="UI\UIItem.cs" />
     <Compile Include="Models\ValueConditionModel.cs" />
@@ -294,6 +296,9 @@
     </Compile>
     <Compile Include="View\ContentView.xaml.cs">
       <DependentUpon>ContentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EventListView.xaml.cs">
+      <DependentUpon>EventListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EventSettingView.xaml.cs">
       <DependentUpon>EventSettingView.xaml</DependentUpon>
@@ -343,6 +348,10 @@
     <Page Include="View\ContentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EventListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\EventSettingView.xaml">
       <SubType>Designer</SubType>

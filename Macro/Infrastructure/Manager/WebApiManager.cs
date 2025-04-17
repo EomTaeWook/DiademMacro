@@ -20,7 +20,7 @@ namespace Macro.Infrastructure.Manager
         {
             var baseUri = ConstHelper.MacroUri;
 #if DEBUG
-            baseUri = "http://localhost:9100/macro";
+            //baseUri = "http://localhost:9100/macro";
 #endif
             var response = Task.Run<TResponse>(async () =>
             {

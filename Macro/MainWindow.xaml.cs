@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -28,6 +29,8 @@ namespace Macro
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private ProcessItem[] _processes;
+        private ProcessItem _fixProcess;
         private Config _config;
         private ContentController _contentController;
         private CloseButtonWindow _closeButtonWindow;
@@ -75,7 +78,7 @@ namespace Macro
             {
                 return false;
             }
-            return false;
+            return response.IsSponsor;
         }
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -97,11 +100,90 @@ namespace Macro
         {
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
-            NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
             NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
             NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
+
+            btnSetting.Click += BtnSetting_Click;
+            btnGithub.Click += BtnGithub_Click;
+            btnStop.Click += BtnStop_Click;
+            btnStart.Click += BtnStart_Click;
+            btnRefresh.Click += BtnRefresh_Click;
+
+            checkFix.Click += CheckFix_Click;
+            comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
+        }
+
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            Refresh();
+        }
+
+        private void BtnStart_Click(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var buttons = this.FindChildren<Button>();
+                foreach (var button in buttons)
+                {
+                    if (button.Equals(btnStart) || button.Equals(btnStop))
+                    {
+                        continue;
+                    }
+                    button.IsEnabled = false;
+                }
+                comboProcess.IsEnabled = false;
+                checkFix.IsEnabled = false;
+                btnStop.Visibility = Visibility.Visible;
+                btnStart.Visibility = Visibility.Collapsed;
+            });
+            
+        }
+
+        private void BtnStop_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.ShowProgressbar();
+            _contentController.Stop();
+            Dispatcher.Invoke(() =>
+            {
+                var buttons = this.FindChildren<Button>();
+                foreach (var button in buttons)
+                {
+                    if (button.Equals(btnStart) || button.Equals(btnStop))
+                    {
+                        continue;
+                    }
+                    button.IsEnabled = true;
+                }
+                comboProcess.IsEnabled = true;
+                checkFix.IsEnabled = true;
+                btnStart.Visibility = Visibility.Visible;
+                btnStop.Visibility = Visibility.Collapsed;
+            });
+            ApplicationManager.HideProgressbar();
+        }
+
+        private void CheckFix_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkFix.IsChecked == true)
+            {
+                _fixProcess = comboProcess.SelectedItem as ProcessItem;
+            }
+            else
+            {
+                _fixProcess = null;
+            }
+        }
+
+        private void BtnGithub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(ConstHelper.HelpUrl);
+        }
+
+        private void BtnSetting_Click(object sender, RoutedEventArgs e)
+        {
+            UIManager.Instance.AddPopup<SettingView>();
         }
 
         private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
@@ -113,7 +195,7 @@ namespace Macro
         {
             if (e.Key == System.Windows.Input.Key.Escape)
             {
-
+                BtnStop_Click(btnStop, null);
             }
         }
 
@@ -143,18 +225,30 @@ namespace Macro
         }
         private string GetSaveFilePath()
         {
-            if (string.IsNullOrEmpty(_config.SavePath) == true)
+            var path = ConstHelper.DefaultSavePath;
+
+            if(string.IsNullOrEmpty(_config.SavePath) == false)
             {
-                return $"{ConstHelper.DefaultSavePath}{ConstHelper.DefaultSaveFileName}";
+                path = _config.SavePath;
             }
-            else
-            {
-                return $"{_config.SavePath}\\{ConstHelper.DefaultSaveFileName}";
-            }
+            return Path.Combine(path, ConstHelper.DefaultSaveFileName);
         }
 
         private void Refresh()
         {
+            if (Directory.Exists(GetSaveFilePath()) == false)
+            {
+                Directory.CreateDirectory(GetSaveFilePath());
+            }
+
+            _processes = Process.GetProcesses()
+                .Where(r => r.MainWindowHandle != IntPtr.Zero)
+                .Select(r => new ProcessItem(r))
+                .OrderBy(r => r.ProcessName).ToArray();
+
+            comboProcess.ItemsSource = _processes;
+            comboProcess.DisplayMemberPath = "ProcessName";
+            comboProcess.SelectedValuePath = "Process";
         }
 
 
@@ -187,11 +281,7 @@ namespace Macro
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-        }
-        private void CheckFix_Checked(object sender, RoutedEventArgs e)
-        {
-
+            CheckFix_Click(checkFix, null);
         }
         private void NotifyHelper_SelectTreeViewChanged(SelctTreeViewItemChangedEventArgs e)
         {
