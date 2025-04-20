@@ -28,7 +28,7 @@
                 </UI:TreeGridView.ItemTemplate>
 
                 <UI:TreeGridView.Columns>
-                    <GridViewColumn Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.15*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.12*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.Header>
                             <CheckBox IsChecked="{Binding Path=DataContext.IsAllSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                         </GridViewColumn.Header>

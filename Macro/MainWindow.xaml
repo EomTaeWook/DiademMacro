@@ -10,7 +10,7 @@
     xmlns:UI="clr-namespace:Macro.UI"
     GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
     BorderThickness="1"
-    Title="{Binding Path=Title, Source={StaticResource LabelLocator}}" Height="600" Width="480" WindowStartupLocation="CenterScreen" 
+    Title="{Binding Path=Title, Source={StaticResource LabelLocator}}" Height="600" Width="420" WindowStartupLocation="CenterScreen" 
     mc:Ignorable="d">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
@@ -30,14 +30,18 @@
     
     <Grid>
         <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
-            <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="110">
+            <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="140">
                 <DockPanel LastChildFill="True" Margin="0,0,0,6">
                     <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                        <Label Height="40" VerticalAlignment="Top" Content="{Binding Path=SelectProcess, Source={StaticResource LabelLocator}}" DockPanel.Dock="Left"/>
+                        <Label Height="35" VerticalAlignment="Top" Content="{Binding Path=SelectProcess, Source={StaticResource LabelLocator}}" DockPanel.Dock="Left"/>
                         <Button Name="btnStart" Width="50" Content="{Binding Path=Start, Source={StaticResource LabelLocator}}" DockPanel.Dock="Right"/>
                         <Button Name="btnStop" Width="50" Visibility="Collapsed" Content="{Binding Path=Stop, Source={StaticResource LabelLocator}}" DockPanel.Dock="Right"/>
                     </DockPanel>
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="6*"></RowDefinition>
+                            <RowDefinition Height="4*"></RowDefinition>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="7*"></ColumnDefinition>
                             <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -52,6 +56,11 @@
                                 <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
                             </Button>
                             <CheckBox x:Name="checkFix" Grid.Column="1" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="5,0,0,0" Width="50"></CheckBox>
+                        </Grid>
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                            <Button Name="btnAddEvent" Content ="추가" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Button Name="btnRemoveEvent" Content ="제거" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+                            <Button Name="btnCopyEvent" Content ="복사" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
                         </Grid>
                     </Grid>
                 </DockPanel>

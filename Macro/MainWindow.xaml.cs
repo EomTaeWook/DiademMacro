@@ -138,7 +138,7 @@ namespace Macro
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
             });
-            
+
         }
 
         private void BtnStop_Click(object sender, RoutedEventArgs e)
@@ -227,18 +227,26 @@ namespace Macro
         {
             var path = ConstHelper.DefaultSavePath;
 
-            if(string.IsNullOrEmpty(_config.SavePath) == false)
+            if (string.IsNullOrEmpty(_config.SavePath) == false)
             {
                 path = _config.SavePath;
             }
             return Path.Combine(path, ConstHelper.DefaultSaveFileName);
         }
+        private string GetSaveDirectoryPath()
+        {
+            if (string.IsNullOrEmpty(_config.SavePath) == true)
+            {
+                return ConstHelper.DefaultSavePath;
+            }
+            return _config.SavePath;
+        }
 
         private void Refresh()
         {
-            if (Directory.Exists(GetSaveFilePath()) == false)
+            if (Directory.Exists(GetSaveDirectoryPath()) == false)
             {
-                Directory.CreateDirectory(GetSaveFilePath());
+                Directory.CreateDirectory(GetSaveDirectoryPath());
             }
 
             _processes = Process.GetProcesses()
