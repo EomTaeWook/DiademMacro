@@ -44,7 +44,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <UI:TreeGridViewExpander/>
-                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Sumnail}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Thumbnail}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

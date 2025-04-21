@@ -110,9 +110,27 @@ namespace Macro
             btnStop.Click += BtnStop_Click;
             btnStart.Click += BtnStart_Click;
             btnRefresh.Click += BtnRefresh_Click;
+            btnAddEventItem.Click += BtnAddEventItem_Click;
+            btnRemoveEventItem.Click += BtnRemoveEventItem_Click;
+            btnCopyEventItem.Click += BtnCopyEventItem_Click;
 
             checkFix.Click += CheckFix_Click;
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
+        }
+
+        private void BtnCopyEventItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void BtnRemoveEventItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void BtnAddEventItem_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)

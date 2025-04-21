@@ -332,31 +332,43 @@
   {
     "Id": 1055,
     "Name": "1055",
-    "Kor": "취소",
-    "Eng": "Cancel"
-  },
-  {
-    "Id": 1056,
-    "Name": "1056",
     "Kor": "동일한 내용 추가",
     "Eng": "Add the same content"
   },
   {
-    "Id": 1057,
-    "Name": "1057",
+    "Id": 1056,
+    "Name": "1056",
     "Kor": "일반",
     "Eng": "Common"
   },
   {
-    "Id": 1058,
-    "Name": "1058",
+    "Id": 1057,
+    "Name": "1057",
     "Kor": "MacroMode",
     "Eng": "MacroMode"
   },
   {
-    "Id": 1059,
-    "Name": "1059",
+    "Id": 1058,
+    "Name": "1058",
     "Kor": "키보드 딜레이(ms)",
     "Eng": "KeyboardDelay(ms)"
+  },
+  {
+    "Id": 1059,
+    "Name": "1059",
+    "Kor": "추가",
+    "Eng": "Addition"
+  },
+  {
+    "Id": 1060,
+    "Name": "1060",
+    "Kor": "제거",
+    "Eng": "Removal"
+  },
+  {
+    "Id": 1061,
+    "Name": "1061",
+    "Kor": "복사",
+    "Eng": "Copy"
   }
 ]
