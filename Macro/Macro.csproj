@@ -123,8 +123,8 @@
     <Reference Include="Dignus">
       <HintPath>..\Dll\Dignus.dll</HintPath>
     </Reference>
-    <Reference Include="Dignus.Extensions">
-      <HintPath>..\Dll\Dignus.Extensions.dll</HintPath>
+    <Reference Include="Dignus.Log">
+      <HintPath>..\Dll\Dignus.Log.dll</HintPath>
     </Reference>
     <Reference Include="Dignus.Utils">
       <HintPath>..\Dll\Dignus.Utils.dll</HintPath>
