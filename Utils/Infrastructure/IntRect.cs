@@ -5,7 +5,7 @@ namespace Utils.Infrastructure
 {
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Rect : IEquatable<Rect>
+    public struct IntRect : IEquatable<IntRect>
     {
         public int Left { get; set; }
         public int Top { get; set; }
@@ -14,9 +14,9 @@ namespace Utils.Infrastructure
         public int Width { get => Right - Left; }
         public int Height { get => Bottom - Top; }
 
-        public static Rect operator -(Rect r1, Rect r2)
+        public static IntRect operator -(IntRect r1, IntRect r2)
         {
-            return new Rect()
+            return new IntRect()
             {
                 Left = r1.Left - r2.Left,
                 Right = r1.Right - r2.Right,
@@ -24,9 +24,9 @@ namespace Utils.Infrastructure
                 Top = r1.Top - r2.Top
             };
         }
-        public static Rect operator +(Rect r1, Rect r2)
+        public static IntRect operator +(IntRect r1, IntRect r2)
         {
-            return new Rect()
+            return new IntRect()
             {
                 Left = r1.Left + r2.Left,
                 Right = r1.Right + r2.Right,
@@ -35,7 +35,7 @@ namespace Utils.Infrastructure
             };
         }
 
-        public bool Equals(Rect other)
+        public bool Equals(IntRect other)
         {
             return object.Equals(this, other);
         }
@@ -50,7 +50,7 @@ namespace Utils.Infrastructure
         public int Bottom { get; set; }
         public int Width { get => Right - Left; }
         public int Height { get => Bottom - Top; }
-        public static implicit operator Rectangle(Rect rect)
+        public static implicit operator Rectangle(IntRect rect)
         {
             return new Rectangle()
             {

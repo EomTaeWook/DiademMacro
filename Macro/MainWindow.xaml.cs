@@ -6,6 +6,7 @@ using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.Models.Protocols;
+using Macro.Models.ViewModel;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -14,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -34,11 +36,10 @@ namespace Macro
         private Config _config;
         private ContentController _contentController;
         private CloseButtonWindow _closeButtonWindow;
-        private CoroutineHandler _coroutineHandler = new CoroutineHandler();
+        private readonly CoroutineHandler _coroutineHandler = new CoroutineHandler();
         private bool _isShutdownHandled;
         private WebApiManager _webApiManager;
         private AdManager _adManager;
-        private ScreenCaptureManager _screenCaptureManager;
         private CacheDataManager _cacheDataManager;
         public MainWindow()
         {
@@ -48,9 +49,9 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _contentController = ServiceDispatcher.Resolve<ContentController>();
-            _config = ServiceDispatcher.Resolve<Config>();
-            _cacheDataManager = ServiceDispatcher.Resolve<CacheDataManager>();
+            _contentController = ServiceDispatcher.GetService<ContentController>();
+            _config = ServiceDispatcher.GetService<Config>();
+            _cacheDataManager = ServiceDispatcher.GetService<CacheDataManager>();
 
             InitEvent();
             Init();
@@ -60,7 +61,7 @@ namespace Macro
             });
 
             ApplicationManager.Instance.Init();
-            _adManager = ServiceDispatcher.Resolve<AdManager>();
+            _adManager = ServiceDispatcher.GetService<AdManager>();
             _adManager.InitializeAdUrls();
             if (CheckSponsor() == false)
             {
@@ -103,7 +104,9 @@ namespace Macro
             NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
             NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
             NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
-            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
+            NotifyHelper.UpdatedTime += UpdatedTime;
+            NotifyHelper.ScreenCaptureCompleted += ScreenCaptureCompleted;
+
 
             btnSetting.Click += BtnSetting_Click;
             btnGithub.Click += BtnGithub_Click;
@@ -118,19 +121,78 @@ namespace Macro
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
         }
 
+        private ProcessInfo GetSelectedProcessInfo()
+        {
+            if (comboProcess.SelectedValue as Process == null)
+            {
+                return null;
+            }
+
+            var rect = new IntRect();
+            NativeHelper.GetWindowRect((comboProcess.SelectedValue as Process).MainWindowHandle, ref rect);
+
+            var processInfo = new ProcessInfo()
+            {
+                ProcessName = (comboProcess.SelectedValue as Process).ProcessName,
+                Position = rect
+            };
+            return processInfo;
+        }
+        private void ScreenCaptureCompleted(CaptureEventArgs obj)
+        {
+            ApplicationManager.Instance.CloseCaptureView();
+            var capture = obj.CaptureImage;
+
+            if (capture == null)
+            {
+                return;
+            }
+
+            var processInfo = GetSelectedProcessInfo();
+
+            if (processInfo == null)
+            {
+                var labelTemplate = TemplateContainer<LabelTemplate>.Find(1062);
+                var messageTemplate = TemplateContainer<MessageTemplate>.Find(1017);
+                ApplicationManager.ShowMessageDialog(labelTemplate.GetString(), messageTemplate.GetString());
+                return;
+            }
+
+            var viewModel = eventListView.DataContext<EventListViewModel>();
+
+            var eventModel = new EventTriggerModel
+            {
+                Image = new Bitmap(obj.CaptureImage, capture.Width, capture.Height),
+                MonitorInfo = obj.MonitorInfo,
+                ProcessInfo = processInfo,
+            };
+            viewModel.TriggerSaves.Add(eventModel);
+
+            _cacheDataManager.MakeIndexTriggerModel(eventModel);
+
+            Save();
+        }
+
         private void BtnCopyEventItem_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void BtnRemoveEventItem_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void BtnAddEventItem_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (comboProcess.SelectedItem == null)
+            {
+                var labelTemplate = TemplateContainer<LabelTemplate>.Find(1062);
+                var messageTemplate = TemplateContainer<MessageTemplate>.Find(1017);
+                ApplicationManager.ShowMessageDialog(labelTemplate.GetString(), messageTemplate.GetString());
+                return;
+            }
+            ApplicationManager.Instance.ShowCaptureImageView();
         }
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
@@ -204,7 +266,7 @@ namespace Macro
             UIManager.Instance.AddPopup<SettingView>();
         }
 
-        private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
+        private void UpdatedTime(UpdatedTimeArgs obj)
         {
             _coroutineHandler.UpdateCoroutines(obj.DeltaTime);
         }
@@ -219,7 +281,7 @@ namespace Macro
 
         private void Init()
         {
-            _webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
+            _webApiManager = ServiceDispatcher.GetService<WebApiManager>();
 
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
             {
@@ -289,8 +351,13 @@ namespace Macro
         }
         private void Save()
         {
-            var fileService = ServiceDispatcher.Resolve<FileService>();
+            var viewModel = eventListView.DataContext<EventListViewModel>();
+
+            var fileService = ServiceDispatcher.GetService<FileService>();
+
+            fileService.Save(GetSaveFilePath(), viewModel.TriggerSaves);
         }
+
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
         {
             if (File.Exists(GetSaveFilePath()))
@@ -316,7 +383,7 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            var fileManager = ServiceDispatcher.Resolve<FileService>();
+            var fileManager = ServiceDispatcher.GetService<FileService>();
             var loadDatas = fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {

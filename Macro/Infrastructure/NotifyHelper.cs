@@ -10,7 +10,7 @@ namespace Macro.Infrastructure
 
         public static event Action<ConfigEventArgs> ConfigChanged;
         public static event Action<MousePointEventArgs> MousePositionDataBind;
-        public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
+        public static event Action<CaptureEventArgs> ScreenCaptureCompleted;
         public static event Action<EventTriggerOrderChangedEventArgs> TreeItemOrderChanged;
         public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
         public static event Action<EventTriggerEventArgs> EventTriggerInserted;
@@ -22,7 +22,7 @@ namespace Macro.Infrastructure
         public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
         public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
-        public static event Action<ROICaptureEventArgs> ROICaptureDataBind;
+        public static event Action<ROICaptureEventArgs> ROICaptureCompleted;
 
         public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
         {
@@ -34,8 +34,8 @@ namespace Macro.Infrastructure
                 case NotifyEventType.MousePointDataBind:
                     MousePositionDataBind?.Invoke(args as MousePointEventArgs);
                     break;
-                case NotifyEventType.ScreenCaptureDataBind:
-                    ScreenCaptureDataBind?.Invoke(args as CaptureEventArgs);
+                case NotifyEventType.ScreenCaptureCompleted:
+                    ScreenCaptureCompleted?.Invoke(args as CaptureEventArgs);
                     break;
                 case NotifyEventType.TreeItemOrderChanged:
                     TreeItemOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
@@ -67,8 +67,8 @@ namespace Macro.Infrastructure
                 case NotifyEventType.UpdatedTime:
                     UpdatedTime?.Invoke(args as UpdatedTimeArgs);
                     break;
-                case NotifyEventType.ROICaptureDataBind:
-                    ROICaptureDataBind?.Invoke(args as ROICaptureEventArgs);
+                case NotifyEventType.ROICaptureCompleted:
+                    ROICaptureCompleted?.Invoke(args as ROICaptureEventArgs);
                     break;
                 case NotifyEventType.Max:
                 default:

@@ -40,9 +40,9 @@ namespace Macro.Extensions
                 WheelData = source.WheelData
             };
         }
-        public static Rect Clone(this Rect source)
+        public static IntRect Clone(this IntRect source)
         {
-            return new Rect()
+            return new IntRect()
             {
                 Bottom = source.Bottom,
                 Left = source.Left,

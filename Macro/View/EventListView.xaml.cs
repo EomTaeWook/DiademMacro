@@ -8,7 +8,7 @@ namespace Macro.View
     /// </summary>
     public partial class EventListView : UserControl
     {
-        EventListViewModel _viewModel = new EventListViewModel();
+        private readonly EventListViewModel _viewModel = new EventListViewModel();
         public EventListView()
         {
             InitializeComponent();

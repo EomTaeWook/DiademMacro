@@ -10,8 +10,8 @@ using System.Windows.Input;
 using Utils;
 using Utils.Infrastructure;
 using Brushes = System.Windows.Media.Brushes;
+using IntRect = Utils.Infrastructure.IntRect;
 using Point = System.Windows.Point;
-using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro.View
 {
@@ -95,7 +95,7 @@ namespace Macro.View
             {
                 _dragBorder = _dummyCaptureBorder.Clone();
             }
-            else if (this._captureMode == CaptureModeType.ROICapture)
+            else if (this._captureMode == CaptureModeType.ROICaptureCompleted)
             {
                 _dragBorder = _dummyRoiBorder.Clone();
             }
@@ -119,7 +119,7 @@ namespace Macro.View
                 e.Handled = true;
                 if (this._captureMode == CaptureModeType.ImageCapture)
                 {
-                    NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBind, new CaptureEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureCompleted, new CaptureEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         CaptureImage = null
@@ -127,7 +127,7 @@ namespace Macro.View
                 }
                 else
                 {
-                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureDataBind, new ROICaptureEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureCompleted, new ROICaptureEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         RoiRect = null
@@ -193,7 +193,7 @@ namespace Macro.View
                 _dragBorder.Height = origin.Y - current.Y;
             }
         }
-        private Bitmap CaptureScreenRegion(MonitorInfo monitor, Rect rect)
+        private Bitmap CaptureScreenRegion(MonitorInfo monitor, IntRect rect)
         {
             try
             {
@@ -227,7 +227,7 @@ namespace Macro.View
                 int top = (int)(Canvas.GetTop(_dragBorder) * _factor.Y);
                 int width = (int)(_dragBorder.Width * _factor.X);
                 int height = (int)(_dragBorder.Height * _factor.Y);
-                var rect = new Rect
+                var rect = new IntRect
                 {
                     Left = left,
                     Right = width + left,
@@ -237,16 +237,16 @@ namespace Macro.View
                 if (_captureMode == CaptureModeType.ImageCapture)
                 {
                     var image = CaptureScreenRegion(_monitorInfo, rect);
-                    NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureDataBind, new CaptureEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureCompleted, new CaptureEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         CaptureImage = image,
                         Position = rect
                     });
                 }
-                else if (_captureMode == CaptureModeType.ROICapture)
+                else if (_captureMode == CaptureModeType.ROICaptureCompleted)
                 {
-                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureDataBind, new ROICaptureEventArgs()
+                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureCompleted, new ROICaptureEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         RoiRect = rect

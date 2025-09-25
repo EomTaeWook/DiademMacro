@@ -6,7 +6,7 @@ using System.Drawing;
 using Utils.Infrastructure;
 using Color = System.Drawing.Color;
 using Point = OpenCvSharp.Point;
-using Rect = Utils.Infrastructure.Rect;
+using IntRect = Utils.Infrastructure.IntRect;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace Macro.Infrastructure
@@ -94,7 +94,7 @@ namespace Macro.Infrastructure
             }
             return locations;
         }
-        public static Bitmap CropImage(Bitmap source, Rect roiRect)
+        public static Bitmap CropImage(Bitmap source, IntRect roiRect)
         {
             var sourceMat = BitmapConverter.ToMat(source);
 

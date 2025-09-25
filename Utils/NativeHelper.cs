@@ -23,7 +23,7 @@ namespace Utils
         public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
+        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref IntRect rect);
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hWnd);
@@ -32,7 +32,7 @@ namespace Utils
 
         [DllImport("user32.dll")]
         public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr rect, MonitorEnumDelegate callback, int data);
-        public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data);
+        public delegate bool MonitorEnumDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref IntRect rect, int data);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
@@ -124,7 +124,7 @@ namespace Utils
 
         [DllImport("user32.dll")]
         private static extern bool SetWindowPos(IntPtr hWnd, SpecialWindowHandles hWndInsertAfter, int x, int y, int width, int height, WindowPosFlags flags);
-        public static bool SetWindowPos(IntPtr hWnd, Rect rect)
+        public static bool SetWindowPos(IntPtr hWnd, IntRect rect)
         {
             return SetWindowPos(hWnd, SpecialWindowHandles.Top, rect.Left, rect.Top, rect.Width, rect.Height, WindowPosFlags.ShowWindow | WindowPosFlags.DoNotActivate | WindowPosFlags.AsynchronousWindowPosition | WindowPosFlags.DoNotCopyBits);
         }

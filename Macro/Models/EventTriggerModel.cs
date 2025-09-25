@@ -103,7 +103,7 @@ namespace Macro.Models
         [Order(6)]
         public ProcessInfo ProcessInfo
         {
-            get => _processInfo ?? (_processInfo = new ProcessInfo() { Position = new Rect(), });
+            get => _processInfo ?? (_processInfo = new ProcessInfo() { Position = new IntRect(), });
             set
             {
                 _processInfo = value;

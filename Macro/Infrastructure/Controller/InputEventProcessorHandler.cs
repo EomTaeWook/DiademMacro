@@ -44,7 +44,7 @@ namespace Macro.Infrastructure.Controller
             ApplicationTemplate applicationTemplate,
             int dragDelay)
         {
-            var processLocation = new Utils.Infrastructure.Rect();
+            var processLocation = new Utils.Infrastructure.IntRect();
             NativeHelper.GetWindowRect(hWnd, ref processLocation);
 
             var currentProcessLocation = model.ProcessInfo.Position -
@@ -98,7 +98,7 @@ processLocation;
             }
             else
             {
-                var processLocation = new Utils.Infrastructure.Rect();
+                var processLocation = new Utils.Infrastructure.IntRect();
                 NativeHelper.GetWindowRect(hWnd, ref processLocation);
 
                 var clickPoint = new Point2D()

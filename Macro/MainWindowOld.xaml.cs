@@ -23,8 +23,8 @@ using System.Windows.Threading;
 using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
+using IntRect = Utils.Infrastructure.IntRect;
 using Label = System.Windows.Controls.Label;
-using Rect = Utils.Infrastructure.Rect;
 
 namespace Macro
 {
@@ -53,10 +53,10 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _contentController = ServiceDispatcher.Resolve<ContentController>();
-            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
-            _config = ServiceDispatcher.Resolve<Config>();
-            _cacheDataManager = ServiceDispatcher.Resolve<CacheDataManager>();
+            _contentController = ServiceDispatcher.GetService<ContentController>();
+            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
+            _config = ServiceDispatcher.GetService<Config>();
+            _cacheDataManager = ServiceDispatcher.GetService<CacheDataManager>();
             InitEvent();
             Init();
             _closeButtonWindow = new CloseButtonWindow(this, () =>
@@ -65,7 +65,7 @@ namespace Macro
             });
 
             ApplicationManager.Instance.Init();
-            _adManager = ServiceDispatcher.Resolve<AdManager>();
+            _adManager = ServiceDispatcher.GetService<AdManager>();
             _adManager.InitializeAdUrls();
             if (CheckSponsor() == false)
             {
@@ -141,7 +141,7 @@ namespace Macro
 
         private void Init()
         {
-            _webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
+            _webApiManager = ServiceDispatcher.GetService<WebApiManager>();
 
 
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
@@ -239,7 +239,7 @@ namespace Macro
                 return;
             }
 
-            var rect = new Rect();
+            var rect = new IntRect();
             NativeHelper.GetWindowRect(process.MainWindowHandle, ref rect);
             model.ProcessInfo = new ProcessInfo()
             {
@@ -255,7 +255,7 @@ namespace Macro
                 }
                 foreach (var monitor in _screenCaptureManager.GetMonitorInfo())
                 {
-                    if (monitor.Rect.IsContain(rect))
+                    if (monitor.Rect.IsContain((IntRect)rect))
                     {
                         if (model.EventType != EventType.Mouse)
                         {
@@ -327,7 +327,7 @@ namespace Macro
         private void Save()
         {
             var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileService = ServiceDispatcher.Resolve<FileService>();
+            var fileService = ServiceDispatcher.GetService<FileService>();
             fileService.Save(GetSaveFilePath(), triggers);
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
@@ -358,11 +358,11 @@ namespace Macro
                     Process = item.Value,
                 });
 
-                var savedPosition = _cacheDataManager.GetData<Rect>(item.Value);
+                var savedPosition = _cacheDataManager.GetData<IntRect>(item.Value);
 
                 if (savedPosition.Equals(default) == false)
                 {
-                    var currentPosotion = new Rect();
+                    var currentPosotion = new IntRect();
                     NativeHelper.GetWindowRect(item.Value.MainWindowHandle, ref currentPosotion);
 
                     if (currentPosotion.Equals(savedPosition))
@@ -438,7 +438,7 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            var fileManager = ServiceDispatcher.Resolve<FileService>();
+            var fileManager = ServiceDispatcher.GetService<FileService>();
             var loadDatas = fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {
@@ -573,7 +573,7 @@ namespace Macro
 
                 if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
                 {
-                    var rect = new Rect();
+                    var rect = new IntRect();
 
                     NativeHelper.GetWindowRect(item.Value.MainWindowHandle, ref rect);
 
@@ -582,7 +582,7 @@ namespace Macro
                         _cacheDataManager.AddData(item.Value, rect);
                     }
 
-                    var moveRect = new Rect
+                    var moveRect = new IntRect
                     {
                         Left = _config.ProcessLocationX,
                         Top = _config.ProcessLocationY,
@@ -603,7 +603,7 @@ namespace Macro
             {
                 if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
                 {
-                    var rect = _cacheDataManager.GetData<Rect>(item.Value);
+                    var rect = _cacheDataManager.GetData<IntRect>(item.Value);
                     if (rect.Equals(default) == false)
                     {
                         NativeHelper.SetWindowPos(item.Value.MainWindowHandle, rect);

@@ -18,7 +18,7 @@ namespace Macro.Models
     {
         public MonitorInfo MonitorInfo { get; set; }
         public Bitmap CaptureImage { get; set; }
-        public Rect Position { get; set; }
+        public IntRect Position { get; set; }
 
     }
     public class ConfigEventArgs : INotifyEventArgs
@@ -66,6 +66,6 @@ namespace Macro.Models
     public class ROICaptureEventArgs : INotifyEventArgs
     {
         public MonitorInfo MonitorInfo { get; set; }
-        public Rect? RoiRect { get; set; }
+        public IntRect? RoiRect { get; set; }
     }
 }

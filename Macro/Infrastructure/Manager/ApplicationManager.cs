@@ -67,7 +67,7 @@ namespace Macro.Infrastructure.Manager
         public void Init()
         {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
-            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
+            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
             _drawWindow.Opacity = 0;
 #if DEBUG
             _drawWindow.Opacity = 1;
@@ -119,7 +119,7 @@ namespace Macro.Infrastructure.Manager
             }
         }
 
-        public void ShowImageCaptureView()
+        public void ShowCaptureImageView()
         {
             ResetMonitorViews();
 
@@ -133,7 +133,7 @@ namespace Macro.Infrastructure.Manager
         {
             foreach (var item in _captureViews)
             {
-                item.ShowActivate(CaptureModeType.ROICapture);
+                item.ShowActivate(CaptureModeType.ROICaptureCompleted);
             }
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }

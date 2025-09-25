@@ -57,8 +57,8 @@ namespace Macro.View
 
             Loaded += ContentView_Loaded;
 
-            NotifyHelper.ScreenCaptureDataBind += NotifyHelper_ScreenCaptureDataBind;
-            NotifyHelper.ROICaptureDataBind += NotifyHelper_ROICaptureDataBind;
+            NotifyHelper.ScreenCaptureCompleted += ScreenCaptureCompleted;
+            NotifyHelper.ROICaptureCompleted += ROICaptureCompleted;
             NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
         }
         private void ContentView_Loaded(object sender, RoutedEventArgs e)
@@ -69,7 +69,7 @@ namespace Macro.View
         private void Init()
         {
         }
-        private void NotifyHelper_ROICaptureDataBind(ROICaptureEventArgs e)
+        private void ROICaptureCompleted(ROICaptureEventArgs e)
         {
             ApplicationManager.Instance.CloseCaptureView();
             var dataContext = eventSettingView.GetDataContext();
@@ -89,7 +89,7 @@ namespace Macro.View
             }
         }
 
-        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
+        private void ScreenCaptureCompleted(CaptureEventArgs e)
         {
             ApplicationManager.Instance.CloseCaptureView();
 
@@ -135,7 +135,7 @@ namespace Macro.View
                 {
                     dataContext.Clear();
                 }
-                ApplicationManager.Instance.ShowImageCaptureView();
+                ApplicationManager.Instance.ShowCaptureImageView();
             }
             else if (btn.Equals(btnSave))
             {

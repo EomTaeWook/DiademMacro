@@ -33,11 +33,11 @@ namespace Macro.Infrastructure.Controller
         {
             if (_config.MacroMode == MacroModeType.SequentialMode)
             {
-                _macroModeController = ServiceDispatcher.Resolve<SequentialModeController>();
+                _macroModeController = ServiceDispatcher.GetService<SequentialModeController>();
             }
             else
             {
-                _macroModeController = ServiceDispatcher.Resolve<BatchModeController>();
+                _macroModeController = ServiceDispatcher.GetService<BatchModeController>();
             }
         }
 
