@@ -119,6 +119,29 @@ namespace Macro
 
             checkFix.Click += CheckFix_Click;
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
+
+            this.eventListView.treeGridView.SelectedItemChanged += TreeGridView_SelectedItemChanged;
+
+            this.eventListView.Loaded += EventListView_Loaded;
+        }
+
+        private void EventListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadSaveFile(GetSaveFilePath());
+        }
+
+        private void TreeGridView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (sender is UI.TreeGridView treeGridView == false)
+            {
+                return;
+            }
+            if (treeGridView.SelectedItem is EventTriggerModel == false)
+            {
+                return;
+            }
+
+
         }
 
         private ProcessInfo GetSelectedProcessInfo()
@@ -301,7 +324,6 @@ namespace Macro
                 Process.GetCurrentProcess().Kill();
             }
             Refresh();
-            LoadSaveFile(GetSaveFilePath());
         }
         private string GetSaveFilePath()
         {
@@ -390,6 +412,13 @@ namespace Macro
                 loadDatas = new List<EventTriggerModel>();
             }
             _cacheDataManager.InitDatas(loadDatas);
+            var model = eventListView.DataContext<EventListViewModel>();
+            model.TriggerSaves.Clear();
+
+            foreach (var item in loadDatas)
+            {
+                model.TriggerSaves.Add(item);
+            }
         }
 
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)

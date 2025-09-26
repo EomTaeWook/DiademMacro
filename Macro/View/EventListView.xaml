@@ -1,12 +1,10 @@
 ﻿<UserControl x:Class="Macro.View.EventListView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Extensions="clr-namespace:Macro.Extensions"
              xmlns:UI="clr-namespace:Macro.UI"
-             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
              Extensions:SizeObserver.Observe="True"
                           Extensions:SizeObserver.ObservedWidth="{Binding Width, Mode=TwoWay}"
                           mc:Ignorable="d"
@@ -19,7 +17,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel DockPanel.Dock="Left" LastChildFill="True">
-            <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path= TriggerSaves }" x:Name="treeSaves" AllowDrop="True" Margin="0,-1,0,1">
+            <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path= TriggerSaves }" x:Name="treeGridView" AllowDrop="True" Margin="0,-1,0,1">
                 <UI:TreeGridView.Resources>
                     <FrameworkElement x:Key="ProxyElement"></FrameworkElement>
                 </UI:TreeGridView.Resources>
