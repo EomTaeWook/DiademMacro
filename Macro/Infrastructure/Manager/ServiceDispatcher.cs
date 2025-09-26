@@ -9,9 +9,9 @@ namespace Macro.Infrastructure.Manager
         {
             _serviceContainer = serviceContainer;
         }
-        public static T Resolve<T>()
+        public static T GetService<T>()
         {
-            return _serviceContainer.Resolve<T>();
+            return _serviceContainer.GetService<T>();
         }
     }
 }

@@ -51,9 +51,9 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _contentController = ServiceDispatcher.Resolve<ContentController>();
-            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
-            _config = ServiceDispatcher.Resolve<Config>();
+            _contentController = ServiceDispatcher.GetService<ContentController>();
+            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
+            _config = ServiceDispatcher.GetService<Config>();
             InitEvent();
             Init();
             _closeButtonWindow = new CloseButtonWindow(this, () =>
@@ -62,7 +62,7 @@ namespace Macro
             });
 
             ApplicationManager.Instance.Init();
-            _adManager = ServiceDispatcher.Resolve<AdManager>();
+            _adManager = ServiceDispatcher.GetService<AdManager>();
             _adManager.InitializeAdUrls();
             if (CheckSponsor() == false)
             {
@@ -138,7 +138,7 @@ namespace Macro
 
         private void Init()
         {
-            _webApiManager = ServiceDispatcher.Resolve<WebApiManager>();
+            _webApiManager = ServiceDispatcher.GetService<WebApiManager>();
 
 
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
@@ -324,7 +324,7 @@ namespace Macro
         private void Save()
         {
             var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileService = ServiceDispatcher.Resolve<FileService>();
+            var fileService = ServiceDispatcher.GetService<FileService>();
             fileService.Save(GetSaveFilePath(), triggers);
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
@@ -435,7 +435,7 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            var fileManager = ServiceDispatcher.Resolve<FileService>();
+            var fileManager = ServiceDispatcher.GetService<FileService>();
             var loadDatas = fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {
@@ -489,6 +489,8 @@ namespace Macro
             {
                 AdOverlay.Visibility = Visibility.Visible;
                 await EmbeddedWebView.LoadUrlAsync(_adManager.GetRandomAdUrl());
+                EmbeddedWebView.Width = this.Width;
+                EmbeddedWebView.Height = this.Height;
             });
 
             yield return new DelayInSeconds(3.5F);
@@ -497,6 +499,8 @@ namespace Macro
             {
                 Dispatcher.Invoke(() =>
                 {
+                    _closeButtonWindow.Width = this.Width;
+                    _closeButtonWindow.Height = this.Height;
                     _closeButtonWindow.Show();
                 });
             }

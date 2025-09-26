@@ -19,7 +19,7 @@ namespace Macro.Infrastructure.Controller
         public MacroModeControllerBase(Config config)
         {
             _config = config;
-            _screenCaptureManager = ServiceDispatcher.Resolve<ScreenCaptureManager>();
+            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
         }
         public abstract void Execute(
             ArrayQueue<Process> processes,
