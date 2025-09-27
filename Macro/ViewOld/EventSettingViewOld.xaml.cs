@@ -20,7 +20,7 @@ namespace Macro.View
     /// <summary>
     /// ConfigEventView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class EventSettingView : UserControl
+    public partial class EventSettingViewOld : UserControl
     {
         private bool _isDrag;
 
@@ -29,14 +29,14 @@ namespace Macro.View
         private CoroutineHandler _coroutineHandler = new CoroutineHandler();
 
         private bool isBtnTreeItemPress = false;
-        public EventSettingView()
+        public EventSettingViewOld()
         {
             InitializeComponent();
             InitEvent();
 
             _isDrag = false;
 
-            _eventConfigViewModelCached = ServiceDispatcher.GetService<EventSettingViewModel>();
+            _eventConfigViewModelCached = ServiceResolver.GetService<EventSettingViewModel>();
             DataContext = _eventConfigViewModelCached;
         }
         public EventSettingViewModel GetDataContext()
@@ -170,7 +170,7 @@ namespace Macro.View
                 {
                     var model = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                     _eventConfigViewModelCached.TriggerSaves.Add(model);
-                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerInserted, new EventTriggerEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerInserted, new EventTriggerEventArgs()
                     {
                         Index = model.TriggerIndex,
                         TriggerModel = model
@@ -201,7 +201,7 @@ namespace Macro.View
                     _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(model);
                 }
 
-                NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerRemoved, new EventTriggerEventArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerRemoved, new EventTriggerEventArgs()
                 {
                     Index = model.TriggerIndex,
                     TriggerModel = model
@@ -255,11 +255,10 @@ namespace Macro.View
         private void InitEvent()
         {
             this.Loaded += EventConfigView_Loaded;
-            NotifyHelper.ScreenCaptureCompleted += NotifyHelper_ScreenCaptureDataBind;
-            NotifyHelper.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
-            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
-            NotifyHelper.TreeGridViewFocus += NotifyHelper_TreeGridViewFocus;
-            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
+            NotifyHelperOld.ScreenCaptureCompleted += NotifyHelper_ScreenCaptureDataBind;
+            NotifyHelperOld.MousePositionDataBind += NotifyHelper_MousePositionDataBind;
+            NotifyHelperOld.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelperOld.TreeGridViewFocus += NotifyHelper_TreeGridViewFocus;
 
             var radioButtons = this.FindChildren<RadioButton>();
             foreach (var button in radioButtons)
@@ -338,7 +337,7 @@ namespace Macro.View
                 yield return 0.3F;
             }
 
-            NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+            NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
             {
                 SelectedTreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
             });
@@ -436,7 +435,7 @@ namespace Macro.View
                     itemContainer.Swap(currentIndex, currentIndex - 1);
                     _eventConfigViewModelCached.CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex - 1]);
 
-                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
                         SelectedTreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
                     });
@@ -446,7 +445,7 @@ namespace Macro.View
                     itemContainer.Swap(currentIndex, currentIndex + 1);
                     _eventConfigViewModelCached.CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(itemContainer[currentIndex + 1]);
 
-                    NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerOrderChanged, new EventTriggerOrderChangedEventArgs()
                     {
                         SelectedTreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
                     });
@@ -490,7 +489,7 @@ namespace Macro.View
             }
 
             _eventConfigViewModelCached.CurrentTreeViewItem = treeSaves.GetSelectItemFromObject<TreeGridViewItem>(treeSaves.SelectedItem);
-            NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
+            NotifyHelperOld.InvokeNotify(NotifyEventOldType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs()
             {
                 TreeViewItem = _eventConfigViewModelCached.CurrentTreeViewItem
             });
@@ -529,7 +528,7 @@ namespace Macro.View
                 ItemContainerPositionChange(targetRow);
                 Clear();
 
-                NotifyHelper.InvokeNotify(NotifyEventType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.TreeItemOrderChanged, new EventTriggerOrderChangedEventArgs()
                 {
                     SelectedTreeViewItem = targetRow
                 });
@@ -559,7 +558,7 @@ namespace Macro.View
             if (e.Key == Key.Escape)
             {
                 Clear();
-                NotifyHelper.InvokeNotify(NotifyEventType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs());
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.SelctTreeViewItemChanged, new SelctTreeViewItemChangedEventArgs());
                 e.Handled = true;
             }
             base.OnPreviewKeyDown(e);

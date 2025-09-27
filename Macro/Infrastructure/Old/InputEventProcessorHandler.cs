@@ -14,7 +14,7 @@ using Utils;
 using Utils.Extensions;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure.Controller
+namespace Macro.Infrastructure.ControllerOld
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     public class InputEventProcessorHandler

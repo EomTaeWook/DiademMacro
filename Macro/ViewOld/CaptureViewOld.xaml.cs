@@ -18,7 +18,7 @@ namespace Macro.View
     /// <summary>
     /// CaptureView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class CaptureView : Window
+    public partial class CaptureViewOld : Window
     {
         private bool _isDrag;
         private Point _originPoint;
@@ -29,7 +29,7 @@ namespace Macro.View
         private Point _factor;
 
         private CaptureModeType _captureMode;
-        public CaptureView(MonitorInfo monitorInfo)
+        public CaptureViewOld(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
             _dummyCaptureBorder = new Border

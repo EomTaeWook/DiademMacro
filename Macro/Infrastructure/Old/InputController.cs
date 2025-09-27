@@ -1,7 +1,7 @@
 ﻿using Dignus.DependencyInjection.Attributes;
 using Macro.Infrastructure.Interface;
 
-namespace Macro.Infrastructure.Controller
+namespace Macro.Infrastructure.ControllerOld
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     public class InputController

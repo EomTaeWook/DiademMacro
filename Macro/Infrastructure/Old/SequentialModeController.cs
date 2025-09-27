@@ -13,21 +13,20 @@ using System.Threading;
 using Utils;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure.Controller
+namespace Macro.Infrastructure.ControllerOld
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
-    internal class BatchModeController : MacroModeControllerBase
+    internal class SequentialModeController : MacroModeControllerBase
     {
         private readonly InputEventProcessorHandler _eventProcessorHandler;
         private CacheDataManager _cacheDataManager;
-        public BatchModeController(Config config,
-            InputEventProcessorHandler inputEventProcessorHandler,
+        public SequentialModeController(Config config,
+            InputEventProcessorHandler inputEventProcessor,
             CacheDataManager cacheDataManager) : base(config)
         {
-            _eventProcessorHandler = inputEventProcessorHandler;
+            _eventProcessorHandler = inputEventProcessor;
             _cacheDataManager = cacheDataManager;
         }
-
 
         public override void Execute(
             ArrayQueue<Process> processes,
@@ -41,59 +40,6 @@ namespace Macro.Infrastructure.Controller
                 ProcessEventTriggers(process, eventTriggerModels, cancellationToken);
 
                 TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
-            }
-        }
-        private void ProcessSubEventTriggers(
-            Process process,
-            EventTriggerModel model,
-            CancellationToken cancellationToken)
-        {
-            for (int i = 0; i < model.RepeatInfo.Count; ++i)
-            {
-                if (TaskHelper.TokenCheckDelay(model.AfterDelay, cancellationToken) == false)
-                {
-                    break;
-                }
-
-                if (_screenCaptureManager.CaptureProcessWindow(process,
-                    out Bitmap sourceBmp) == false)
-                {
-                    break;
-                }
-
-                for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
-                {
-                    var childResult = HandleEvent(
-                        sourceBmp,
-                        process,
-                        model.SubEventTriggers[ii],
-                        cancellationToken);
-                    if (model.RepeatInfo.RepeatType == RepeatType.NoSearchChild)
-                    {
-                        if (childResult.IsSuccess == false)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (cancellationToken.IsCancellationRequested == true)
-                    {
-                        break;
-                    }
-                }
-
-                if (model.RepeatInfo.RepeatType == RepeatType.SearchParent)
-                {
-                    if (_screenCaptureManager.CaptureProcessWindow(process, out sourceBmp) == false)
-                    {
-                        break;
-                    }
-
-                    if (CalculateSimilarityAndLocation(model.Image, sourceBmp, model).Item1 >= _config.Similarity)
-                    {
-                        break;
-                    }
-                }
             }
         }
         private EventResult HandleEvent(
@@ -116,14 +62,12 @@ namespace Macro.Infrastructure.Controller
                 windowHandle = item != null ? item.Item2 : process.MainWindowHandle;
             }
 
-            var copyBitmap = (Bitmap)capturedImage.Clone();
-
-            var matchResult = CalculateSimilarityAndLocation(eventTriggerModel.Image, copyBitmap, eventTriggerModel);
+            var matchResult = CalculateSimilarityAndLocation(eventTriggerModel.Image, capturedImage, eventTriggerModel);
 
             var similarity = matchResult.Item1;
             Point2D matchedLocation = matchResult.Item2;
 
-            _drawImageCallback?.Invoke(copyBitmap);
+            _drawImageCallback?.Invoke(capturedImage);
 
             LogHelper.Debug($"Similarity : {matchResult.Item1} % max Loc : X : {matchedLocation.X} Y: {matchedLocation.Y}");
 
@@ -132,7 +76,6 @@ namespace Macro.Infrastructure.Controller
                 TaskHelper.TokenCheckDelay(_config.ItemDelay, cancellationToken);
                 return new EventResult(false, null);
             }
-
             if (eventTriggerModel.SubEventTriggers.Count > 0)
             {
                 ProcessSubEventTriggers(process, eventTriggerModel, cancellationToken);
@@ -213,21 +156,74 @@ namespace Macro.Infrastructure.Controller
             return new EventResult(false, null);
         }
 
+        private void ProcessSubEventTriggers(
+            Process process,
+            EventTriggerModel model,
+            CancellationToken cancellationToken)
+        {
+            for (int i = 0; i < model.RepeatInfo.Count; ++i)
+            {
+                if (TaskHelper.TokenCheckDelay(model.AfterDelay, cancellationToken) == false)
+                {
+                    break;
+                }
+
+                if (_screenCaptureManager.CaptureProcessWindow(process, out Bitmap sourceBmp) == false)
+                {
+                    break;
+                }
+
+                for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+                {
+                    var childResult = HandleEvent(
+                        sourceBmp,
+                        process,
+                        model.SubEventTriggers[ii],
+                        cancellationToken);
+                    if (model.RepeatInfo.RepeatType == RepeatType.NoSearchChild)
+                    {
+                        if (childResult.IsSuccess == false)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (cancellationToken.IsCancellationRequested == true)
+                    {
+                        break;
+                    }
+                }
+
+                if (model.RepeatInfo.RepeatType == RepeatType.SearchParent)
+                {
+                    if (_screenCaptureManager.CaptureProcessWindow(process, out sourceBmp) == false)
+                    {
+                        break;
+                    }
+
+                    if (CalculateSimilarityAndLocation(model.Image, sourceBmp, model).Item1 >= _config.Similarity)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
         private void ProcessEventTriggers(
             Process process,
             ArrayQueue<EventTriggerModel> eventTriggerModels,
             CancellationToken cancellationToken)
         {
-            if (_screenCaptureManager.CaptureProcessWindow(process,
-                    out Bitmap sourceBmp) == false)
-            {
-                return;
-            }
-
-            _drawImageCallback?.Invoke(sourceBmp);
-
             for (int i = 0; i < eventTriggerModels.Count; ++i)
             {
+                if (_screenCaptureManager.CaptureProcessWindow(process,
+                    out Bitmap sourceBmp) == false)
+                {
+                    TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
+                    continue;
+                }
+
+                _drawImageCallback?.Invoke(sourceBmp);
+
                 var model = eventTriggerModels[i];
                 var result = HandleEvent(sourceBmp, process, model, cancellationToken);
 

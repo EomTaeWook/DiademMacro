@@ -36,7 +36,7 @@ namespace Macro.View
             var macroModeValues = Enum.GetValues(typeof(MacroModeType)).Cast<MacroModeType>();
             comboMacroMode.ItemsSource = macroModeValues;
 
-            DataContext = ServiceDispatcher.GetService<SettingViewModel>();
+            DataContext = ServiceResolver.GetService<SettingViewModel>();
         }
         private void SettingView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -73,12 +73,12 @@ namespace Macro.View
         private void Save(Config model)
         {
             var path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
-            var fileService = ServiceDispatcher.GetService<FileService>();
+            var fileService = ServiceResolver.GetService<FileService>();
             var saved = fileService.SaveJson(path, model);
 
             if (saved == true)
             {
-                NotifyHelper.InvokeNotify(NotifyEventType.ConfigChanged, new ConfigEventArgs() { Config = model });
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.ConfigChanged, new ConfigEventArgs() { Config = model });
             }
         }
         private bool TryModelValidate(Config model, out MessageTemplate messageTemplate)

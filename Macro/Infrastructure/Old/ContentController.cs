@@ -9,13 +9,13 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Macro.Infrastructure.Controller
+namespace Macro.Infrastructure.ControllerOld
 {
 
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     public class ContentController
     {
-        private ContentView _contentView;
+        private ContentViewOld _contentView;
         private CancellationTokenSource _cts;
         private Process _fixedProcess;
         private Config _config;
@@ -25,7 +25,7 @@ namespace Macro.Infrastructure.Controller
         public ContentController(Config config, InputEventProcessorHandler eventProcessorHandler)
         {
             _config = config;
-            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelperOld.ConfigChanged += NotifyHelper_ConfigChanged;
             InitializeController();
         }
 
@@ -33,11 +33,11 @@ namespace Macro.Infrastructure.Controller
         {
             if (_config.MacroMode == MacroModeType.SequentialMode)
             {
-                _macroModeController = ServiceDispatcher.GetService<SequentialModeController>();
+                _macroModeController = ServiceResolver.GetService<SequentialModeController>();
             }
             else
             {
-                _macroModeController = ServiceDispatcher.GetService<BatchModeController>();
+                _macroModeController = ServiceResolver.GetService<BatchModeController>();
             }
         }
 
@@ -47,7 +47,7 @@ namespace Macro.Infrastructure.Controller
             InitializeController();
         }
 
-        public void SetContentView(ContentView baseContentView)
+        public void SetContentView(ContentViewOld baseContentView)
         {
             this._contentView = baseContentView;
         }

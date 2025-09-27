@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Macro.View.ContentView"
+﻿<UserControl x:Class="Macro.View.ContentViewOld"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -44,7 +44,7 @@
                 <Button Name="btnSave" DockPanel.Dock="Right" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}"></Button>
             </DockPanel>
             <DockPanel DockPanel.Dock="Left">
-                <view:EventSettingView x:Name="eventSettingView"/>
+                <view:EventSettingViewOld x:Name="eventSettingView"/>
             </DockPanel>
         </DockPanel>
     </Grid>

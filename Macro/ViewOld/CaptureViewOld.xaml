@@ -1,0 +1,13 @@
+﻿<Window x:Class="Macro.View.CaptureViewOld"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+             WindowStyle="None" ResizeMode="NoResize" Opacity="0.5" WindowStartupLocation="Manual"
+             AllowsTransparency="True" ShowInTaskbar="False" BorderThickness="0,0,0,0">
+    <Grid>
+        <Canvas AllowDrop="True" Name="captureZone" Background="Gainsboro" Opacity="1">
+        </Canvas>
+    </Grid>
+</Window>

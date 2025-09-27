@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Threading;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure.Controller
+namespace Macro.Infrastructure.ControllerOld
 {
     internal abstract class MacroModeControllerBase : IMacroModeController
     {
@@ -19,7 +19,7 @@ namespace Macro.Infrastructure.Controller
         public MacroModeControllerBase(Config config)
         {
             _config = config;
-            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
+            _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
         }
         public abstract void Execute(
             ArrayQueue<Process> processes,

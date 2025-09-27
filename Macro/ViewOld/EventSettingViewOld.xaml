@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Macro.View.EventSettingView"
+﻿<UserControl x:Class="Macro.View.EventSettingViewOld"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

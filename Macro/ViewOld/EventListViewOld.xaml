@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="Macro.View.EventListViewOld"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:Extensions="clr-namespace:Macro.Extensions"
+             xmlns:UI="clr-namespace:Macro.UI"
+             Extensions:SizeObserver.Observe="True"
+                          Extensions:SizeObserver.ObservedWidth="{Binding Width, Mode=TwoWay}"
+                          mc:Ignorable="d"
+                          d:DesignHeight="480" d:DesignWidth="480">
+    <UserControl.Resources>
+        <infra:ImageConverter x:Key="ImageConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:WidthConverter x:Key="WidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:DependencyObjectWidthConverter x:Key="DependencyObjectWidthConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+        <infra:BooleanToValueConverter x:Key="BooleanConverter" xmlns:infra="clr-namespace:Macro.Infrastructure.Converter"/>
+    </UserControl.Resources>
+    <Grid>
+        <DockPanel DockPanel.Dock="Left" LastChildFill="True">
+            <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path= TriggerSaves }" x:Name="treeGridView" AllowDrop="True" Margin="0,-1,0,1">
+                <UI:TreeGridView.Resources>
+                    <FrameworkElement x:Key="ProxyElement"></FrameworkElement>
+                </UI:TreeGridView.Resources>
+                <UI:TreeGridView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Path= SubEventTriggers }" />
+                </UI:TreeGridView.ItemTemplate>
+
+                <UI:TreeGridView.Columns>
+                    <GridViewColumn Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.12*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn.Header>
+                            <CheckBox IsChecked="{Binding Path=DataContext.IsAllSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsChecked="{Binding IsChecked}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Image" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <UI:TreeGridViewExpander/>
+                                    <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding Image, Converter={StaticResource ResourceKey=ImageConverter}}" Style="{StaticResource Thumbnail}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Index" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TriggerIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="EventType" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding EventType}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn  Header="ProcessName" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.25*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </UI:TreeGridView.Columns>
+            </UI:TreeGridView>
+        </DockPanel>
+    </Grid>
+</UserControl>

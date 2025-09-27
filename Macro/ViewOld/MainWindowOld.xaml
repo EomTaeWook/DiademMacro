@@ -1,5 +1,5 @@
 ﻿<mah:MetroWindow
-    x:Class="Macro.MainWindowOld"
+    x:Class="Macro.ViewOld.MainWindowOld"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:IconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -60,7 +60,7 @@
                 </DockPanel>
             </Border>
             <DockPanel>
-                <view:ContentView x:Name="contentView"/>
+                <view:ContentViewOld x:Name="contentView"/>
             </DockPanel>
         </DockPanel>
 

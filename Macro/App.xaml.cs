@@ -78,7 +78,8 @@ namespace Macro
         }
         private void DependenciesResolved()
         {
-            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
+            var path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
+
             if (!File.Exists(path))
             {
                 File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
@@ -96,7 +97,7 @@ namespace Macro
 
             serviceContainer.RegisterType<EventSettingViewModel, EventSettingViewModel>();
             serviceContainer.RegisterType<SettingViewModel, SettingViewModel>();
-            ServiceDispatcher.SetContainer(serviceContainer);
+            ServiceResolver.SetContainer(serviceContainer);
 
             serviceContainer.Build();
         }

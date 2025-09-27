@@ -1,5 +1,6 @@
 ﻿using Dignus.Collections;
 using Dignus.Framework;
+using Macro.Infrastructure.Controller;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -55,7 +56,6 @@ namespace Macro.Infrastructure.Manager
                 RenderSize = _mainWindow.RenderSize
             };
         }
-
         public Window GetDrawWindow()
         {
             return _drawWindow;
@@ -67,7 +67,7 @@ namespace Macro.Infrastructure.Manager
         public void Init()
         {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
-            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
+            _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
             _drawWindow.Opacity = 0;
 #if DEBUG
             _drawWindow.Opacity = 1;
@@ -79,7 +79,7 @@ namespace Macro.Infrastructure.Manager
             ResetMonitorViews();
 
             _drawWindowHandle = new WindowInteropHelper(_drawWindow).Handle;
-            SchedulerManager.Instance.Start();
+            SchedulerManagerOld.Instance.Start();
         }
         private void ResetMonitorViews()
         {
@@ -150,8 +150,8 @@ namespace Macro.Infrastructure.Manager
         public void Dispose()
         {
             _drawWindow.Close();
-            SchedulerManager.Instance.Stop();
             _progress.Close();
+            CoroutineRunner.Dispose();
             foreach (var item in _captureViews)
             {
                 item.Close();

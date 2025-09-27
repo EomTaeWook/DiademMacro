@@ -15,8 +15,8 @@ namespace Macro.Infrastructure.Manager
         {
             _indexTriggerModelToMap = new Dictionary<ulong, EventTriggerModel>();
 
-            NotifyHelper.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
-            NotifyHelper.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
+            NotifyHelperOld.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
+            NotifyHelperOld.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
         }
 
         public void InitDatas(List<EventTriggerModel> eventTriggerDatas)

@@ -14,9 +14,9 @@ namespace Macro.View
     /// <summary>
     /// CommonContentView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ContentView : UserControl
+    public partial class ContentViewOld : UserControl
     {
-        public ContentView()
+        public ContentViewOld()
         {
             InitializeComponent();
             InitEvent();
@@ -57,9 +57,9 @@ namespace Macro.View
 
             Loaded += ContentView_Loaded;
 
-            NotifyHelper.ScreenCaptureCompleted += ScreenCaptureCompleted;
-            NotifyHelper.ROICaptureCompleted += ROICaptureCompleted;
-            NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
+            NotifyHelperOld.ScreenCaptureCompleted += ScreenCaptureCompleted;
+            NotifyHelperOld.ROICaptureCompleted += ROICaptureCompleted;
+            NotifyHelperOld.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
         }
         private void ContentView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -146,7 +146,7 @@ namespace Macro.View
                     model.MouseTriggerInfo.StartPoint = new Point(dataContext.RelativePosition.X, dataContext.RelativePosition.Y);
                 }
 
-                NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = model,
                 });
@@ -159,7 +159,7 @@ namespace Macro.View
                     return;
                 }
 
-                NotifyHelper.InvokeNotify(NotifyEventType.Save, new SaveEventTriggerModelArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.Save, new SaveEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = item,
                 });
@@ -167,7 +167,7 @@ namespace Macro.View
             else if (btn.Equals(btnDelete))
             {
                 var model = eventSettingView.GetDataContext().CurrentTreeViewItem.DataContext<EventTriggerModel>();
-                NotifyHelper.InvokeNotify(NotifyEventType.Delete, new DeleteEventTriggerModelArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.Delete, new DeleteEventTriggerModelArgs()
                 {
                     CurrentEventTriggerModel = model,
                 });

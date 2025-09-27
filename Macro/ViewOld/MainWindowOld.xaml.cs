@@ -2,7 +2,7 @@
 using Dignus.Coroutine;
 using Macro.Extensions;
 using Macro.Infrastructure;
-using Macro.Infrastructure.Controller;
+using Macro.Infrastructure.ControllerOld;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.Models.Protocols;
@@ -26,7 +26,7 @@ using Utils.Infrastructure;
 using IntRect = Utils.Infrastructure.IntRect;
 using Label = System.Windows.Controls.Label;
 
-namespace Macro
+namespace Macro.ViewOld
 {
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리
@@ -53,10 +53,10 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _contentController = ServiceDispatcher.GetService<ContentController>();
-            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
-            _config = ServiceDispatcher.GetService<Config>();
-            _cacheDataManager = ServiceDispatcher.GetService<CacheDataManager>();
+            _contentController = ServiceResolver.GetService<ContentController>();
+            _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
+            _config = ServiceResolver.GetService<Config>();
+            _cacheDataManager = ServiceResolver.GetService<CacheDataManager>();
             InitEvent();
             Init();
             _closeButtonWindow = new CloseButtonWindow(this, () =>
@@ -65,7 +65,7 @@ namespace Macro
             });
 
             ApplicationManager.Instance.Init();
-            _adManager = ServiceDispatcher.GetService<AdManager>();
+            _adManager = ServiceResolver.GetService<AdManager>();
             _adManager.InitializeAdUrls();
             if (CheckSponsor() == false)
             {
@@ -117,18 +117,12 @@ namespace Macro
 
             KeyDown += MainWindow_KeyDown;
 
-            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
-            NotifyHelper.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
-            NotifyHelper.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
-            NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
-            NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
-            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
-            NotifyHelper.UpdatedTime += NotifyHelper_UpdatedTime;
-        }
-
-        private void NotifyHelper_UpdatedTime(UpdatedTimeArgs obj)
-        {
-            _coroutineHandler.UpdateCoroutines(obj.DeltaTime);
+            NotifyHelperOld.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelperOld.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
+            NotifyHelperOld.SelectTreeViewChanged += NotifyHelper_SelectTreeViewChanged;
+            NotifyHelperOld.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
+            NotifyHelperOld.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
+            NotifyHelperOld.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -141,7 +135,7 @@ namespace Macro
 
         private void Init()
         {
-            _webApiManager = ServiceDispatcher.GetService<WebApiManager>();
+            _webApiManager = ServiceResolver.GetService<WebApiManager>();
 
 
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
@@ -327,7 +321,7 @@ namespace Macro
         private void Save()
         {
             var triggers = contentView.eventSettingView.GetDataContext().TriggerSaves;
-            var fileService = ServiceDispatcher.GetService<FileService>();
+            var fileService = ServiceResolver.GetService<FileService>();
             fileService.Save(GetSaveFilePath(), triggers);
         }
         private void NotifyHelper_TreeItemOrderChanged(EventTriggerOrderChangedEventArgs e)
@@ -353,7 +347,7 @@ namespace Macro
 
             if (comboProcess.SelectedItem is KeyValuePair<string, Process> item)
             {
-                NotifyHelper.InvokeNotify(NotifyEventType.ComboProcessChanged, new ComboProcessChangedEventArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.ComboProcessChanged, new ComboProcessChangedEventArgs()
                 {
                     Process = item.Value,
                 });
@@ -438,7 +432,7 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            var fileManager = ServiceDispatcher.GetService<FileService>();
+            var fileManager = ServiceResolver.GetService<FileService>();
             var loadDatas = fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {

@@ -8,11 +8,11 @@ using Utils.Infrastructure;
 
 namespace Macro.Infrastructure.Manager
 {
-    public class SchedulerManager : Singleton<SchedulerManager>
+    public class SchedulerManagerOld : Singleton<SchedulerManagerOld>
     {
         private CancellationTokenSource cts;
         private CancellationToken cancellationToken = CancellationToken.None;
-        public SchedulerManager()
+        public SchedulerManagerOld()
         {
         }
         public bool IsRunning()
@@ -47,7 +47,7 @@ namespace Macro.Infrastructure.Manager
                 args.DeltaTime = (float)TimeSpan.FromTicks(currentTime - previousTick).TotalSeconds;
                 previousTick = currentTime;
 
-                NotifyHelper.InvokeNotify(NotifyEventType.UpdatedTime, args);
+                //NotifyHelperOld.InvokeNotify(NotifyEventOldType.UpdatedTime, args);
             }
         }
     }

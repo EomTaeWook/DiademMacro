@@ -20,7 +20,7 @@
         Max
     }
 
-    public enum NotifyEventType
+    public enum NotifyEventOldType
     {
         ComboProcessChanged,
 
@@ -37,8 +37,6 @@
         Delete,
 
         TreeGridViewFocus,
-
-        UpdatedTime,
         ROICaptureCompleted,
 
         Max

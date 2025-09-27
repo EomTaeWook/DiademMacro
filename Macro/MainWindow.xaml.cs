@@ -7,6 +7,7 @@ using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.Models.Protocols;
 using Macro.Models.ViewModel;
+using Macro.UI;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -32,9 +33,7 @@ namespace Macro
     public partial class MainWindow : MetroWindow
     {
         private ProcessItem[] _processes;
-        private ProcessItem _fixProcess;
         private Config _config;
-        private ContentController _contentController;
         private CloseButtonWindow _closeButtonWindow;
         private readonly CoroutineHandler _coroutineHandler = new CoroutineHandler();
         private bool _isShutdownHandled;
@@ -49,9 +48,8 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _contentController = ServiceDispatcher.GetService<ContentController>();
-            _config = ServiceDispatcher.GetService<Config>();
-            _cacheDataManager = ServiceDispatcher.GetService<CacheDataManager>();
+            _config = ServiceResolver.GetService<Config>();
+            _cacheDataManager = ServiceResolver.GetService<CacheDataManager>();
 
             InitEvent();
             Init();
@@ -61,7 +59,7 @@ namespace Macro
             });
 
             ApplicationManager.Instance.Init();
-            _adManager = ServiceDispatcher.GetService<AdManager>();
+            _adManager = ServiceResolver.GetService<AdManager>();
             _adManager.InitializeAdUrls();
             if (CheckSponsor() == false)
             {
@@ -99,14 +97,12 @@ namespace Macro
         }
         private void InitEvent()
         {
-            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
-            NotifyHelper.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
-            NotifyHelper.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
-            NotifyHelper.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
-            NotifyHelper.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
-            NotifyHelper.UpdatedTime += UpdatedTime;
-            NotifyHelper.ScreenCaptureCompleted += ScreenCaptureCompleted;
-
+            NotifyHelperOld.ConfigChanged += NotifyHelper_ConfigChanged;
+            NotifyHelperOld.TreeItemOrderChanged += NotifyHelper_TreeItemOrderChanged;
+            NotifyHelperOld.EventTriggerOrderChanged += NotifyHelper_EventTriggerOrderChanged;
+            NotifyHelperOld.SaveEventTriggerModel += NotifyHelper_SaveEventTriggerModel;
+            NotifyHelperOld.DeleteEventTriggerModel += NotifyHelper_DeleteEventTriggerModel;
+            NotifyHelperOld.ScreenCaptureCompleted += ScreenCaptureCompleted;
 
             btnSetting.Click += BtnSetting_Click;
             btnGithub.Click += BtnGithub_Click;
@@ -123,6 +119,7 @@ namespace Macro
             this.eventListView.treeGridView.SelectedItemChanged += TreeGridView_SelectedItemChanged;
 
             this.eventListView.Loaded += EventListView_Loaded;
+            this.KeyDown += MainWindow_KeyDown;
         }
 
         private void EventListView_Loaded(object sender, RoutedEventArgs e)
@@ -136,12 +133,15 @@ namespace Macro
             {
                 return;
             }
-            if (treeGridView.SelectedItem is EventTriggerModel == false)
+            if (treeGridView.SelectedItem is EventTriggerModel eventTriggerModel == false)
             {
                 return;
             }
 
+            var treeGridViewItem = treeGridView.GetSelectItemFromObject<TreeGridViewItem>(treeGridView.SelectedItem);
 
+            var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
+            selectionStateController.SelectTreeGridViewItem = treeGridViewItem;
         }
 
         private ProcessInfo GetSelectedProcessInfo()
@@ -247,7 +247,7 @@ namespace Macro
         private void BtnStop_Click(object sender, RoutedEventArgs e)
         {
             ApplicationManager.ShowProgressbar();
-            _contentController.Stop();
+            //_contentController.Stop();
             Dispatcher.Invoke(() =>
             {
                 var buttons = this.FindChildren<Button>();
@@ -269,13 +269,15 @@ namespace Macro
 
         private void CheckFix_Click(object sender, RoutedEventArgs e)
         {
+            var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
+
             if (checkFix.IsChecked == true)
             {
-                _fixProcess = comboProcess.SelectedItem as ProcessItem;
+                selectionStateController.SelectProcessItem = comboProcess.SelectedItem as ProcessItem;
             }
             else
             {
-                _fixProcess = null;
+                selectionStateController.SelectProcessItem = null;
             }
         }
 
@@ -289,22 +291,19 @@ namespace Macro
             UIManager.Instance.AddPopup<SettingView>();
         }
 
-        private void UpdatedTime(UpdatedTimeArgs obj)
-        {
-            _coroutineHandler.UpdateCoroutines(obj.DeltaTime);
-        }
-
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Escape)
             {
-                BtnStop_Click(btnStop, null);
+                var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
+
+                selectionStateController.UnselectTreeGridViewItem();
             }
         }
 
         private void Init()
         {
-            _webApiManager = ServiceDispatcher.GetService<WebApiManager>();
+            _webApiManager = ServiceResolver.GetService<WebApiManager>();
 
             if (Environment.OSVersion.Version >= new System.Version(6, 1, 0))
             {
@@ -375,7 +374,7 @@ namespace Macro
         {
             var viewModel = eventListView.DataContext<EventListViewModel>();
 
-            var fileService = ServiceDispatcher.GetService<FileService>();
+            var fileService = ServiceResolver.GetService<FileService>();
 
             fileService.Save(GetSaveFilePath(), viewModel.TriggerSaves);
         }
@@ -405,7 +404,7 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            var fileManager = ServiceDispatcher.GetService<FileService>();
+            var fileManager = ServiceResolver.GetService<FileService>();
             var loadDatas = fileManager.Load<EventTriggerModel>(path);
             if (loadDatas == null)
             {

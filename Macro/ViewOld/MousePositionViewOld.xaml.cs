@@ -11,12 +11,12 @@ namespace Macro.View
     /// <summary>
     /// MousePositionView.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MousePositionView : Window
+    public partial class MousePositionViewOld : Window
     {
         private readonly MonitorInfo _monitorInfo;
         private bool _isDrag;
         private readonly PathFigure _pathFigure;
-        public MousePositionView(MonitorInfo monitorInfo)
+        public MousePositionViewOld(MonitorInfo monitorInfo)
         {
             _pathFigure = new PathFigure
             {

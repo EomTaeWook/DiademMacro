@@ -10,7 +10,7 @@ namespace Macro.Extensions
     {
         public static string GetString(this LabelTemplate labelTemplate)
         {
-            var config = ServiceDispatcher.GetService<Config>();
+            var config = ServiceResolver.GetService<Config>();
             if (config.Language == LanguageType.Kor)
             {
                 return labelTemplate.Kor;
