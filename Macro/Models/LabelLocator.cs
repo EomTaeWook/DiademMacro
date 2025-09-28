@@ -212,6 +212,11 @@ namespace Macro.Models
         {
             get => GetString(1061);
         }
+        public string Option
+        {
+            get => GetString(1063);
+        }
+
         private string GetString(int templateId)
         {
             var template = TemplateContainer<LabelTemplate>.Find(templateId);

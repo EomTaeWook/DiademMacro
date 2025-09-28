@@ -112,7 +112,8 @@ namespace Macro
             btnDownEventItem.PreviewMouseDown += BtnDownEventItem_PreviewMouseDown;
             btnDownEventItem.PreviewMouseUp += BtnDownEventItem_PreviewMouseUp;
             btnUpEventItem.PreviewMouseDown += BtnUpEventItem_PreviewMouseDown;
-            btnUpEventItem.PreviewMouseUp += BtnUpEventItem_PreviewMouseUp; ;
+            btnUpEventItem.PreviewMouseUp += BtnUpEventItem_PreviewMouseUp;
+            btnOptionEventItem.Click += BtnOptionEventItem_Click;
 
             checkFix.Click += CheckFix_Click;
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
@@ -121,6 +122,18 @@ namespace Macro
 
             this.eventListView.Loaded += EventListView_Loaded;
             this.KeyDown += MainWindow_KeyDown;
+        }
+
+        private void BtnOptionEventItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
+
+            if (selectionStateController.SelectTreeGridViewItem == null)
+            {
+                return;
+            }
+
+
         }
 
         private void BtnUpEventItem_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -262,6 +275,7 @@ namespace Macro
                 btnCopyEventItem.Visibility = Visibility.Visible;
                 btnUpEventItem.Visibility = Visibility.Visible;
                 btnDownEventItem.Visibility = Visibility.Visible;
+                btnOptionEventItem.Visibility = Visibility.Visible;
             }
             else
             {
@@ -270,6 +284,7 @@ namespace Macro
                 btnCopyEventItem.Visibility = Visibility.Collapsed;
                 btnUpEventItem.Visibility = Visibility.Collapsed;
                 btnDownEventItem.Visibility = Visibility.Collapsed;
+                btnOptionEventItem.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -438,6 +453,9 @@ namespace Macro
         {
             if (e.Key == System.Windows.Input.Key.Escape)
             {
+                var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
+                selectionStateController.UnselectTreeGridViewItem();
+
                 RefreshEventItemButton();
                 BtnStop_Click(btnStop, null);
             }

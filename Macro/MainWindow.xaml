@@ -68,6 +68,7 @@
                                 <Button Name="btnDownEventItem" Background="Transparent" VerticalAlignment="Stretch" Height="27" Visibility="Collapsed">
                                     <IconPacks:PackIconMaterial Width="auto" Height="auto" Kind="ArrowDownDropCircleOutline" />
                                 </Button>
+                                <Button Name="btnOptionEventItem" Content="{Binding Path=Option, Source={StaticResource LabelLocator}}" Width="80" Height="27" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed"/>
                             </StackPanel>
                         </Grid>
                     </Grid>
