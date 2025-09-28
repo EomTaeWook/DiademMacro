@@ -97,7 +97,7 @@ namespace Macro.View
         }
         private void ItemContainerPositionChange(TreeGridViewItem target)
         {
-            var parentItemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+            var parentItemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventItems;
 
             if (target != null)
             {
@@ -112,21 +112,21 @@ namespace Macro.View
                 if (target.ParentItem == null && _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null)
                 {
                     parentItemContainer.Remove(item);
-                    targetItem.SubEventTriggers.Add(item);
+                    targetItem.SubEventItems.Add(item);
                 }
                 else if (target.ParentItem != _eventConfigViewModelCached.CurrentTreeViewItem)
                 {
                     parentItemContainer.Remove(item);
-                    targetItem.SubEventTriggers.Add(item);
+                    targetItem.SubEventItems.Add(item);
                 }
                 else if (target.ParentItem == _eventConfigViewModelCached.CurrentTreeViewItem)
                 {
                     parentItemContainer.Remove(item);
-                    item.SubEventTriggers.Remove(targetItem);
-                    var targetSubItem = targetItem.SubEventTriggers;
-                    targetItem.SubEventTriggers = item.SubEventTriggers;
-                    item.SubEventTriggers = targetSubItem;
-                    targetItem.SubEventTriggers.Add(item);
+                    item.SubEventItems.Remove(targetItem);
+                    var targetSubItem = targetItem.SubEventItems;
+                    targetItem.SubEventItems = item.SubEventItems;
+                    item.SubEventItems = targetSubItem;
+                    targetItem.SubEventItems.Add(item);
                     parentItemContainer.Add(targetItem);
                     _eventConfigViewModelCached.Clear();
                 }
@@ -198,7 +198,7 @@ namespace Macro.View
                 }
                 else
                 {
-                    _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers.Remove(model);
+                    _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventItems.Remove(model);
                 }
 
                 NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerRemoved, new EventTriggerEventArgs()
@@ -229,7 +229,7 @@ namespace Macro.View
 
             var current = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>();
             btnTreeItemUp.Visibility = btnTreeItemDown.Visibility = Visibility.Visible;
-            if (current.SubEventTriggers.Count != 0)
+            if (current.SubEventItems.Count != 0)
             {
                 lblRepeatSubItems.Visibility = Visibility.Visible;
                 gridRepeat.Visibility = Visibility.Visible;
@@ -303,7 +303,7 @@ namespace Macro.View
         }
         private IEnumerator ProcessLongClickTreePositionButton(object sender)
         {
-            var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+            var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventItems;
             var currentIndex = itemContainer.IndexOf(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
             var changedIndex = currentIndex;
             var addIndex = 0;
@@ -428,7 +428,7 @@ namespace Macro.View
                     return;
                 }
 
-                var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventTriggers;
+                var itemContainer = _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem == null ? this.DataContext<EventSettingViewModel>().TriggerSaves : _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventItems;
                 var currentIndex = itemContainer.IndexOf(_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>());
                 if (currentIndex > 0 && sender.Equals(btnTreeItemUp))
                 {
@@ -573,7 +573,7 @@ namespace Macro.View
             Application.Current.MainWindow.WindowState = WindowState.Normal;
         }
 
-        private void NotifyHelper_ScreenCaptureDataBind(CaptureEventArgs e)
+        private void NotifyHelper_ScreenCaptureDataBind(CaptureCompletedEventArgs e)
         {
             RadioButtonRefresh();
         }

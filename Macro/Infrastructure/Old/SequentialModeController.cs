@@ -76,7 +76,7 @@ namespace Macro.Infrastructure.ControllerOld
                 TaskHelper.TokenCheckDelay(_config.ItemDelay, cancellationToken);
                 return new EventResult(false, null);
             }
-            if (eventTriggerModel.SubEventTriggers.Count > 0)
+            if (eventTriggerModel.SubEventItems.Count > 0)
             {
                 ProcessSubEventTriggers(process, eventTriggerModel, cancellationToken);
             }
@@ -173,12 +173,12 @@ namespace Macro.Infrastructure.ControllerOld
                     break;
                 }
 
-                for (int ii = 0; ii < model.SubEventTriggers.Count; ++ii)
+                for (int ii = 0; ii < model.SubEventItems.Count; ++ii)
                 {
                     var childResult = HandleEvent(
                         sourceBmp,
                         process,
-                        model.SubEventTriggers[ii],
+                        model.SubEventItems[ii],
                         cancellationToken);
                     if (model.RepeatInfo.RepeatType == RepeatType.NoSearchChild)
                     {

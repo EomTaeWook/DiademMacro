@@ -8,7 +8,7 @@ namespace Macro.Models.ViewModel
         private double _width;
         private double _height;
         private bool _isAllSelected;
-        private ObservableCollection<EventTriggerModel> _triggerSaves = new ObservableCollection<EventTriggerModel>();
+        private ObservableCollection<EventTriggerModel> _eventItems = new ObservableCollection<EventTriggerModel>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -39,13 +39,13 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged("IsAllSelected");
             }
         }
-        public ObservableCollection<EventTriggerModel> TriggerSaves
+        public ObservableCollection<EventTriggerModel> EventItems
         {
-            get => _triggerSaves;
+            get => _eventItems;
             set
             {
-                _triggerSaves = value;
-                OnPropertyChanged("TriggerSaves");
+                _eventItems = value;
+                OnPropertyChanged("EventItems");
             }
         }
         protected void OnPropertyChanged(string propertyName)

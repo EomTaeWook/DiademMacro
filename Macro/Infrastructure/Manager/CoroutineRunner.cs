@@ -20,10 +20,13 @@ namespace Macro.Infrastructure.Controller
                 }
             });
         }
-
         public static CoroutineHandle Start(IEnumerator enumerator)
         {
-            return _coroutineHandler.Start(enumerator);
+            return Start(0, enumerator);
+        }
+        public static CoroutineHandle Start(float delay, IEnumerator enumerator)
+        {
+            return _coroutineHandler.Start(delay, enumerator);
         }
         public static bool Stop(CoroutineHandle coroutineHandle)
         {

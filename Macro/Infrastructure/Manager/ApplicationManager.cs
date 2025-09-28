@@ -79,7 +79,6 @@ namespace Macro.Infrastructure.Manager
             ResetMonitorViews();
 
             _drawWindowHandle = new WindowInteropHelper(_drawWindow).Handle;
-            SchedulerManagerOld.Instance.Start();
         }
         private void ResetMonitorViews()
         {

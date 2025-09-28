@@ -20,6 +20,15 @@
         Max
     }
 
+    public enum NotifyEventType
+    {
+        ConfigChanged,
+        ScreenCaptureCompleted,
+
+
+        Max
+    }
+
     public enum NotifyEventOldType
     {
         ComboProcessChanged,

@@ -33,9 +33,9 @@ namespace Macro.Models.ViewModel
             foreach (var item in eventTriggerModels)
             {
                 item.IsChecked = value;
-                if (item.SubEventTriggers.Count > 0)
+                if (item.SubEventItems.Count > 0)
                 {
-                    ApplySelectionToAllTriggers(item.SubEventTriggers, value);
+                    ApplySelectionToAllTriggers(item.SubEventItems, value);
                 }
             }
         }
@@ -89,7 +89,7 @@ namespace Macro.Models.ViewModel
                 EventType = Infrastructure.EventType.Image,
                 MonitorInfo = new Utils.Infrastructure.MonitorInfo(),
                 MouseTriggerInfo = new MouseTriggerInfo(),
-                SubEventTriggers = new ObservableCollection<EventTriggerModel>(),
+                SubEventItems = new ObservableCollection<EventTriggerModel>(),
                 ProcessInfo = new ProcessInfo(),
                 RepeatInfo = new RepeatInfoModel(),
                 RoiData = new RoiModel(),

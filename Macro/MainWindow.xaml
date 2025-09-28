@@ -58,9 +58,17 @@
                             <CheckBox x:Name="checkFix" Grid.Column="1" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="5,0,0,0" Width="50"></CheckBox>
                         </Grid>
                         <Grid Grid.Row="2" Grid.ColumnSpan="2">
-                            <Button Name="btnAddEventItem" Content="{Binding Path=Addition, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Button Name="btnRemoveEventItem" Content="{Binding Path=Removal, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
-                            <Button Name="btnCopyEventItem" Content="{Binding Path=Copy, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Name="btnAddEventItem" Content="{Binding Path=Addition, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible"/>
+                                <Button Name="btnRemoveEventItem" Content="{Binding Path=Removal, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <Button Name="btnCopyEventItem" Content="{Binding Path=Copy, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <Button Name="btnUpEventItem" Background="Transparent" VerticalAlignment="Stretch" Height="27" Visibility="Collapsed">
+                                    <IconPacks:PackIconMaterial Width="auto" Height="auto" Kind="ArrowUpDropCircleOutline" />
+                                </Button>
+                                <Button Name="btnDownEventItem" Background="Transparent" VerticalAlignment="Stretch" Height="27" Visibility="Collapsed">
+                                    <IconPacks:PackIconMaterial Width="auto" Height="auto" Kind="ArrowDownDropCircleOutline" />
+                                </Button>
+                            </StackPanel>
                         </Grid>
                     </Grid>
                 </DockPanel>

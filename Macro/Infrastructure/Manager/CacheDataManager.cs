@@ -62,7 +62,7 @@ namespace Macro.Infrastructure.Manager
         {
             model.TriggerIndex = IncreaseIndex();
 
-            foreach (var child in model.SubEventTriggers)
+            foreach (var child in model.SubEventItems)
             {
                 MakeIndexTriggerModel(child);
             }
@@ -74,7 +74,7 @@ namespace Macro.Infrastructure.Manager
             {
                 _indexTriggerModelToMap.Add(model.TriggerIndex, model);
             }
-            foreach (var child in model.SubEventTriggers)
+            foreach (var child in model.SubEventItems)
             {
                 InsertIndexTriggerModel(child);
             }
@@ -86,7 +86,7 @@ namespace Macro.Infrastructure.Manager
             {
                 _indexTriggerModelToMap.Remove(model.TriggerIndex);
             }
-            foreach (var child in model.SubEventTriggers)
+            foreach (var child in model.SubEventItems)
             {
                 RemoveIndexTriggerModel(child);
             }

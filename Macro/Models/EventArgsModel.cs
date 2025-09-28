@@ -14,7 +14,7 @@ namespace Macro.Models
         public MonitorInfo MonitorInfo { get; set; }
         public MouseTriggerInfo MouseTriggerInfo { get; set; }
     }
-    public class CaptureEventArgs : INotifyEventArgs
+    public class CaptureCompletedEventArgs : INotifyEventArgs
     {
         public MonitorInfo MonitorInfo { get; set; }
         public Bitmap CaptureImage { get; set; }

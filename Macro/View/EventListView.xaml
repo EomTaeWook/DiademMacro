@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:Extensions="clr-namespace:Macro.Extensions"
-             xmlns:UI="clr-namespace:Macro.UI"
+             xmlns:UI="clr-namespace:Macro.UI" xmlns:viewmodel="clr-namespace:Macro.Models.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:EventListViewModel}"
              Extensions:SizeObserver.Observe="True"
                           Extensions:SizeObserver.ObservedWidth="{Binding Width, Mode=TwoWay}"
                           mc:Ignorable="d"
@@ -17,7 +17,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel DockPanel.Dock="Left" LastChildFill="True">
-            <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path= TriggerSaves }" x:Name="treeGridView" AllowDrop="True" Margin="0,-1,0,1">
+            <UI:TreeGridView DockPanel.Dock="Left" ItemsSource="{ Binding Path= EventItems }" x:Name="treeGridView" AllowDrop="True" Margin="0,-1,0,1">
                 <UI:TreeGridView.Resources>
                     <FrameworkElement x:Key="ProxyElement"></FrameworkElement>
                 </UI:TreeGridView.Resources>

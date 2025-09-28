@@ -8,7 +8,7 @@ namespace Macro.Infrastructure
     {
         public static event Action<ConfigEventArgs> ConfigChanged;
         public static event Action<MousePointEventArgs> MousePositionDataBind;
-        public static event Action<CaptureEventArgs> ScreenCaptureCompleted;
+        public static event Action<CaptureCompletedEventArgs> ScreenCaptureCompleted;
         public static event Action<EventTriggerOrderChangedEventArgs> TreeItemOrderChanged;
         public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
         public static event Action<EventTriggerEventArgs> EventTriggerInserted;
@@ -33,7 +33,7 @@ namespace Macro.Infrastructure
                     MousePositionDataBind?.Invoke(args as MousePointEventArgs);
                     break;
                 case NotifyEventOldType.ScreenCaptureCompleted:
-                    ScreenCaptureCompleted?.Invoke(args as CaptureEventArgs);
+                    ScreenCaptureCompleted?.Invoke(args as CaptureCompletedEventArgs);
                     break;
                 case NotifyEventOldType.TreeItemOrderChanged:
                     TreeItemOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);

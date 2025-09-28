@@ -18,7 +18,7 @@ namespace Macro.Models
         private MouseTriggerInfo _mouseTriggerInfo;
         private string _keyboardCmd = "";
         private ProcessInfo _processInfo;
-        private ObservableCollection<EventTriggerModel> _subEventTriggers;
+        private ObservableCollection<EventTriggerModel> _subEventItems;
         private int _afterDelay;
         private RepeatInfoModel _repeatInfo;
         private ulong _eventToNext = 0;
@@ -41,7 +41,7 @@ namespace Macro.Models
             _mouseTriggerInfo = other.MouseTriggerInfo;
             _keyboardCmd = other.KeyboardCmd;
             _processInfo = other.ProcessInfo;
-            _subEventTriggers = other.SubEventTriggers;
+            _subEventItems = other.SubEventItems;
             _afterDelay = other.AfterDelay;
             _repeatInfo = other.RepeatInfo;
             _eventToNext = other.EventToNext;
@@ -111,14 +111,15 @@ namespace Macro.Models
             }
         }
 
+        [Obsolete]
         [Order(7)]
         public ObservableCollection<EventTriggerModel> SubEventTriggers
         {
-            get => _subEventTriggers ?? (_subEventTriggers = new ObservableCollection<EventTriggerModel>());
+            get => _subEventItems ?? (_subEventItems = new ObservableCollection<EventTriggerModel>());
             set
             {
-                _subEventTriggers = value;
-                OnPropertyChanged("SubEventTriggers");
+                _subEventItems = value;
+                OnPropertyChanged("SubEventItems");
             }
         }
 
@@ -224,6 +225,17 @@ namespace Macro.Models
             }
             get => _isChecked;
         }
+        [Order(18)]
+        public ObservableCollection<EventTriggerModel> SubEventItems
+        {
+            get => _subEventItems ?? (_subEventItems = new ObservableCollection<EventTriggerModel>());
+            set
+            {
+                _subEventItems = value;
+                OnPropertyChanged("SubEventItems");
+            }
+        }
+
         public string Desc
         {
             get

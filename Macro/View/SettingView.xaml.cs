@@ -78,7 +78,7 @@ namespace Macro.View
 
             if (saved == true)
             {
-                NotifyHelperOld.InvokeNotify(NotifyEventOldType.ConfigChanged, new ConfigEventArgs() { Config = model });
+                NotifyHelper.InvokeNotify(NotifyEventType.ConfigChanged, new ConfigEventArgs() { Config = model });
             }
         }
         private bool TryModelValidate(Config model, out MessageTemplate messageTemplate)

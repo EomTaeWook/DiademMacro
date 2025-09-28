@@ -342,9 +342,6 @@
     <Compile Include="View\WebViewControl.xaml.cs">
       <DependentUpon>WebViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\WindowEventPopup.xaml.cs">
-      <DependentUpon>WindowEventPopup.xaml</DependentUpon>
-    </Compile>
     <Page Include="ViewOld\MainWindowOld.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -418,10 +415,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\WebViewControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\WindowEventPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -89,7 +89,7 @@ namespace Macro.View
             }
         }
 
-        private void ScreenCaptureCompleted(CaptureEventArgs e)
+        private void ScreenCaptureCompleted(CaptureCompletedEventArgs e)
         {
             ApplicationManager.Instance.CloseCaptureView();
 

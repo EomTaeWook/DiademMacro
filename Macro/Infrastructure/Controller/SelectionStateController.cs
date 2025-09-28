@@ -18,7 +18,5 @@ namespace Macro.Infrastructure.Controller
                 SelectTreeGridViewItem = null;
             }
         }
-
-
     }
 }

@@ -119,7 +119,7 @@ namespace Macro.View
                 e.Handled = true;
                 if (this._captureMode == CaptureModeType.ImageCapture)
                 {
-                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ScreenCaptureCompleted, new CaptureEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ScreenCaptureCompleted, new CaptureCompletedEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         CaptureImage = null
@@ -237,7 +237,7 @@ namespace Macro.View
                 if (_captureMode == CaptureModeType.ImageCapture)
                 {
                     var image = CaptureScreenRegion(_monitorInfo, rect);
-                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ScreenCaptureCompleted, new CaptureEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ScreenCaptureCompleted, new CaptureCompletedEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         CaptureImage = image,
