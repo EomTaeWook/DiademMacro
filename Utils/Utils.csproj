@@ -106,8 +106,6 @@
     <Compile Include="Infrastructure\MonitorInfo.cs" />
     <Compile Include="Infrastructure\Point2D.cs" />
     <Compile Include="Infrastructure\IntRect.cs" />
-    <Compile Include="Infrastructure\TaskBuilder.cs" />
-    <Compile Include="Infrastructure\TaskQueue.cs" />
     <Compile Include="Models\Enums.cs" />
     <Compile Include="Models\Version.cs" />
     <Compile Include="Infrastructure\WindowFlags.cs" />

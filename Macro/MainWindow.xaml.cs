@@ -133,7 +133,9 @@ namespace Macro
                 return;
             }
 
-
+            var optionDialog = new OptionDialog(); // 생성자에 모델 넘김
+            optionDialog.Owner = Application.Current.MainWindow; // 모달로 띄우기
+            bool? result = optionDialog.ShowDialog();
         }
 
         private void BtnUpEventItem_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

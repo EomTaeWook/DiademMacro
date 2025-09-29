@@ -4,7 +4,6 @@ using Macro.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Utils.Infrastructure;
 
 namespace Macro.Infrastructure.Manager
 {
@@ -28,7 +27,7 @@ namespace Macro.Infrastructure.Manager
             }
             cts = new CancellationTokenSource();
             cancellationToken = cts.Token;
-            return TaskBuilder.Build(async () => { await UpdateAsync(); });
+            return Task.Run(async () => { await UpdateAsync(); });
         }
         public void Stop()
         {

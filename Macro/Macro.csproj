@@ -255,6 +255,7 @@
     <Compile Include="Infrastructure\NotifyHelperOld.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
+    <Compile Include="Models\ViewModel\OptionDialogViewModel.cs" />
     <Compile Include="ViewOld\MainWindowOld.xaml.cs">
       <DependentUpon>MainWindowOld.xaml</DependentUpon>
     </Compile>
@@ -326,6 +327,9 @@
     </Compile>
     <Compile Include="View\MousePositionView.xaml.cs">
       <DependentUpon>MousePositionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionDialog.xaml.cs">
+      <DependentUpon>OptionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -403,6 +407,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\MousePositionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OptionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
