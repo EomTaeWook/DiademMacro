@@ -16,8 +16,8 @@ namespace Macro.Models.ViewModel
             EventType.RelativeToImage
         };
 
-        private string _selectedEventType;
-        public string SelectedEventType
+        private EventType _selectedEventType;
+        public EventType SelectedEventType
         {
             get => _selectedEventType;
             set
@@ -37,7 +37,46 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(KeyboardCmd));
             }
         }
-
+        private bool _sameImageDrag;
+        public bool SameImageDrag
+        {
+            get => _sameImageDrag;
+            set
+            {
+                _sameImageDrag = value;
+                OnPropertyChanged(nameof(SameImageDrag));
+            }
+        }
+        private int _afterDelay;
+        public int AfterDelay
+        {
+            get => _afterDelay;
+            set
+            {
+                _afterDelay = value;
+                OnPropertyChanged(nameof(AfterDelay));
+            }
+        }
+        private int _eventToNext;
+        public int EventToNext
+        {
+            get => _eventToNext;
+            set
+            {
+                _eventToNext = value;
+                OnPropertyChanged(nameof(EventToNext));
+            }
+        }
+        private bool _hardClick;
+        public bool HardClick
+        {
+            get => _hardClick;
+            set
+            {
+                _hardClick = value;
+                OnPropertyChanged(nameof(HardClick));
+            }
+        }
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

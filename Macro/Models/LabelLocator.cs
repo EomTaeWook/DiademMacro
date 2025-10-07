@@ -118,6 +118,10 @@ namespace Macro.Models
         {
             get => GetString(1053);
         }
+        public string Roi
+        {
+            get => GetString(1064);
+        }
         public string RestoreMoveProcessLocation
         {
             get => GetString(1054);

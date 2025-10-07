@@ -1,48 +1,77 @@
 ﻿<Window x:Class="Macro.View.OptionDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Macro.View"
-        WindowStartupLocation="CenterOwner"
         xmlns:viewmodel="clr-namespace:Macro.Models.ViewModel"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        WindowStartupLocation="CenterOwner"
         d:DataContext="{d:DesignInstance Type=viewmodel:OptionDialogViewModel}"
         mc:Ignorable="d"
-        Title="OptionDialog" Height="270" Width="400">
+        Title="OptionDialog" Height="400" Width="400">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <!-- 구분 라벨 -->
             <RowDefinition Height="Auto"/>
             <!-- 이벤트 타입 -->
             <RowDefinition Height="Auto"/>
             <!-- 이벤트 데이터 -->
             <RowDefinition Height="Auto"/>
-            <!-- 관심영역 설정, X/Y -->
+            <!-- 바로 이동 -->
             <RowDefinition Height="Auto"/>
             <!-- 딜레이 -->
             <RowDefinition Height="Auto"/>
-            <!-- 바로 이동 -->
+            <!-- 관심영역 설정, X/Y -->
             <RowDefinition Height="Auto"/>
             <!-- 물리 클릭 -->
             <RowDefinition Height="Auto"/>
+            <!-- 아래 여백(남는 공간) -->
+            <RowDefinition Height="*"/>
             <!-- 버튼 영역 -->
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Option" FontWeight="Bold" FontSize="14" />
-        <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=EventType, Source={StaticResource LabelLocator}}"></Label>
-        <ComboBox Grid.Row="1" Grid.Column="1"
-          ItemsSource="{Binding EventTypeList}"
-          SelectedItem="{Binding SelectedEventType, Mode=TwoWay}"
-          Width="180" Height="28"/>
-        <Label Grid.Row="2" Grid.Column="0" Content="{Binding Path=EventDataSet, Source={StaticResource LabelLocator}}"></Label>
-
-        <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=SameImageDrag, Mode=TwoWay}" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}" Grid.Row="2" Grid.Column="1" Width="150" Height=" 28"></CheckBox>
-        <Button Name="btnMouseCoordinate" Content="{Binding Path=MouseCoordinates, Source={StaticResource LabelLocator}}" Grid.Row="2" Grid.Column="1" Width="150" Height="28" Visibility="Collapsed"/>
-        <TextBox Name="txtKeyboardCmd" Grid.Row="2" Grid.Column="1" Text="{Binding Path=KeyboardCmd, Mode=TwoWay}" Width="200" Height="28" Visibility="Collapsed"/>
         
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Option" FontWeight="Bold" FontSize="14" />
+        <!-- 이벤트 타입 -->
+        <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=EventType, Source={StaticResource LabelLocator}}"></Label>
+        <ComboBox Name="comboEventType" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding EventTypeList}" SelectedItem="{Binding SelectedEventType, Mode=TwoWay}"/>
+        
+        <!-- 이벤트 데이터 -->
+        <Label Grid.Row="2" Grid.Column="0" Content="{Binding Path=EventDataSet, Source={StaticResource LabelLocator}}"></Label>
+        <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=SameImageDrag, Mode=TwoWay}" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}" Grid.Row="2" Grid.Column="1"></CheckBox>
+        <Button x:Name="btnMouseCoordinate" Content="{Binding Path=MouseCoordinates, Source={StaticResource LabelLocator}}" Grid.Row="2" Grid.Column="1" Visibility="Collapsed"/>
+        <TextBox x:Name="txtKeyboardCmd" Grid.Row="2" Grid.Column="1" Text="{Binding Path=KeyboardCmd, Mode=TwoWay}"  Visibility="Collapsed" TextAlignment="Left"/>
+        <StackPanel x:Name="relativeToImagePanel" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
+            <Label Content="X"></Label>
+            <mah:NumericUpDown x:Name="numRelativeX" Value="{Binding Path=AfterDelay, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+            <Label Content="Y"></Label>
+            <mah:NumericUpDown x:Name="numRelativeY" Value="{Binding Path=AfterDelay, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+        </StackPanel>
+        
+        <!-- 바로 이동 -->
+        <Label Grid.Row="3" Grid.Column="0" Content="{Binding Path=TriggerToNext, Source={StaticResource LabelLocator}}"></Label>
+        <mah:NumericUpDown Name="numEventToNext" Grid.Row="3" Grid.Column="1" Value="{Binding Path=EventToNext, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+
+        <!-- 딜레이 -->
+        <Label Grid.Row="4" Grid.Column="0" Content="{Binding Path=AfterDelay, Source={StaticResource LabelLocator}}"></Label>
+        <mah:NumericUpDown Name="numAfterDelay" Grid.Row="4" Grid.Column="1" Value="{Binding Path=AfterDelay, Mode=TwoWay}" HideUpDownButtons="True" Minimum="0" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+
+        <!-- 관심영역 설정, X/Y -->
+        <Label Grid.Row="5" Grid.Column="0" Content="{Binding Path=Roi, Source={StaticResource LabelLocator}}"></Label>
+        <Button Name="btnSetRoi" Content="{Binding Path=SetROI, Source={StaticResource LabelLocator}}" Grid.Row="5" Grid.Column="1" Visibility="Visible"/>
+        <Button Name="btnRemoveRoi" Content="{Binding Path=RemoveROI, Source={StaticResource LabelLocator}}" Grid.Row="5" Grid.Column="1" Visibility="Collapsed"/>
+
+        <!-- 물리 클릭 -->
+        <Label Grid.Row="6" Grid.Column="0" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}"></Label>
+        <CheckBox x:Name="checkHardClick" IsEnabled="True" IsChecked="{Binding Path=HardClick, Mode=TwoWay}" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}" Grid.Row="6" Grid.Column="1"></CheckBox>
+
+        <!-- 버튼 영역 -->
+        <DockPanel HorizontalAlignment="Center" Grid.Row="8" Grid.ColumnSpan="2">
+            <Button x:Name="btnSave" Content="저장" Width="200"></Button>
+        </DockPanel>
     </Grid>
 </Window>

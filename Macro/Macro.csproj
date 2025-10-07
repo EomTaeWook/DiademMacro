@@ -255,6 +255,7 @@
     <Compile Include="Infrastructure\NotifyHelperOld.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
+    <Compile Include="Models\EventTriggerModel.cs" />
     <Compile Include="Models\ViewModel\OptionDialogViewModel.cs" />
     <Compile Include="ViewOld\MainWindowOld.xaml.cs">
       <DependentUpon>MainWindowOld.xaml</DependentUpon>
@@ -429,7 +430,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Config.cs" />
-    <Compile Include="Models\EventTriggerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

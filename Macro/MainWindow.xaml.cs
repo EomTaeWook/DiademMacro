@@ -133,8 +133,14 @@ namespace Macro
                 return;
             }
 
-            var optionDialog = new OptionDialog(); // 생성자에 모델 넘김
-            optionDialog.Owner = Application.Current.MainWindow; // 모달로 띄우기
+            var eventTriggerModel = selectionStateController.SelectTreeGridViewItem.DataContext<EventTriggerModel>();
+
+            var optionDialog = new OptionDialog
+            {
+                Owner = Application.Current.MainWindow
+            };
+            optionDialog.Init(eventTriggerModel);
+
             bool? result = optionDialog.ShowDialog();
         }
 

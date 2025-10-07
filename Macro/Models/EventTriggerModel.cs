@@ -4,7 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using Utils.Infrastructure;
 
 namespace Macro.Models
@@ -46,7 +45,6 @@ namespace Macro.Models
             _repeatInfo = other.RepeatInfo;
             _eventToNext = other.EventToNext;
             _triggerIndex = other.TriggerIndex;
-            _imageSearchRequired = other.ImageSearchRequired;
             _sameImageDrag = other.SameImageDrag;
             _maxSameImageCount = other.MaxSameImageCount;
             _hardClick = other._hardClick;
@@ -110,10 +108,8 @@ namespace Macro.Models
                 OnPropertyChanged("ProcessInfo");
             }
         }
-
-        [Obsolete]
         [Order(7)]
-        public ObservableCollection<EventTriggerModel> SubEventTriggers
+        public ObservableCollection<EventTriggerModel> SubEventItems
         {
             get => _subEventItems ?? (_subEventItems = new ObservableCollection<EventTriggerModel>());
             set
@@ -164,16 +160,7 @@ namespace Macro.Models
             }
             get => _eventToNext;
         }
-        [Order(12)]
-        public bool ImageSearchRequired
-        {
-            set
-            {
-                _imageSearchRequired = value;
-                OnPropertyChanged("ImageSearchRequired");
-            }
-            get => _imageSearchRequired;
-        }
+
         [Order(13)]
         public bool SameImageDrag
         {
@@ -225,75 +212,7 @@ namespace Macro.Models
             }
             get => _isChecked;
         }
-        [Order(18)]
-        public ObservableCollection<EventTriggerModel> SubEventItems
-        {
-            get => _subEventItems ?? (_subEventItems = new ObservableCollection<EventTriggerModel>());
-            set
-            {
-                _subEventItems = value;
-                OnPropertyChanged("SubEventItems");
-            }
-        }
 
-        public string Desc
-        {
-            get
-            {
-                var sb = new StringBuilder();
-                if (RoiData != null)
-                {
-                    if (RoiData.RoiRect != null)
-                    {
-                        sb.Append($"R : [X : {RoiData.RoiRect.Left} W : {RoiData.RoiRect.Width} Y : {RoiData.RoiRect.Top} H : {RoiData.RoiRect.Height}] ");
-                    }
-                }
-                else
-                {
-                    sb.Append($"R : [-] ");
-                }
-
-                if (EventType == EventType.Mouse)
-                {
-                    if (MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None && MouseTriggerInfo.MouseInfoEventType != MouseEventType.Wheel)
-                    {
-                        sb.Append($"X : {MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}");
-                    }
-                    else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
-                    {
-                        sb.Append($"Mouse None");
-                    }
-                    else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
-                    {
-                        if (MouseTriggerInfo.WheelData > 0)
-                        {
-                            sb.Append($"Wheel Up");
-                        }
-                        else
-                        {
-                            sb.Append($"Wheel Down");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append($"X : {MouseTriggerInfo.StartPoint.X:0} Y : {MouseTriggerInfo.StartPoint.Y:0}{Environment.NewLine}" +
-                            $"X : {MouseTriggerInfo.EndPoint.X:0} Y : {MouseTriggerInfo.EndPoint.Y:0}");
-                    }
-                }
-                else if (EventType == EventType.Keyboard)
-                {
-                    sb.Append(KeyboardCmd);
-                }
-                else if (EventType == EventType.RelativeToImage)
-                {
-                    sb.Append($"X : {MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}");
-                }
-                else
-                {
-                }
-                return sb.ToString();
-            }
-        }
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
