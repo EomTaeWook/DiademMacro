@@ -17,9 +17,9 @@ namespace Macro.Extensions
                 Value = source.Value
             };
         }
-        public static MouseTriggerInfo Clone(this MouseTriggerInfo source)
+        public static MouseEventInfo Clone(this MouseEventInfo source)
         {
-            return new MouseTriggerInfo()
+            return new MouseEventInfo()
             {
                 EndPoint = new System.Windows.Point()
                 {

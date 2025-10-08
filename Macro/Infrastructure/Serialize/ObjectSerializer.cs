@@ -71,7 +71,10 @@ namespace Macro.Infrastructure.Serialize
             var deserializedObjects = new List<T>();
             using (var memoryStream = new MemoryStream(serializedBytes))
             {
-                var bf = new BinaryFormatter();
+                var bf = new BinaryFormatter()
+                {
+                    Binder = new TypeRedirectBinder()
+                };
                 var targetTypeProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
                 var maxPropertyOrder = 0;

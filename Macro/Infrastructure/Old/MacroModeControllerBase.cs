@@ -36,9 +36,9 @@ namespace Macro.Infrastructure.ControllerOld
             var similarity = 0;
             Point2D matchedLocation = new Point2D(0, 0);
 
-            if (eventTriggerModel.RoiData.IsExists() == true)
+            if (eventTriggerModel.RoiDataInfo.IsExists() == true)
             {
-                var newRect = _screenCaptureManager.AdjustRectForDPI(eventTriggerModel.RoiData.RoiRect, eventTriggerModel.RoiData.MonitorInfo);
+                var newRect = _screenCaptureManager.AdjustRectForDPI(eventTriggerModel.RoiDataInfo.RoiRect, eventTriggerModel.RoiDataInfo.MonitorInfo);
 
                 int imageWidth = sourceBmp.Width;
                 int imageHeight = sourceBmp.Height;

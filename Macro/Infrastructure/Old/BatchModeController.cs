@@ -139,7 +139,7 @@ namespace Macro.Infrastructure.ControllerOld
             }
             else if (eventTriggerModel.SameImageDrag == true)
             {
-                for (int i = 0; i < eventTriggerModel.MaxSameImageCount; ++i)
+                for (int i = 0; i < eventTriggerModel.MaxDragCount; ++i)
                 {
                     var locations = OpenCVHelper.MultipleSearch(capturedImage, eventTriggerModel.Image, _config.Similarity, 2, _config.SearchImageResultDisplay);
 

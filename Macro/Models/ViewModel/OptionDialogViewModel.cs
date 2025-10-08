@@ -100,6 +100,27 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(RepeatCount));
             }
         }
+        private MouseEventInfo _mouseEventInfo;
+
+        public MouseEventInfo MouseEventInfo
+        {
+            get => _mouseEventInfo;
+            set
+            {
+                _mouseEventInfo = value;
+                OnPropertyChanged(nameof(MouseEventInfo));
+            }
+        }
+        private int _maxDragCount;
+        public int MaxDragCount
+        {
+            get => _maxDragCount;
+            set
+            {
+                _maxDragCount = value;
+                OnPropertyChanged(nameof(MaxDragCount));
+            }
+        }
 
         protected void OnPropertyChanged(string propertyName)
         {

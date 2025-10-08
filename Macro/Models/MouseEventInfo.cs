@@ -6,7 +6,7 @@ using System.Windows;
 namespace Macro.Models
 {
     [Serializable]
-    public class MouseTriggerInfo
+    public class MouseEventInfo
     {
         public MouseEventType MouseInfoEventType { get; set; } = MouseEventType.None;
 

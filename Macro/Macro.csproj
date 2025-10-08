@@ -254,6 +254,7 @@
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\NotifyHelperOld.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
+    <Compile Include="Infrastructure\Serialize\TypeRedirectBinder.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
     <Compile Include="Models\EventTriggerModel.cs" />
     <Compile Include="Models\ViewModel\OptionDialogViewModel.cs" />
@@ -277,7 +278,7 @@
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Models\EventArgsModel.cs" />
-    <Compile Include="Models\MouseTriggerInfo.cs" />
+    <Compile Include="Models\MouseEventInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiModel.cs" />

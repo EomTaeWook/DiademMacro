@@ -63,7 +63,7 @@ namespace Macro.Infrastructure.ControllerOld
                 messageTemplate = TemplateContainer<MessageTemplate>.Find(1001);
                 return false;
             }
-            if (model.EventType == EventType.Mouse && model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
+            if (model.EventType == EventType.Mouse && model.MouseEventInfo.MouseInfoEventType == MouseEventType.None)
             {
                 messageTemplate = TemplateContainer<MessageTemplate>.Find(1002);
                 return false;

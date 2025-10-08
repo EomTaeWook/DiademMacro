@@ -239,7 +239,7 @@ namespace Macro.View
                 lblRepeatSubItems.Visibility = Visibility.Collapsed;
                 gridRepeat.Visibility = Visibility.Collapsed;
             }
-            if (current.RoiData.IsExists() == false)
+            if (current.RoiDataInfo.IsExists() == false)
             {
                 this.btnRemoveROI.Visibility = Visibility.Hidden;
                 this.btnSetROI.Visibility = Visibility.Visible;
@@ -414,9 +414,9 @@ namespace Macro.View
         {
             if (sender.Equals(btnMouseCoordinate))
             {
-                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo.MouseInfoEventType != MouseEventType.None)
                 {
-                    _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                    _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo = new MouseEventInfo();
                 }
                 Application.Current.MainWindow.WindowState = WindowState.Minimized;
                 ApplicationManager.Instance.ShowMousePointView();
@@ -457,7 +457,7 @@ namespace Macro.View
             }
             else if (sender.Equals(btnRemoveROI))
             {
-                _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().RoiData = null;
+                _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().RoiDataInfo = null;
                 RefreshUI();
             }
             //else if(sender.Equals(btnMouseWheel))
@@ -567,7 +567,7 @@ namespace Macro.View
         private void NotifyHelper_MousePositionDataBind(MousePointEventArgs e)
         {
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = e.MonitorInfo;
-            _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = e.MouseTriggerInfo;
+            _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo = e.MouseEventInfo;
 
             ApplicationManager.Instance.CloseMousePointView();
             Application.Current.MainWindow.WindowState = WindowState.Normal;
@@ -591,20 +591,20 @@ namespace Macro.View
             else if (sender.Equals(rbImage))
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.Image;
-                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo.MouseInfoEventType != MouseEventType.None)
                 {
-                    _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                    _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo = new MouseEventInfo();
                 }
             }
             else if (sender.Equals(rbRelativeToImage))
             {
                 _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().EventType = EventType.RelativeToImage;
-                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.MouseInfoEventType != MouseEventType.None)
+                if (_eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo.MouseInfoEventType != MouseEventType.None)
                 {
-                    _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo = new MouseTriggerInfo();
+                    _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo = new MouseEventInfo();
                 }
-                _eventConfigViewModelCached.RelativePosition.X = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint.X;
-                _eventConfigViewModelCached.RelativePosition.Y = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseTriggerInfo.StartPoint.Y;
+                _eventConfigViewModelCached.RelativePosition.X = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo.StartPoint.X;
+                _eventConfigViewModelCached.RelativePosition.Y = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo.StartPoint.Y;
             }
             RadioButtonRefresh();
         }

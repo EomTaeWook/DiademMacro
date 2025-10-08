@@ -49,15 +49,10 @@ namespace Macro.View
 
             viewModel.SelectedEventType = eventTriggerModel.EventType;
             viewModel.SelectedRepeatType = eventTriggerModel.RepeatInfo.RepeatType;
+            viewModel.MouseEventInfo = eventTriggerModel.MouseEventInfo;
 
-            if (eventTriggerModel.SubEventItems.Count > 0)
-            {
-                SetRepeatSectionVisibility(true);
-            }
-            else
-            {
-                SetRepeatSectionVisibility(false);
-            }
+            SetRepeatSectionVisibility(eventTriggerModel.SubEventItems.Count > 0);
+            ComboEventType_SelectionChanged(comboEventType, null);
         }
         private void SetRepeatSectionVisibility(bool isVisible)
         {
@@ -78,6 +73,20 @@ namespace Macro.View
         {
             comboEventType.SelectionChanged += ComboEventType_SelectionChanged;
             comboRepeatItem.SelectionChanged += ComboRepeatItem_SelectionChanged;
+            checkSameImageDrag.Checked += CheckSameImageDrag_ValueChanged;
+            checkSameImageDrag.Unchecked += CheckSameImageDrag_ValueChanged;
+        }
+
+        private void CheckSameImageDrag_ValueChanged(object sender, RoutedEventArgs e)
+        {
+            if (checkSameImageDrag.IsChecked == true)
+            {
+                numMaxDragCount.IsEnabled = true;
+            }
+            else
+            {
+                numMaxDragCount.IsEnabled = false;
+            }
         }
 
         private void ComboRepeatItem_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -102,31 +111,40 @@ namespace Macro.View
 
             if (currentType == Infrastructure.EventType.Image)
             {
-                checkSameImageDrag.Visibility = Visibility.Visible;
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsEnabled = true;
+                panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
+                checkHardClick.IsEnabled = true;
             }
             else if (currentType == Infrastructure.EventType.Mouse)
             {
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                btnMouseCoordinate.Visibility = Visibility.Visible;
+                checkSameImageDrag.IsChecked = false;
+                checkSameImageDrag.IsEnabled = false;
+                panelMouseEvent.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
+                checkHardClick.IsEnabled = true;
             }
             else if (currentType == Infrastructure.EventType.Keyboard)
             {
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                checkSameImageDrag.IsEnabled = false;
+                panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Visible;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
+                checkHardClick.IsChecked = false;
+                checkHardClick.IsEnabled = false;
             }
             else if (currentType == Infrastructure.EventType.RelativeToImage)
             {
-                checkSameImageDrag.Visibility = Visibility.Collapsed;
-                btnMouseCoordinate.Visibility = Visibility.Collapsed;
+                checkSameImageDrag.IsChecked = false;
+                checkSameImageDrag.IsEnabled = false;
+
+                panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Visible;
+                checkHardClick.IsEnabled = true;
             }
         }
 

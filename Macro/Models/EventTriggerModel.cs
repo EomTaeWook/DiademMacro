@@ -14,7 +14,7 @@ namespace Macro.Models
         public static EventTriggerModel DummyParentEventModel;
 
         private EventType _eventType = EventType.Image;
-        private MouseTriggerInfo _mouseTriggerInfo;
+        private MouseEventInfo _mouseEventInfo;
         private string _keyboardCmd = "";
         private ProcessInfo _processInfo;
         private ObservableCollection<EventTriggerModel> _subEventItems;
@@ -25,7 +25,7 @@ namespace Macro.Models
         private bool _imageSearchRequired = false;
         private bool _sameImageDrag = false;
         private bool _hardClick = false;
-        private int _maxSameImageCount = 1;
+        private int _maxDragCount = 1;
         private bool _isChecked = true;
         private RoiModel _roiData = new RoiModel();
         private Bitmap _image;
@@ -37,7 +37,7 @@ namespace Macro.Models
         {
             _image = other.Image;
             _eventType = other.EventType;
-            _mouseTriggerInfo = other.MouseTriggerInfo;
+            _mouseEventInfo = other.MouseEventInfo;
             _keyboardCmd = other.KeyboardCmd;
             _processInfo = other.ProcessInfo;
             _subEventItems = other.SubEventItems;
@@ -46,7 +46,7 @@ namespace Macro.Models
             _eventToNext = other.EventToNext;
             _triggerIndex = other.TriggerIndex;
             _sameImageDrag = other.SameImageDrag;
-            _maxSameImageCount = other.MaxSameImageCount;
+            _maxDragCount = other.MaxDragCount;
             _hardClick = other._hardClick;
             _roiData = other._roiData;
             _isChecked = other._isChecked;
@@ -66,20 +66,18 @@ namespace Macro.Models
             set
             {
                 _eventType = value;
-                OnPropertyChanged("EventType");
-                OnPropertyChanged("Desc");
+                OnPropertyChanged(nameof(EventType));
             }
         }
 
         [Order(3)]
-        public MouseTriggerInfo MouseTriggerInfo
+        public MouseEventInfo MouseEventInfo
         {
-            get => _mouseTriggerInfo ?? (_mouseTriggerInfo = new MouseTriggerInfo());
+            get => _mouseEventInfo ?? (_mouseEventInfo = new MouseEventInfo());
             set
             {
-                _mouseTriggerInfo = value;
-                OnPropertyChanged("MouseTriggerInfo");
-                OnPropertyChanged("Desc");
+                _mouseEventInfo = value;
+                OnPropertyChanged(nameof(MouseEventInfo));
             }
         }
 
@@ -93,8 +91,7 @@ namespace Macro.Models
             set
             {
                 _keyboardCmd = value;
-                OnPropertyChanged("KeyboardCmd");
-                OnPropertyChanged("Desc");
+                OnPropertyChanged(nameof(KeyboardCmd));
             }
         }
 
@@ -105,7 +102,7 @@ namespace Macro.Models
             set
             {
                 _processInfo = value;
-                OnPropertyChanged("ProcessInfo");
+                OnPropertyChanged(nameof(ProcessInfo));
             }
         }
         [Order(7)]
@@ -115,7 +112,7 @@ namespace Macro.Models
             set
             {
                 _subEventItems = value;
-                OnPropertyChanged("SubEventItems");
+                OnPropertyChanged(nameof(SubEventItems));
             }
         }
 
@@ -126,7 +123,7 @@ namespace Macro.Models
             set
             {
                 _afterDelay = value;
-                OnPropertyChanged("AfterDelay");
+                OnPropertyChanged(nameof(AfterDelay));
             }
         }
         [Order(9)]
@@ -136,7 +133,7 @@ namespace Macro.Models
             set
             {
                 _repeatInfo = value;
-                OnPropertyChanged("RepeatInfo");
+                OnPropertyChanged(nameof(RepeatInfo));
             }
         }
         [Order(10)]
@@ -145,7 +142,7 @@ namespace Macro.Models
             set
             {
                 _triggerIndex = value;
-                OnPropertyChanged("TriggerIndex");
+                OnPropertyChanged(nameof(TriggerIndex));
             }
             get => _triggerIndex;
         }
@@ -156,7 +153,7 @@ namespace Macro.Models
             set
             {
                 _eventToNext = value;
-                OnPropertyChanged("EventToNext");
+                OnPropertyChanged(nameof(EventToNext));
             }
             get => _eventToNext;
         }
@@ -167,19 +164,19 @@ namespace Macro.Models
             set
             {
                 _sameImageDrag = value;
-                OnPropertyChanged("SameImageDrag");
+                OnPropertyChanged(nameof(SameImageDrag));
             }
             get => _sameImageDrag;
         }
         [Order(14)]
-        public int MaxSameImageCount
+        public int MaxDragCount
         {
             set
             {
-                _maxSameImageCount = value;
-                OnPropertyChanged("MaxSameImageCount");
+                _maxDragCount = value;
+                OnPropertyChanged(nameof(MaxDragCount));
             }
-            get => _maxSameImageCount;
+            get => _maxDragCount;
         }
         [Order(15)]
         public bool HardClick
@@ -187,18 +184,17 @@ namespace Macro.Models
             set
             {
                 _hardClick = value;
-                OnPropertyChanged("HardClick");
+                OnPropertyChanged(nameof(HardClick));
             }
             get => _hardClick;
         }
         [Order(16)]
-        public RoiModel RoiData
+        public RoiModel RoiDataInfo
         {
             set
             {
                 _roiData = value;
-                OnPropertyChanged("RoiData");
-                OnPropertyChanged("Desc");
+                OnPropertyChanged(nameof(RoiDataInfo));
             }
             get => _roiData;
         }
@@ -208,7 +204,7 @@ namespace Macro.Models
             set
             {
                 _isChecked = value;
-                OnPropertyChanged("IsChecked");
+                OnPropertyChanged(nameof(IsChecked));
             }
             get => _isChecked;
         }

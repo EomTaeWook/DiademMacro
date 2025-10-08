@@ -73,7 +73,7 @@ namespace Macro.View
             {
                 NotifyHelperOld.InvokeNotify(NotifyEventOldType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new MouseTriggerInfo()
+                    MouseEventInfo = new MouseEventInfo()
                     {
                         MouseInfoEventType = MouseEventType.RightClick,
                         StartPoint = PointToScreen(e.GetPosition(this))
@@ -91,7 +91,7 @@ namespace Macro.View
             {
                 NotifyHelperOld.InvokeNotify(NotifyEventOldType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new MouseTriggerInfo()
+                    MouseEventInfo = new MouseEventInfo()
                     {
                         MouseInfoEventType = MouseEventType.LeftClick,
                         StartPoint = PointToScreen(e.GetPosition(this))
@@ -103,7 +103,7 @@ namespace Macro.View
             {
                 NotifyHelperOld.InvokeNotify(NotifyEventOldType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new MouseTriggerInfo()
+                    MouseEventInfo = new MouseEventInfo()
                     {
                         MouseInfoEventType = MouseEventType.Drag,
                         StartPoint = PointToScreen(_pathFigure.StartPoint),
@@ -130,7 +130,7 @@ namespace Macro.View
             {
                 NotifyHelperOld.InvokeNotify(NotifyEventOldType.MousePointDataBind, new MousePointEventArgs()
                 {
-                    MouseTriggerInfo = new MouseTriggerInfo()
+                    MouseEventInfo = new MouseEventInfo()
                     {
                         MouseInfoEventType = MouseEventType.None,
                     },

@@ -12,7 +12,7 @@ namespace Macro.Models
     public class MousePointEventArgs : INotifyEventArgs
     {
         public MonitorInfo MonitorInfo { get; set; }
-        public MouseTriggerInfo MouseTriggerInfo { get; set; }
+        public MouseEventInfo MouseEventInfo { get; set; }
     }
     public class CaptureCompletedEventArgs : INotifyEventArgs
     {

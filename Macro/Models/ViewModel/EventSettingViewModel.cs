@@ -88,11 +88,11 @@ namespace Macro.Models.ViewModel
             {
                 EventType = Infrastructure.EventType.Image,
                 MonitorInfo = new Utils.Infrastructure.MonitorInfo(),
-                MouseTriggerInfo = new MouseTriggerInfo(),
+                MouseEventInfo = new MouseEventInfo(),
                 SubEventItems = new ObservableCollection<EventTriggerModel>(),
                 ProcessInfo = new ProcessInfo(),
                 RepeatInfo = new RepeatInfoModel(),
-                RoiData = new RoiModel(),
+                RoiDataInfo = new RoiModel(),
             };
         }
         public TreeGridViewItem CurrentTreeViewItem

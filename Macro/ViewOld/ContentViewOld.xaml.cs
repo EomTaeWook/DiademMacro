@@ -77,7 +77,7 @@ namespace Macro.View
 
             if (e.RoiRect != null)
             {
-                model.RoiData = new RoiModel()
+                model.RoiDataInfo = new RoiModel()
                 {
                     RoiRect = e.RoiRect.Value,
                     MonitorInfo = e.MonitorInfo
@@ -85,7 +85,7 @@ namespace Macro.View
             }
             else
             {
-                model.RoiData = null;
+                model.RoiDataInfo = null;
             }
         }
 
@@ -143,7 +143,7 @@ namespace Macro.View
                 var model = dataContext.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                 if (model.EventType == EventType.RelativeToImage)
                 {
-                    model.MouseTriggerInfo.StartPoint = new Point(dataContext.RelativePosition.X, dataContext.RelativePosition.Y);
+                    model.MouseEventInfo.StartPoint = new Point(dataContext.RelativePosition.X, dataContext.RelativePosition.Y);
                 }
 
                 NotifyHelperOld.InvokeNotify(NotifyEventOldType.Save, new SaveEventTriggerModelArgs()

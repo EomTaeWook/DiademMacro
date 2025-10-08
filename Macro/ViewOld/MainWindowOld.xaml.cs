@@ -260,12 +260,12 @@ namespace Macro.ViewOld
                             model.MonitorInfo = monitor;
 
                         }
-                        if (model.RoiData.IsExists() == true)
+                        if (model.RoiDataInfo.IsExists() == true)
                         {
-                            model.RoiData.RoiRect.Left -= rect.Left - monitor.Rect.Left;
-                            model.RoiData.RoiRect.Top -= rect.Top - monitor.Rect.Top;
-                            model.RoiData.RoiRect.Right -= rect.Left - monitor.Rect.Left;
-                            model.RoiData.RoiRect.Bottom -= rect.Top - monitor.Rect.Top;
+                            model.RoiDataInfo.RoiRect.Left -= rect.Left - monitor.Rect.Left;
+                            model.RoiDataInfo.RoiRect.Top -= rect.Top - monitor.Rect.Top;
+                            model.RoiDataInfo.RoiRect.Right -= rect.Left - monitor.Rect.Left;
+                            model.RoiDataInfo.RoiRect.Bottom -= rect.Top - monitor.Rect.Top;
                         }
                         break;
                     }
