@@ -181,13 +181,13 @@
   },
   {
     "Id": 1030,
-    "Name": "NoSearchChild",
+    "Name": "RepeatOnChildEvent",
     "Kor": "자식 이벤트 실행 시 반복",
     "Eng": "Repeat when child event runs"
   },
   {
     "Id": 1031,
-    "Name": "SearchParent",
+    "Name": "StopOnParentImage",
     "Kor": "부모 이미지 검색 시 종료",
     "Eng": "End when parent image is found"
   },

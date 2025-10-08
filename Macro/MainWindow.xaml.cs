@@ -139,7 +139,7 @@ namespace Macro
             {
                 Owner = Application.Current.MainWindow
             };
-            optionDialog.Init(eventTriggerModel);
+            optionDialog.BindItem(eventTriggerModel);
 
             bool? result = optionDialog.ShowDialog();
         }

@@ -180,7 +180,7 @@ namespace Macro.Infrastructure.ControllerOld
                         process,
                         model.SubEventItems[ii],
                         cancellationToken);
-                    if (model.RepeatInfo.RepeatType == RepeatType.NoSearchChild)
+                    if (model.RepeatInfo.RepeatType == RepeatType.RepeatOnChildEvent)
                     {
                         if (childResult.IsSuccess == false)
                         {
@@ -194,7 +194,7 @@ namespace Macro.Infrastructure.ControllerOld
                     }
                 }
 
-                if (model.RepeatInfo.RepeatType == RepeatType.SearchParent)
+                if (model.RepeatInfo.RepeatType == RepeatType.StopOnParentImage)
                 {
                     if (_screenCaptureManager.CaptureProcessWindow(process, out sourceBmp) == false)
                     {

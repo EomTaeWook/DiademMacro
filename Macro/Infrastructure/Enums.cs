@@ -54,8 +54,8 @@
     public enum RepeatType
     {
         Count,
-        NoSearchChild,
-        SearchParent,
+        RepeatOnChildEvent,
+        StopOnParentImage,
 
         Max
     }

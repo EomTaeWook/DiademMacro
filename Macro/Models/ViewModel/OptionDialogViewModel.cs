@@ -1,4 +1,5 @@
 ﻿using Macro.Infrastructure;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -7,8 +8,9 @@ namespace Macro.Models.ViewModel
     public class OptionDialogViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public ObservableCollection<KeyValuePair<RepeatType, string>> RepeatItemsSource { get; set; } = new ObservableCollection<KeyValuePair<RepeatType, string>>();
 
-        public ObservableCollection<EventType> EventTypeList { get; set; } = new ObservableCollection<EventType>()
+        public ObservableCollection<EventType> EventTypes { get; set; } = new ObservableCollection<EventType>()
         {
             EventType.Image,
             EventType.Mouse,
@@ -77,6 +79,28 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(HardClick));
             }
         }
+
+        private RepeatType _selectedRepeatType;
+        public RepeatType SelectedRepeatType
+        {
+            get => _selectedRepeatType;
+            set
+            {
+                _selectedRepeatType = value;
+                OnPropertyChanged(nameof(SelectedRepeatType));
+            }
+        }
+        private int _repeatCount;
+        public int RepeatCount
+        {
+            get => _repeatCount;
+            set
+            {
+                _repeatCount = value;
+                OnPropertyChanged(nameof(RepeatCount));
+            }
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

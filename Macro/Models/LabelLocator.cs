@@ -134,7 +134,7 @@ namespace Macro.Models
         {
             get => GetString(1026);
         }
-        public string RepeatSubItems
+        public string RepeatItems
         {
             get => GetString(1027);
         }
