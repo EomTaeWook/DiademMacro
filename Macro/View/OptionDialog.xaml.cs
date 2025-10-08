@@ -63,11 +63,15 @@ namespace Macro.View
         {
             if (isVisible == true)
             {
-                comboRepeatItem.Visibility = labelRepeatItem.Visibility = Visibility.Visible;
+                comboRepeatItem.Visibility = Visibility.Visible;
+                labelRepeatItem.Visibility = Visibility.Visible;
+                numRepeatCount.Visibility = Visibility.Visible;
             }
             else
             {
-                comboRepeatItem.Visibility = labelRepeatItem.Visibility = Visibility.Collapsed;
+                comboRepeatItem.Visibility = Visibility.Collapsed;
+                labelRepeatItem.Visibility = Visibility.Collapsed;
+                numRepeatCount.Visibility = Visibility.Collapsed;
             }
         }
         private void InitEvent()
