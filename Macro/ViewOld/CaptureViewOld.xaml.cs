@@ -95,7 +95,7 @@ namespace Macro.View
             {
                 _dragBorder = _dummyCaptureBorder.Clone();
             }
-            else if (this._captureMode == CaptureModeType.ROICaptureCompleted)
+            else if (this._captureMode == CaptureModeType.ROICapture)
             {
                 _dragBorder = _dummyRoiBorder.Clone();
             }
@@ -119,19 +119,11 @@ namespace Macro.View
                 e.Handled = true;
                 if (this._captureMode == CaptureModeType.ImageCapture)
                 {
-                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ScreenCaptureCompleted, new CaptureCompletedEventArgs()
-                    {
-                        MonitorInfo = _monitorInfo,
-                        CaptureImage = null
-                    });
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ScreenCaptureCompleted, new CaptureCompletedEventArgs());
                 }
                 else
                 {
-                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ROICaptureCompleted, new ROICaptureEventArgs()
-                    {
-                        MonitorInfo = _monitorInfo,
-                        RoiRect = null
-                    });
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ROICaptureCompleted, new ROICaptureCompletedEventArgs());
                 }
             }
             base.OnPreviewKeyDown(e);
@@ -244,9 +236,9 @@ namespace Macro.View
                         Position = rect
                     });
                 }
-                else if (_captureMode == CaptureModeType.ROICaptureCompleted)
+                else if (_captureMode == CaptureModeType.ROICapture)
                 {
-                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ROICaptureCompleted, new ROICaptureEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.ROICaptureCompleted, new ROICaptureCompletedEventArgs()
                     {
                         MonitorInfo = _monitorInfo,
                         RoiRect = rect

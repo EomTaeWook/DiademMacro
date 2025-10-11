@@ -100,6 +100,7 @@ namespace Macro
         {
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureCompleted += ScreenCaptureCompleted;
+            NotifyHelper.EventTriggerSaved += NotifyHelper_EventTriggerSaved;
 
             btnSetting.Click += BtnSetting_Click;
             btnGithub.Click += BtnGithub_Click;
@@ -122,6 +123,13 @@ namespace Macro
 
             this.eventListView.Loaded += EventListView_Loaded;
             this.KeyDown += MainWindow_KeyDown;
+
+
+        }
+
+        private void NotifyHelper_EventTriggerSaved(EventTriggerEventArgs obj)
+        {
+            Save();
         }
 
         private void BtnOptionEventItem_Click(object sender, RoutedEventArgs e)

@@ -10,7 +10,7 @@
         SizeToContent="Manual"
         d:DataContext="{d:DesignInstance Type=viewmodel:OptionDialogViewModel}"
         mc:Ignorable="d"
-        Title="OptionDialog" Height="400" Width="450">
+        Title="OptionDialog" Height="500" Width="450">
     <Grid Margin="10" x:Name="gridMain">
         <Grid.RowDefinitions>
             <!-- 구분 라벨 -->
@@ -25,11 +25,11 @@
             <RowDefinition Height="Auto"/>
             <!-- 관심영역 설정, X/Y -->
             <RowDefinition Height="Auto"/>
-            <!-- 반복 -->
-            <RowDefinition Height="Auto"/>
             <!-- 물리 클릭 -->
             <RowDefinition Height="Auto"/>
             <!-- 같은 이미지 드래그 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 반복 -->
             <RowDefinition Height="Auto"/>
             <!-- 아래 여백(남는 공간) -->
             <RowDefinition Height="*"/>
@@ -51,14 +51,14 @@
         
         <StackPanel x:Name="panelMouseEvent" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
             <Button x:Name="btnMouseEvent" Content="{Binding Path=MouseCoordinates, Source={StaticResource LabelLocator}}"/>
-            <Label x:Name="labelDesc" Content="None"></Label>
+            <Label x:Name="labelEventDesc" Content="None"></Label>
         </StackPanel>
         <TextBox x:Name="txtKeyboardCmd" Grid.Row="2" Grid.Column="1" Text="{Binding Path=KeyboardCmd, Mode=TwoWay}"  Visibility="Collapsed" TextAlignment="Left"/>
         <StackPanel x:Name="relativeToImagePanel" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
             <Label Content="X"></Label>
-            <mah:NumericUpDown x:Name="numRelativeX" Value="{Binding Path=AfterDelay, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+            <mah:NumericUpDown x:Name="numRelativeX" Value="{Binding Path=RelativeX, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
             <Label Content="Y"></Label>
-            <mah:NumericUpDown x:Name="numRelativeY" Value="{Binding Path=AfterDelay, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+            <mah:NumericUpDown x:Name="numRelativeY" Value="{Binding Path=RelativeY, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
         </StackPanel>
         
         <!-- 바로 이동 -->
@@ -71,27 +71,30 @@
 
         <!-- 관심영역 설정, X/Y -->
         <Label Grid.Row="5" Grid.Column="0" Content="{Binding Path=Roi, Source={StaticResource LabelLocator}}"></Label>
-        <Button Name="btnSetRoi" Content="{Binding Path=SetROI, Source={StaticResource LabelLocator}}" Grid.Row="5" Grid.Column="1" Visibility="Visible"/>
-        <Button Name="btnRemoveRoi" Content="{Binding Path=RemoveROI, Source={StaticResource LabelLocator}}" Grid.Row="5" Grid.Column="1" Visibility="Collapsed"/>
-
-        <!-- 반복 -->
-        <Label x:Name="labelRepeatItem" Grid.Row="6" Grid.Column="0" Content="{Binding Path=RepeatItems, Source={StaticResource LabelLocator}}"></Label>
-        <StackPanel Grid.Row="6" Grid.Column="1">
-            <ComboBox Name="comboRepeatItem" ItemsSource="{Binding RepeatItemsSource}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedRepeatType, Mode=TwoWay}"/>
-            <mah:NumericUpDown x:Name="numRepeatCount" Value="{Binding Path=RepeatCount, Mode=TwoWay}" TextAlignment="Left" Minimum="0" NumericInputMode="Numbers" ></mah:NumericUpDown>
+        <StackPanel Grid.Row="5" Grid.Column="1">
+            <Button Name="btnSetRoi" Content="{Binding Path=SetROI, Source={StaticResource LabelLocator}}" Visibility="Visible"/>
+            <Button Name="btnRemoveRoi" Content="{Binding Path=RemoveROI, Source={StaticResource LabelLocator}}" Visibility="Collapsed"/>
+            <Label x:Name="labelROIDesc" Content="{Binding Path=RoiDesc, Mode=TwoWay}"></Label>
         </StackPanel>
+        
 
         <!-- 물리 클릭 -->
-        <Label Grid.Row="7" Grid.Column="0" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}"></Label>
-        <CheckBox x:Name="checkHardClick" IsEnabled="True" IsChecked="{Binding Path=HardClick, Mode=TwoWay}" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}" Grid.Row="7" Grid.Column="1"></CheckBox>
+        <Label Grid.Row="6" Grid.Column="0" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}"></Label>
+        <CheckBox x:Name="checkHardClick" IsEnabled="True" IsChecked="{Binding Path=HardClick, Mode=TwoWay}" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}" Grid.Row="6" Grid.Column="1"></CheckBox>
 
         <!-- 같은 이미지 드래그 -->
-        <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}"></Label>
-        <StackPanel Grid.Row="8" Grid.Column="1">
-            <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=SameImageDrag, Mode=TwoWay}" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}" Grid.Row="7" Grid.Column="1"></CheckBox>
+        <Label Grid.Row="7" Grid.Column="0" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}"></Label>
+        <StackPanel Grid.Row="7" Grid.Column="1">
+            <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=SameImageDrag, Mode=TwoWay}" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}"></CheckBox>
             <mah:NumericUpDown x:Name="numMaxDragCount" Value="{Binding Path=MaxDragCount, Mode=TwoWay}" TextAlignment="Left" Minimum="0" NumericInputMode="Numbers" IsEnabled="False" ></mah:NumericUpDown>
         </StackPanel>
 
+        <!-- 반복 -->
+        <Label x:Name="labelRepeatItem" Grid.Row="8" Grid.Column="0" Content="{Binding Path=RepeatItems, Source={StaticResource LabelLocator}}"></Label>
+        <StackPanel Grid.Row="8" Grid.Column="1">
+            <ComboBox Name="comboRepeatItem" ItemsSource="{Binding RepeatItemsSource}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding SelectedRepeatType, Mode=TwoWay}"/>
+            <mah:NumericUpDown x:Name="numRepeatCount" Value="{Binding Path=RepeatCount, Mode=TwoWay}" TextAlignment="Left" Minimum="0" NumericInputMode="Numbers" ></mah:NumericUpDown>
+        </StackPanel>
 
         <!-- 버튼 영역 -->
         <DockPanel HorizontalAlignment="Center" Grid.Row="10" Grid.ColumnSpan="2">

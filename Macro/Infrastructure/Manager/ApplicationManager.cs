@@ -130,9 +130,11 @@ namespace Macro.Infrastructure.Manager
         }
         public void ShowSetROIView()
         {
+            ResetMonitorViews();
+
             foreach (var item in _captureViews)
             {
-                item.ShowActivate(CaptureModeType.ROICaptureCompleted);
+                item.ShowActivate(CaptureModeType.ROICapture);
             }
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }

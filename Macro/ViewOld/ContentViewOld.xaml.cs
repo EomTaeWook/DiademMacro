@@ -69,24 +69,17 @@ namespace Macro.View
         private void Init()
         {
         }
-        private void ROICaptureCompleted(ROICaptureEventArgs e)
+        private void ROICaptureCompleted(ROICaptureCompletedEventArgs e)
         {
             ApplicationManager.Instance.CloseCaptureView();
             var dataContext = eventSettingView.GetDataContext();
             var model = dataContext.CurrentTreeViewItem.DataContext<EventTriggerModel>();
 
-            if (e.RoiRect != null)
+            model.RoiDataInfo = new RoiModel()
             {
-                model.RoiDataInfo = new RoiModel()
-                {
-                    RoiRect = e.RoiRect.Value,
-                    MonitorInfo = e.MonitorInfo
-                };
-            }
-            else
-            {
-                model.RoiDataInfo = null;
-            }
+                RoiRect = e.RoiRect,
+                MonitorInfo = e.MonitorInfo
+            };
         }
 
         private void ScreenCaptureCompleted(CaptureCompletedEventArgs e)

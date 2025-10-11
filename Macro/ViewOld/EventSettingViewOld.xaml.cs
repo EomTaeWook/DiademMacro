@@ -277,6 +277,7 @@ namespace Macro.View
             btnTreeItemDown.PreviewMouseUp += BtnTreeItem_MouseUp;
 
             treeSaves.SelectedItemChanged += TreeSaves_SelectedItemChanged;
+
             treeSaves.PreviewMouseLeftButtonDown += TreeSaves_PreviewMouseLeftButtonDown;
             treeSaves.MouseMove += TreeSaves_MouseMove;
             treeSaves.Drop += TreeSaves_Drop;

@@ -59,8 +59,8 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(AfterDelay));
             }
         }
-        private int _eventToNext;
-        public int EventToNext
+        private ulong _eventToNext;
+        public ulong EventToNext
         {
             get => _eventToNext;
             set
@@ -90,8 +90,8 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(SelectedRepeatType));
             }
         }
-        private int _repeatCount;
-        public int RepeatCount
+        private ushort _repeatCount;
+        public ushort RepeatCount
         {
             get => _repeatCount;
             set
@@ -119,6 +119,57 @@ namespace Macro.Models.ViewModel
             {
                 _maxDragCount = value;
                 OnPropertyChanged(nameof(MaxDragCount));
+            }
+        }
+
+        private int _relativeX;
+        public int RelativeX
+        {
+            get => _relativeX;
+            set
+            {
+                _relativeX = value;
+                OnPropertyChanged(nameof(RelativeX));
+            }
+        }
+        private int _relativeY;
+        public int RelativeY
+        {
+            get => _relativeY;
+            set
+            {
+                _relativeY = value;
+                OnPropertyChanged(nameof(RelativeY));
+            }
+        }
+
+        private RoiModel _roiModel;
+        public RoiModel RoiDataInfo
+        {
+            get => _roiModel;
+            set
+            {
+                _roiModel = value;
+                OnPropertyChanged(nameof(RoiDataInfo));
+
+                if (_roiModel.IsExists() == false)
+                {
+                    RoiDesc = "None";
+                }
+                else
+                {
+                    RoiDesc = $"X: {_roiModel.RoiRect.Left} W: {_roiModel.RoiRect.Width} Y:{_roiModel.RoiRect.Top} H:{_roiModel.RoiRect.Height}";
+                }
+            }
+        }
+        private string _roiDesc = "None";
+        public string RoiDesc
+        {
+            get => _roiDesc;
+            set
+            {
+                _roiDesc = value;
+                OnPropertyChanged(nameof(RoiDesc));
             }
         }
 

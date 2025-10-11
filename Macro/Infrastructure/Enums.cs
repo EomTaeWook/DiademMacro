@@ -24,7 +24,8 @@
     {
         ConfigChanged,
         ScreenCaptureCompleted,
-
+        ROICaptureCompleted,
+        EventTriggerSaved,
 
         Max
     }
@@ -71,7 +72,7 @@
     public enum CaptureModeType
     {
         ImageCapture,
-        ROICaptureCompleted,
+        ROICapture,
 
         Max
     }

@@ -20,7 +20,7 @@ namespace Macro.Infrastructure
         public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
 
         public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
-        public static event Action<ROICaptureEventArgs> ROICaptureCompleted;
+        public static event Action<ROICaptureCompletedEventArgs> ROICaptureCompleted;
 
         public static void InvokeNotify(NotifyEventOldType eventType, INotifyEventArgs args)
         {
@@ -63,7 +63,7 @@ namespace Macro.Infrastructure
                     TreeGridViewFocus?.Invoke(args as TreeGridViewFocusEventArgs);
                     break;
                 case NotifyEventOldType.ROICaptureCompleted:
-                    ROICaptureCompleted?.Invoke(args as ROICaptureEventArgs);
+                    ROICaptureCompleted?.Invoke(args as ROICaptureCompletedEventArgs);
                     break;
                 case NotifyEventOldType.Max:
                 default:
