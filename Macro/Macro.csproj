@@ -224,6 +224,10 @@
     <Compile Include="Extensions\MessageTemplateExtensions.cs" />
     <Compile Include="Extensions\InnerPointExtensions.cs" />
     <Compile Include="Extensions\StringTemplateExtensions.cs" />
+    <Compile Include="Infrastructure\Controller\BatchModeController.cs" />
+    <Compile Include="Infrastructure\Controller\InputController.cs" />
+    <Compile Include="Infrastructure\Controller\InputEventProcessorHandler.cs" />
+    <Compile Include="Infrastructure\Controller\MacroModeControllerBase.cs" />
     <Compile Include="Infrastructure\Old\MacroModeControllerBase.cs" />
     <Compile Include="Infrastructure\Old\SequentialModeController.cs" />
     <Compile Include="Infrastructure\Controller\SelectionStateController.cs" />
@@ -272,7 +276,7 @@
     </Compile>
     <Compile Include="Models\ColorModel.cs" />
     <Compile Include="Models\EventFactorModel.cs" />
-    <Compile Include="Models\EventResult.cs" />
+    <Compile Include="Models\OldEventResult.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessItem.cs" />
     <Compile Include="Models\ProcessResult.cs" />

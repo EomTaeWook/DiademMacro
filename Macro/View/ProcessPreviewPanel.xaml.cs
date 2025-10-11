@@ -1,4 +1,7 @@
 ﻿using MahApps.Metro.Controls;
+using OpenCvSharp.WpfExtensions;
+using System.Drawing;
+using System.Windows.Media;
 
 namespace Macro.View
 {
@@ -10,6 +13,14 @@ namespace Macro.View
         public ProcessPreviewPanel()
         {
             InitializeComponent();
+        }
+
+        public void DrawCaptureImage(Bitmap bmp)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                canvasCaptureImage.Background = new ImageBrush(bmp.ToBitmapSource());
+            });
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Macro.Models.Converters
             {
                 var soureMouseEventInfo = sourceEventTriggerModel.MouseEventInfo;
 
-                targetEventInfoModel.MouseEventInfo.MouseInfoEventType = soureMouseEventInfo.MouseInfoEventType;
+                targetEventInfoModel.MouseEventInfo.MouseEventType = soureMouseEventInfo.MouseInfoEventType;
 
                 if (soureMouseEventInfo.StartPoint != null)
                 {

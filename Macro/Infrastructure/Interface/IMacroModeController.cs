@@ -9,6 +9,14 @@ namespace Macro.Infrastructure.Interfaces
     {
         void Execute(
             ArrayQueue<Process> processes,
+            ArrayQueue<EventInfoModel> eventTriggerModels,
+            CancellationToken cancellationToken);
+    }
+
+    internal interface IMacroModeControllerOld
+    {
+        void Execute(
+            ArrayQueue<Process> processes,
             ArrayQueue<EventTriggerModel> eventTriggerModels,
             CancellationToken cancellationToken);
     }

@@ -2,7 +2,6 @@
 using Dignus.Collections;
 using Dignus.DependencyInjection.Attributes;
 using Dignus.Log;
-using Macro.Extensions;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;
@@ -13,7 +12,7 @@ using System.Threading;
 using Utils;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure.ControllerOld
+namespace Macro.Infrastructure.Controller
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     internal class BatchModeController : MacroModeControllerBase
@@ -31,21 +30,21 @@ namespace Macro.Infrastructure.ControllerOld
 
         public override void Execute(
             ArrayQueue<Process> processes,
-            ArrayQueue<EventTriggerModel> eventTriggerModels,
+            ArrayQueue<EventInfoModel> eventInfoModels,
             CancellationToken cancellationToken)
         {
             for (int i = 0; i < processes.Count; ++i)
             {
                 var process = processes[i];
 
-                ProcessEventTriggers(process, eventTriggerModels, cancellationToken);
+                ProcessEventTriggers(process, eventInfoModels, cancellationToken);
 
                 TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
             }
         }
         private void ProcessSubEventTriggers(
             Process process,
-            EventTriggerModel model,
+            EventInfoModel model,
             CancellationToken cancellationToken)
         {
             for (int i = 0; i < model.RepeatInfo.Count; ++i)
@@ -96,10 +95,10 @@ namespace Macro.Infrastructure.ControllerOld
                 }
             }
         }
-        private OldEventResult HandleEvent(
+        private EventResult HandleEvent(
             Bitmap capturedImage,
             Process process,
-            EventTriggerModel eventTriggerModel,
+            EventInfoModel eventInfoModel,
             CancellationToken cancellationToken)
         {
             var windowHandle = IntPtr.Zero;
@@ -118,7 +117,7 @@ namespace Macro.Infrastructure.ControllerOld
 
             var copyBitmap = (Bitmap)capturedImage.Clone();
 
-            var matchResult = CalculateSimilarityAndLocation(eventTriggerModel.Image, copyBitmap, eventTriggerModel);
+            var matchResult = CalculateSimilarityAndLocation(eventInfoModel.Image, copyBitmap, eventInfoModel);
 
             var similarity = matchResult.Item1;
             Point2D matchedLocation = matchResult.Item2;
@@ -130,34 +129,34 @@ namespace Macro.Infrastructure.ControllerOld
             if (similarity < _config.Similarity)
             {
                 TaskHelper.TokenCheckDelay(_config.ItemDelay, cancellationToken);
-                return new OldEventResult(false, null);
+                return new EventResult(false, null);
             }
 
-            if (eventTriggerModel.SubEventItems.Count > 0)
+            if (eventInfoModel.SubEventItems.Count > 0)
             {
-                ProcessSubEventTriggers(process, eventTriggerModel, cancellationToken);
+                ProcessSubEventTriggers(process, eventInfoModel, cancellationToken);
             }
-            else if (eventTriggerModel.SameImageDrag == true)
+            else if (eventInfoModel.SameImageDrag == true)
             {
-                for (int i = 0; i < eventTriggerModel.MaxDragCount; ++i)
+                for (int i = 0; i < eventInfoModel.MaxDragCount; ++i)
                 {
-                    var locations = OpenCVHelper.MultipleSearch(capturedImage, eventTriggerModel.Image, _config.Similarity, 2, _config.SearchImageResultDisplay);
+                    var locations = OpenCVHelper.MultipleSearch(capturedImage, eventInfoModel.Image, _config.Similarity, 2, _config.SearchImageResultDisplay);
 
                     if (locations.Count > 1)
                     {
-                        var startPoint = new Point2D(locations[0].X + eventTriggerModel.Image.Width / 2,
-                            locations[0].Y + eventTriggerModel.Image.Height / 2);
+                        var startPoint = new Point2D(locations[0].X + eventInfoModel.Image.Width / 2,
+                            locations[0].Y + eventInfoModel.Image.Height / 2);
 
-                        startPoint.X += _eventProcessorHandler.GetRandomValue(0, eventTriggerModel.Image.Width / 2);
-                        startPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventTriggerModel.Image.Height / 2);
+                        startPoint.X += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Width / 2);
+                        startPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Height / 2);
 
-                        var endPoint = new Point2D(locations[1].X + eventTriggerModel.Image.Width / 2,
-                            locations[1].Y + eventTriggerModel.Image.Width / 2);
+                        var endPoint = new Point2D(locations[1].X + eventInfoModel.Image.Width / 2,
+                            locations[1].Y + eventInfoModel.Image.Width / 2);
 
-                        endPoint.X += _eventProcessorHandler.GetRandomValue(0, eventTriggerModel.Image.Width / 2);
-                        endPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventTriggerModel.Image.Height / 2);
+                        endPoint.X += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Width / 2);
+                        endPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Height / 2);
 
-                        _eventProcessorHandler.SameImageMouseDragTriggerProcess(windowHandle, startPoint, endPoint, eventTriggerModel, _config.DragDelay);
+                        _eventProcessorHandler.ProcessSameImageMouseDragEvent(windowHandle, startPoint, endPoint, eventInfoModel, _config.DragDelay);
                     }
                     else
                     {
@@ -167,55 +166,55 @@ namespace Macro.Infrastructure.ControllerOld
             }
             else
             {
-                if (eventTriggerModel.EventType == EventType.Mouse)
+                if (eventInfoModel.EventType == EventType.Mouse)
                 {
                     _eventProcessorHandler.HandleMouseEvent(windowHandle,
-                        eventTriggerModel,
+                        eventInfoModel,
                         matchedLocation,
                         template,
                         _config.DragDelay);
                 }
-                else if (eventTriggerModel.EventType == EventType.Image)
+                else if (eventInfoModel.EventType == EventType.Image)
                 {
                     _eventProcessorHandler.HandleImageEvent(windowHandle,
-                        eventTriggerModel,
+                        eventInfoModel,
                         matchedLocation,
                         template);
                 }
-                else if (eventTriggerModel.EventType == EventType.RelativeToImage)
+                else if (eventInfoModel.EventType == EventType.RelativeToImage)
                 {
                     _eventProcessorHandler.HandleRelativeToImageEvent(windowHandle,
-                        eventTriggerModel,
+                        eventInfoModel,
                         matchedLocation,
                         template);
                 }
-                else if (eventTriggerModel.EventType == EventType.Keyboard)
+                else if (eventInfoModel.EventType == EventType.Keyboard)
                 {
-                    _eventProcessorHandler.KeyboardTriggerProcess(windowHandle, eventTriggerModel);
+                    _eventProcessorHandler.ProcessKeyboardEvent(windowHandle, eventInfoModel);
                 }
 
-                EventTriggerModel nextModel = null;
+                EventInfoModel nextModel = null;
 
-                if (eventTriggerModel.EventToNext > 0 && eventTriggerModel.ItemIndex != eventTriggerModel.EventToNext)
+                if (eventInfoModel.EventToNext > 0 && eventInfoModel.ItemIndex != eventInfoModel.EventToNext)
                 {
-                    //nextModel = _cacheDataManager.GetEventTriggerModel(eventTriggerModel.EventToNext);
+                    nextModel = _cacheDataManager.GetEventInfoModel(eventInfoModel.EventToNext);
 
                     if (nextModel != null)
                     {
-                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {eventTriggerModel.ItemIndex} ] NextIndex [ {nextModel.ItemIndex} ] ");
+                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {eventInfoModel.ItemIndex} ] NextIndex [ {nextModel.ItemIndex} ] ");
                     }
                 }
-                TaskHelper.TokenCheckDelay(eventTriggerModel.AfterDelay, cancellationToken);
+                TaskHelper.TokenCheckDelay(eventInfoModel.AfterDelay, cancellationToken);
 
-                return new OldEventResult(true, nextModel);
+                return new EventResult(true, nextModel);
             }
 
-            return new OldEventResult(false, null);
+            return new EventResult(false, null);
         }
 
         private void ProcessEventTriggers(
             Process process,
-            ArrayQueue<EventTriggerModel> eventTriggerModels,
+            ArrayQueue<EventInfoModel> eventInfoModels,
             CancellationToken cancellationToken)
         {
             if (_screenCaptureManager.CaptureProcessWindow(process,
@@ -226,20 +225,35 @@ namespace Macro.Infrastructure.ControllerOld
 
             _drawImageCallback?.Invoke(sourceBmp);
 
-            for (int i = 0; i < eventTriggerModels.Count; ++i)
+            for (int i = 0; i < eventInfoModels.Count; ++i)
             {
-                var model = eventTriggerModels[i];
+                var model = eventInfoModels[i];
                 var result = HandleEvent(sourceBmp, process, model, cancellationToken);
 
-                var nextEventTrigger = result.NextEventTrigger;
+                var nextEventTrigger = result.NextEventInfoModel;
                 if (nextEventTrigger != null)
                 {
-                    if (eventTriggerModels.TryFindTriggerIndex(nextEventTrigger.ItemIndex, out int index) == true)
+                    if (TryGetIndexByItemIndex(eventInfoModels, nextEventTrigger.ItemIndex, out var sourceIndex))
                     {
-                        i = index - 1;
+                        i = sourceIndex - 1;
                     }
                 }
             }
+        }
+
+        private bool TryGetIndexByItemIndex(ArrayQueue<EventInfoModel> source, ulong findItemIndex, out int sourceIndex)
+        {
+            sourceIndex = -1;
+
+            foreach (var item in source)
+            {
+                sourceIndex++;
+                if (item.ItemIndex == findItemIndex)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

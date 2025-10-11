@@ -116,7 +116,7 @@ namespace Macro.Models.ViewModel
                 }
                 else
                 {
-                    MousePointDesc = $"E: {_mouseEventInfo.MouseInfoEventType} X: {_mouseEventInfo.MousePoint.X} Y:{_mouseEventInfo.MousePoint.Y}";
+                    MousePointDesc = $"E: {_mouseEventInfo.MouseEventType} X: {_mouseEventInfo.MousePoint.X} Y:{_mouseEventInfo.MousePoint.Y}";
                 }
             }
         }

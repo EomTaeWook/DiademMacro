@@ -486,7 +486,6 @@ namespace Macro
                 selectionStateController.SelectProcessItem = null;
             }
         }
-
         private void BtnGithub_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(ConstHelper.HelpUrl);
@@ -581,7 +580,6 @@ namespace Macro
         {
             CheckFix_Click(checkFix, null);
         }
-
         public void LoadSaveFile(string path)
         {
             var fileService = ServiceResolver.GetService<FileService>();
@@ -614,7 +612,6 @@ namespace Macro
                 model.EventItems.Add(item);
             }
         }
-
         private void NotifyHelper_ConfigChanged(ConfigEventArgs e)
         {
             ApplicationManager.ShowProgressbar();

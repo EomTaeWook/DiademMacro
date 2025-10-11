@@ -42,7 +42,7 @@ namespace Macro.Infrastructure.ControllerOld
                 TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
             }
         }
-        private EventResult HandleEvent(
+        private OldEventResult HandleEvent(
             Bitmap capturedImage,
             Process process,
             EventTriggerModel eventTriggerModel,
@@ -74,7 +74,7 @@ namespace Macro.Infrastructure.ControllerOld
             if (similarity < _config.Similarity)
             {
                 TaskHelper.TokenCheckDelay(_config.ItemDelay, cancellationToken);
-                return new EventResult(false, null);
+                return new OldEventResult(false, null);
             }
             if (eventTriggerModel.SubEventItems.Count > 0)
             {
@@ -150,10 +150,10 @@ namespace Macro.Infrastructure.ControllerOld
                 }
                 TaskHelper.TokenCheckDelay(eventTriggerModel.AfterDelay, cancellationToken);
 
-                return new EventResult(true, nextModel);
+                return new OldEventResult(true, nextModel);
             }
 
-            return new EventResult(false, null);
+            return new OldEventResult(false, null);
         }
 
         private void ProcessSubEventTriggers(

@@ -12,7 +12,7 @@ namespace Macro.Extensions
         {
             var cloned = new MouseEventInfoV2
             {
-                MouseInfoEventType = source.MouseInfoEventType,
+                MouseEventType = source.MouseEventType,
                 MousePoints = new List<Point2D>(source.MousePoints),
                 MousePoint = new Point2D()
                 {

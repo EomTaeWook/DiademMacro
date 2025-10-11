@@ -9,9 +9,9 @@ using System.Drawing;
 using System.Threading;
 using Utils.Infrastructure;
 
-namespace Macro.Infrastructure.ControllerOld
+namespace Macro.Infrastructure.Controller
 {
-    internal abstract class MacroModeControllerBase : IMacroModeControllerOld
+    internal abstract class MacroModeControllerBase : IMacroModeController
     {
         protected Config _config;
         protected Action<Bitmap> _drawImageCallback;
@@ -23,7 +23,7 @@ namespace Macro.Infrastructure.ControllerOld
         }
         public abstract void Execute(
             ArrayQueue<Process> processes,
-            ArrayQueue<EventTriggerModel> eventTriggerModels,
+            ArrayQueue<EventInfoModel> eventInfoModels,
             CancellationToken cancellationToken);
 
         public void SetDrawImageCallback(Action<Bitmap> drawImageCallback)
@@ -31,14 +31,14 @@ namespace Macro.Infrastructure.ControllerOld
             _drawImageCallback = drawImageCallback;
         }
 
-        protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventTriggerModel eventTriggerModel)
+        protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel)
         {
             var similarity = 0;
             Point2D matchedLocation = new Point2D(0, 0);
 
-            if (eventTriggerModel.RoiDataInfo.IsExists() == true)
+            if (eventInfoModel.RoiDataInfo.IsExists() == true)
             {
-                var newRect = _screenCaptureManager.AdjustRectForDPI(eventTriggerModel.RoiDataInfo.RoiRect, eventTriggerModel.RoiDataInfo.MonitorInfo);
+                var newRect = _screenCaptureManager.AdjustRectForDPI(eventInfoModel.RoiDataInfo.RoiRect, eventInfoModel.RoiDataInfo.MonitorInfo);
 
                 int imageWidth = sourceBmp.Width;
                 int imageHeight = sourceBmp.Height;

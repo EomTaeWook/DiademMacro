@@ -87,7 +87,7 @@ namespace Macro.View
                 {
                     MouseEventInfo = new MouseEventInfoV2()
                     {
-                        MouseInfoEventType = MouseEventType.RightClick,
+                        MouseEventType = MouseEventType.RightClick,
                         MousePoint = ConvertToPoint2D(PointToScreen(e.GetPosition(this)))
                     },
                     MonitorInfo = _monitorInfo
@@ -115,7 +115,7 @@ namespace Macro.View
                 {
                     MouseEventInfo = new MouseEventInfoV2
                     {
-                        MouseInfoEventType = MouseEventType.LeftClick,
+                        MouseEventType = MouseEventType.LeftClick,
                         MousePoint = ConvertToPoint2D(endPointScreen)
                     },
                     MonitorInfo = _monitorInfo
@@ -134,7 +134,7 @@ namespace Macro.View
                 {
                     MouseEventInfo = new MouseEventInfoV2()
                     {
-                        MouseInfoEventType = MouseEventType.Drag,
+                        MouseEventType = MouseEventType.Drag,
                         MousePoint = ConvertToPoint2D(PointToScreen(_mousePathFigure.StartPoint)),
                         MousePoints = pathPoints
                     },
