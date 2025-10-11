@@ -5,6 +5,7 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
 using Macro.Models;
+using Macro.Models.Converters;
 using Macro.Models.Protocols;
 using Macro.Models.ViewModel;
 using Macro.UI;
@@ -41,6 +42,7 @@ namespace Macro
         private AdManager _adManager;
         private CacheDataManager _cacheDataManager;
         private bool _isEventItemMoveButtonPressed;
+        private ProcessPreviewPanel _processPreview;
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +51,10 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            _processPreview = new ProcessPreviewPanel()
+            {
+                Owner = this
+            };
             _config = ServiceResolver.GetService<Config>();
             _cacheDataManager = ServiceResolver.GetService<CacheDataManager>();
 
@@ -123,11 +129,9 @@ namespace Macro
 
             this.eventListView.Loaded += EventListView_Loaded;
             this.KeyDown += MainWindow_KeyDown;
-
-
         }
 
-        private void NotifyHelper_EventTriggerSaved(EventTriggerEventArgs obj)
+        private void NotifyHelper_EventTriggerSaved(EventInfoEventArgs obj)
         {
             Save();
         }
@@ -141,13 +145,13 @@ namespace Macro
                 return;
             }
 
-            var eventTriggerModel = selectionStateController.SelectTreeGridViewItem.DataContext<EventTriggerModel>();
+            var eventInfoModel = selectionStateController.SelectTreeGridViewItem.DataContext<EventInfoModel>();
 
             var optionDialog = new OptionDialog
             {
                 Owner = Application.Current.MainWindow
             };
-            optionDialog.BindItem(eventTriggerModel);
+            optionDialog.BindItem(eventInfoModel);
 
             bool? result = optionDialog.ShowDialog();
         }
@@ -170,14 +174,14 @@ namespace Macro
 
             var selectTreeGridViewItem = selectionStateController.SelectTreeGridViewItem;
 
-            var item = selectTreeGridViewItem.DataContext<EventTriggerModel>();
+            var item = selectTreeGridViewItem.DataContext<EventInfoModel>();
 
             var currentIndex = viewModel.EventItems.IndexOf(item);
             if (currentIndex <= 0)
             {
                 return;
             }
-
+            _isEventItemMoveButtonPressed = true;
             viewModel.EventItems.Move(currentIndex, currentIndex - 1);
 
             CoroutineRunner.Start(2, RepeatMoveEventItemCoroutine(btnDownEventItem, selectionStateController.SelectTreeGridViewItem));
@@ -201,13 +205,14 @@ namespace Macro
 
             var selectTreeGridViewItem = selectionStateController.SelectTreeGridViewItem;
 
-            var item = selectTreeGridViewItem.DataContext<EventTriggerModel>();
+            var item = selectTreeGridViewItem.DataContext<EventInfoModel>();
 
             var currentIndex = viewModel.EventItems.IndexOf(item);
             if (currentIndex >= viewModel.EventItems.Count - 1)
             {
                 return;
             }
+            _isEventItemMoveButtonPressed = true;
 
             viewModel.EventItems.Move(currentIndex, currentIndex + 1);
 
@@ -235,7 +240,7 @@ namespace Macro
             }
 
             var viewModel = eventListView.DataContext<EventListViewModel>();
-            var item = selectTreeGridViewItem.DataContext<EventTriggerModel>();
+            var item = selectTreeGridViewItem.DataContext<EventInfoModel>();
 
             while (_isEventItemMoveButtonPressed)
             {
@@ -263,10 +268,6 @@ namespace Macro
         private void TreeGridView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (sender is UI.TreeGridView treeGridView == false)
-            {
-                return;
-            }
-            if (treeGridView.SelectedItem is EventTriggerModel == false)
             {
                 return;
             }
@@ -343,7 +344,7 @@ namespace Macro
 
             var viewModel = eventListView.DataContext<EventListViewModel>();
 
-            var eventModel = new EventTriggerModel
+            var eventModel = new EventInfoModel
             {
                 Image = new Bitmap(obj.CaptureImage, capture.Width, capture.Height),
                 MonitorInfo = obj.MonitorInfo,
@@ -358,7 +359,21 @@ namespace Macro
 
         private void BtnCopyEventItem_Click(object sender, RoutedEventArgs e)
         {
+            var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
 
+            if (selectionStateController.SelectTreeGridViewItem == null)
+            {
+                return;
+            }
+
+            var eventItem = selectionStateController.SelectTreeGridViewItem.DataContext<EventInfoModel>();
+
+            var copyItem = new EventInfoModel(eventItem);
+            _cacheDataManager.MakeIndexTriggerModel(copyItem);
+            var viewModel = eventListView.treeGridView.DataContext<EventListViewModel>();
+            viewModel.EventItems.Add(copyItem);
+
+            Save();
         }
 
         private void BtnRemoveEventItem_Click(object sender, RoutedEventArgs e)
@@ -370,9 +385,18 @@ namespace Macro
                 return;
             }
 
-            var viewModel = eventListView.treeGridView.DataContext<EventListViewModel>();
-            var eventItem = selectionStateController.SelectTreeGridViewItem.DataContext<EventTriggerModel>();
-            viewModel.EventItems.Remove(eventItem);
+            var currentEventItem = selectionStateController.SelectTreeGridViewItem.DataContext<EventInfoModel>();
+            if (selectionStateController.SelectTreeGridViewItem.ParentItem == null)
+            {
+                eventListView.DataContext<EventListViewModel>().EventItems.Remove(currentEventItem);
+            }
+            else
+            {
+                var parentEventInfo = selectionStateController.SelectTreeGridViewItem.ParentItem.DataContext<EventInfoModel>();
+
+                parentEventInfo.SubEventItems.Remove(currentEventItem);
+            }
+
             selectionStateController.UnselectTreeGridViewItem();
 
             RefreshEventItemButton();
@@ -389,7 +413,7 @@ namespace Macro
                 ApplicationManager.ShowMessageDialog(labelTemplate.GetString(), messageTemplate.GetString());
                 return;
             }
-            ApplicationManager.Instance.ShowCaptureImageView();
+            ApplicationManager.Instance.ShowCaptureImageViews();
         }
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
@@ -414,8 +438,11 @@ namespace Macro
                 checkFix.IsEnabled = false;
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
+                if (_config.OpenProcessPreview)
+                {
+                    _processPreview.Show();
+                }
             });
-
         }
 
         private void BtnStop_Click(object sender, RoutedEventArgs e)
@@ -437,6 +464,11 @@ namespace Macro
                 checkFix.IsEnabled = true;
                 btnStart.Visibility = Visibility.Visible;
                 btnStop.Visibility = Visibility.Collapsed;
+
+                if (_config.OpenProcessPreview)
+                {
+                    _processPreview.Hide();
+                }
             });
             ApplicationManager.HideProgressbar();
         }
@@ -526,6 +558,8 @@ namespace Macro
                 Directory.CreateDirectory(GetSaveDirectoryPath());
             }
 
+            JsonHelper.ConfigureImageDirectory(Path.Combine(GetSaveDirectoryPath(), "img"));
+
             _processes = Process.GetProcesses()
                 .Where(r => r.MainWindowHandle != IntPtr.Zero)
                 .Select(r => new ProcessItem(r))
@@ -540,8 +574,7 @@ namespace Macro
             var viewModel = eventListView.DataContext<EventListViewModel>();
 
             var fileService = ServiceResolver.GetService<FileService>();
-
-            fileService.Save(GetSaveFilePath(), viewModel.EventItems);
+            fileService.SaveAsJson(GetSaveFilePath(), viewModel.EventItems.ToList());
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -551,17 +584,32 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            var fileManager = ServiceResolver.GetService<FileService>();
-            var loadDatas = fileManager.Load<EventTriggerModel>(path);
-            if (loadDatas == null)
+            var fileService = ServiceResolver.GetService<FileService>();
+            var loadedEventInfoModels = new List<EventInfoModel>();
+
+            if (fileService.LooksLikeJson(path) == true)
             {
-                loadDatas = new List<EventTriggerModel>();
+                var loadedSaveItems = fileService.LoadSaveAsJson(path);
+
+                if (loadedSaveItems != null)
+                {
+                    loadedEventInfoModels.AddRange(loadedSaveItems);
+                }
             }
-            _cacheDataManager.InitDatas(loadDatas);
+            else
+            {
+                var loadedEventTriggerModels = fileService.Load<EventTriggerModel>(path);
+                if (loadedEventTriggerModels == null)
+                {
+                    loadedEventTriggerModels = new List<EventTriggerModel>();
+                }
+                loadedEventInfoModels = EventModelConverter.ToEventInfoList(loadedEventTriggerModels);
+            }
+            _cacheDataManager.InitDatas(loadedEventInfoModels);
             var model = eventListView.DataContext<EventListViewModel>();
             model.EventItems.Clear();
 
-            foreach (var item in loadDatas)
+            foreach (var item in loadedEventInfoModels)
             {
                 model.EventItems.Add(item);
             }

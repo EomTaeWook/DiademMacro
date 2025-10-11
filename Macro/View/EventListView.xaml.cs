@@ -15,7 +15,9 @@ namespace Macro.View
     public partial class EventListView : UserControl
     {
         private readonly EventListViewModel _viewModel = new EventListViewModel();
-        private bool _isDrag;
+        private bool _isDragging;
+        private TreeGridViewItem _dragSourceTreeGridViewItem;
+
         public EventListView()
         {
             InitializeComponent();
@@ -26,7 +28,7 @@ namespace Macro.View
         }
         private void MoveEventTriggerTreeItem(TreeGridViewItem targetTreeGridViewItem, TreeGridViewItem sourceTreeGridViewItem)
         {
-            var currentEventModel = sourceTreeGridViewItem.DataContext<EventTriggerModel>();
+            var currentEventModel = sourceTreeGridViewItem.DataContext<EventInfoModel>();
 
             if (targetTreeGridViewItem == null)
             {
@@ -36,29 +38,29 @@ namespace Macro.View
                     _viewModel.EventItems.Add(currentEventModel);
                     return;
                 }
-                var parentEventModel = sourceTreeGridViewItem.ParentItem.DataContext<EventTriggerModel>();
+                var parentEventModel = sourceTreeGridViewItem.ParentItem.DataContext<EventInfoModel>();
                 parentEventModel.SubEventItems.Remove(currentEventModel);
                 _viewModel.EventItems.Add(currentEventModel);
             }
             else if (sourceTreeGridViewItem.ParentItem == null)
             {
-                var targetEventModel = targetTreeGridViewItem.DataContext<EventTriggerModel>();
+                var targetEventModel = targetTreeGridViewItem.DataContext<EventInfoModel>();
                 _viewModel.EventItems.Remove(currentEventModel);
                 targetEventModel.SubEventItems.Add(currentEventModel);
             }
             else if (sourceTreeGridViewItem.ParentItem != null)
             {
-                var targetEventModel = targetTreeGridViewItem.DataContext<EventTriggerModel>();
-                var parentEventModel = sourceTreeGridViewItem.ParentItem.DataContext<EventTriggerModel>();
+                var targetEventModel = targetTreeGridViewItem.DataContext<EventInfoModel>();
+                var parentEventModel = sourceTreeGridViewItem.ParentItem.DataContext<EventInfoModel>();
                 parentEventModel.SubEventItems.Remove(currentEventModel);
                 targetEventModel.SubEventItems.Add(currentEventModel);
             }
         }
         private void TreeGridView_Drop(object sender, System.Windows.DragEventArgs e)
         {
-            if (_isDrag == true)
+            if (_isDragging == true)
             {
-                _isDrag = false;
+                _isDragging = false;
 
                 var targetRow = treeGridView.TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeGridView));
 
@@ -72,7 +74,7 @@ namespace Macro.View
                     return;
                 }
 
-                var eventItem = sourceTreeGridViewItem.DataContext<EventTriggerModel>();
+                var eventItem = sourceTreeGridViewItem.DataContext<EventInfoModel>();
 
                 if (eventItem == null)
                 {
@@ -81,17 +83,24 @@ namespace Macro.View
 
                 MoveEventTriggerTreeItem(targetRow, sourceTreeGridViewItem);
 
-                NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerSaved, new EventTriggerEventArgs()
+                NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerSaved, new EventInfoEventArgs()
                 {
-                    Index = eventItem.TriggerIndex,
-                    TriggerModel = eventItem
+                    Index = eventItem.ItemIndex,
+                    EventInfoModel = eventItem
                 });
             }
+
+            _dragSourceTreeGridViewItem = null;
         }
 
         private void TreeGridView_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (!_isDrag && e.LeftButton == MouseButtonState.Pressed)
+            if (_dragSourceTreeGridViewItem == null)
+            {
+                return;
+            }
+
+            if (!_isDragging && e.LeftButton == MouseButtonState.Pressed)
             {
                 var target = (sender as UIElement).TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeGridView));
 
@@ -99,7 +108,7 @@ namespace Macro.View
                 {
                     return;
                 }
-                _isDrag = true;
+                _isDragging = true;
 
                 DragDrop.DoDragDrop(target, target, DragDropEffects.Move);
             }
@@ -107,7 +116,8 @@ namespace Macro.View
 
         private void TreeGridView_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            _isDrag = false;
+            _isDragging = false;
+            _dragSourceTreeGridViewItem = treeGridView.TryFindFromPoint<TreeGridViewItem>(e.GetPosition(treeGridView));
         }
 
         private void EventListView_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)

@@ -150,6 +150,9 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.4.11.0.20250507\lib\net48\OpenCvSharp.dll</HintPath>
     </Reference>
@@ -256,6 +259,8 @@
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\Serialize\TypeRedirectBinder.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
+    <Compile Include="Models\Converters\EventModelConverter.cs" />
+    <Compile Include="Models\EventInfoModel.cs" />
     <Compile Include="Models\EventTriggerModel.cs" />
     <Compile Include="Models\ViewModel\OptionDialogViewModel.cs" />
     <Compile Include="ViewOld\MainWindowOld.xaml.cs">
@@ -332,6 +337,9 @@
     </Compile>
     <Compile Include="View\OptionDialog.xaml.cs">
       <DependentUpon>OptionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProcessPreviewPanel.xaml.cs">
+      <DependentUpon>ProcessPreviewPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -413,6 +421,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\OptionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ProcessPreviewPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

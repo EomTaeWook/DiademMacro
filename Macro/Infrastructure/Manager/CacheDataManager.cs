@@ -9,26 +9,23 @@ namespace Macro.Infrastructure.Manager
     {
         private ulong _currentIndex;
         public object _lockObj = new object();
-        private readonly Dictionary<ulong, EventTriggerModel> _indexTriggerModelToMap;
+        private readonly Dictionary<ulong, EventInfoModel> _indexEventInfoToMap;
         private readonly Dictionary<object, object> _cacheDataToMap = new Dictionary<object, object>();
         public CacheDataManager()
         {
-            _indexTriggerModelToMap = new Dictionary<ulong, EventTriggerModel>();
-
-            NotifyHelperOld.EventTriggerInserted += NotifyHelper_EventTriggerInserted;
-            NotifyHelperOld.EventTriggerRemoved += NotifyHelper_EventTriggerRemoved;
+            _indexEventInfoToMap = new Dictionary<ulong, EventInfoModel>();
         }
 
-        public void InitDatas(List<EventTriggerModel> eventTriggerDatas)
+        public void InitDatas(List<EventInfoModel> eventInfoModels)
         {
-            _indexTriggerModelToMap.Clear();
-            foreach (var item in eventTriggerDatas)
+            _indexEventInfoToMap.Clear();
+            foreach (var item in eventInfoModels)
             {
-                _indexTriggerModelToMap.Add(item.TriggerIndex, item);
+                _indexEventInfoToMap.Add(item.ItemIndex, item);
 
-                if (item.TriggerIndex > _currentIndex)
+                if (item.ItemIndex > _currentIndex)
                 {
-                    _currentIndex = item.TriggerIndex;
+                    _currentIndex = item.ItemIndex;
                 }
             }
         }
@@ -43,24 +40,15 @@ namespace Macro.Infrastructure.Manager
             return _currentIndex;
         }
 
-        public EventTriggerModel GetEventTriggerModel(ulong index)
+        public EventInfoModel GetEventInfoModel(ulong index)
         {
-            _indexTriggerModelToMap.TryGetValue(index, out EventTriggerModel eventTriggerModel);
-            return eventTriggerModel;
+            _indexEventInfoToMap.TryGetValue(index, out EventInfoModel item);
+            return item;
         }
 
-        private void NotifyHelper_EventTriggerRemoved(EventTriggerEventArgs obj)
+        public void MakeIndexTriggerModel(EventInfoModel model)
         {
-            RemoveIndexTriggerModel(obj.TriggerModel);
-        }
-
-        private void NotifyHelper_EventTriggerInserted(EventTriggerEventArgs obj)
-        {
-            InsertIndexTriggerModel(obj.TriggerModel);
-        }
-        public void MakeIndexTriggerModel(EventTriggerModel model)
-        {
-            model.TriggerIndex = IncreaseIndex();
+            model.ItemIndex = IncreaseIndex();
 
             foreach (var child in model.SubEventItems)
             {
@@ -68,27 +56,27 @@ namespace Macro.Infrastructure.Manager
             }
         }
 
-        private void InsertIndexTriggerModel(EventTriggerModel model)
+        private void InsertIndexEventModel(EventInfoModel model)
         {
-            if (_indexTriggerModelToMap.ContainsKey(model.TriggerIndex) == false)
+            if (_indexEventInfoToMap.ContainsKey(model.ItemIndex) == false)
             {
-                _indexTriggerModelToMap.Add(model.TriggerIndex, model);
+                _indexEventInfoToMap.Add(model.ItemIndex, model);
             }
             foreach (var child in model.SubEventItems)
             {
-                InsertIndexTriggerModel(child);
+                InsertIndexEventModel(child);
             }
         }
 
-        private void RemoveIndexTriggerModel(EventTriggerModel model)
+        private void RemoveIndexEventModel(EventInfoModel model)
         {
-            if (_indexTriggerModelToMap.ContainsKey(model.TriggerIndex))
+            if (_indexEventInfoToMap.ContainsKey(model.ItemIndex))
             {
-                _indexTriggerModelToMap.Remove(model.TriggerIndex);
+                _indexEventInfoToMap.Remove(model.ItemIndex);
             }
             foreach (var child in model.SubEventItems)
             {
-                RemoveIndexTriggerModel(child);
+                RemoveIndexEventModel(child);
             }
         }
         public void AddData(object key, object value)

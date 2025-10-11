@@ -139,13 +139,13 @@ namespace Macro.Infrastructure.ControllerOld
 
                 EventTriggerModel nextModel = null;
 
-                if (eventTriggerModel.EventToNext > 0 && eventTriggerModel.TriggerIndex != eventTriggerModel.EventToNext)
+                if (eventTriggerModel.EventToNext > 0 && eventTriggerModel.ItemIndex != eventTriggerModel.EventToNext)
                 {
-                    nextModel = _cacheDataManager.GetEventTriggerModel(eventTriggerModel.EventToNext);
+                    //nextModel = _cacheDataManager.GetEventTriggerModel(eventTriggerModel.EventToNext);
 
                     if (nextModel != null)
                     {
-                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {eventTriggerModel.TriggerIndex} ] NextIndex [ {nextModel.TriggerIndex} ] ");
+                        LogHelper.Debug($">>>>Next Move Event : CurrentIndex [ {eventTriggerModel.ItemIndex} ] NextIndex [ {nextModel.ItemIndex} ] ");
                     }
                 }
                 TaskHelper.TokenCheckDelay(eventTriggerModel.AfterDelay, cancellationToken);
@@ -230,7 +230,7 @@ namespace Macro.Infrastructure.ControllerOld
                 var nextEventTrigger = result.NextEventTrigger;
                 if (nextEventTrigger != null)
                 {
-                    if (eventTriggerModels.TryFindTriggerIndex(nextEventTrigger.TriggerIndex, out int index) == true)
+                    if (eventTriggerModels.TryFindTriggerIndex(nextEventTrigger.ItemIndex, out int index) == true)
                     {
                         i = index - 1;
                     }

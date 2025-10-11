@@ -13,8 +13,8 @@ namespace Utils.Infrastructure
     [StructLayout(LayoutKind.Sequential)]
     public struct Point2D
     {
-        public double X;
-        public double Y;
+        public int X;
+        public int Y;
         public Point2D(double x, double y)
         {
             X = (int)x;
@@ -28,7 +28,7 @@ namespace Utils.Infrastructure
 
         public static implicit operator Point(Point2D point)
         {
-            return new Point((int)point.X, (int)point.Y);
+            return new Point(point.X, point.Y);
         }
     }
 

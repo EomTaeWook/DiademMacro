@@ -61,8 +61,8 @@ processLocation;
             {
                 var clickPoint = new Point2D
                 {
-                    X = model.MouseEventInfo.StartPoint.X - currentProcessLocation.Left,
-                    Y = model.MouseEventInfo.StartPoint.Y - currentProcessLocation.Top
+                    X = (int)model.MouseEventInfo.StartPoint.X - currentProcessLocation.Left,
+                    Y = (int)model.MouseEventInfo.StartPoint.Y - currentProcessLocation.Top
                 };
                 HardClickProcess(clickPoint, model.MouseEventInfo.MouseInfoEventType);
             }
@@ -86,8 +86,8 @@ processLocation;
             Point2D matchedLocation,
             ApplicationTemplate applicationTemplate)
         {
-            var percentageX = _randomGenerator.NextDouble();
-            var percentageY = _randomGenerator.NextDouble();
+            var percentageX = (int)_randomGenerator.NextDouble();
+            var percentageY = (int)_randomGenerator.NextDouble();
 
             matchedLocation.X = (matchedLocation.X + applicationTemplate.OffsetX) + (model.Image.Width * percentageX);
             matchedLocation.Y = (matchedLocation.Y + applicationTemplate.OffsetY) + (model.Image.Height * percentageY);
@@ -106,8 +106,8 @@ processLocation;
                     X = matchedLocation.X,
                     Y = matchedLocation.Y
                 };
-                clickPoint.X += processLocation.Left + model.MouseEventInfo.StartPoint.X;
-                clickPoint.Y += processLocation.Top + model.MouseEventInfo.StartPoint.Y;
+                clickPoint.X += processLocation.Left + (int)model.MouseEventInfo.StartPoint.X;
+                clickPoint.Y += processLocation.Top + (int)model.MouseEventInfo.StartPoint.Y;
                 HardClickProcess(clickPoint, MouseEventType.LeftClick);
             }
         }
@@ -195,7 +195,7 @@ processLocation;
             while (recent.Subtract(arrive).Length > interval)
             {
                 LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {recent.Subtract(arrive).Length}");
-                double middleX;
+                int middleX;
                 if (recent.X > arrive.X)
                 {
                     middleX = recent.X - interval;
@@ -209,7 +209,7 @@ processLocation;
                     middleX = recent.X;
                 }
 
-                double middleY;
+                int middleY;
                 if (recent.Y > arrive.Y)
                 {
                     middleY = recent.Y - interval;

@@ -306,7 +306,7 @@ namespace Macro.ViewOld
             {
                 Dispatcher.Invoke(() =>
                 {
-                    _cacheDataManager.MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
+                    //_cacheDataManager.MakeIndexTriggerModel(obj.CurrentEventTriggerModel);
 
                     contentView.eventSettingView.InsertCurrentItem();
                     Save();
@@ -438,7 +438,7 @@ namespace Macro.ViewOld
             {
                 loadDatas = new List<EventTriggerModel>();
             }
-            _cacheDataManager.InitDatas(loadDatas);
+            //_cacheDataManager.InitDatas(loadDatas);
 
             contentView.SaveDataBind(loadDatas);
         }

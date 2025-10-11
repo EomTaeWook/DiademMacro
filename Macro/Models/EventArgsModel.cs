@@ -1,4 +1,5 @@
 ﻿using Macro.Infrastructure;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Controls;
@@ -8,11 +9,22 @@ namespace Macro.Models
 {
     public interface INotifyEventArgs
     { }
-
+    [Obsolete]
+    public class OldEventInfoEventArgs : INotifyEventArgs
+    {
+        public ulong Index { get; set; }
+        public EventTriggerModel TriggerModel { get; set; }
+    }
+    [Obsolete]
     public class MousePointEventArgs : INotifyEventArgs
     {
         public MonitorInfo MonitorInfo { get; set; }
         public MouseEventInfo MouseEventInfo { get; set; }
+    }
+    public class MouseInteractionCapturedEventArgs : INotifyEventArgs
+    {
+        public MonitorInfo MonitorInfo { get; set; }
+        public MouseEventInfoV2 MouseEventInfo { get; set; }
     }
     public class CaptureCompletedEventArgs : INotifyEventArgs
     {
@@ -33,11 +45,13 @@ namespace Macro.Models
     {
         public TreeViewItem TreeViewItem { get; set; }
     }
-    public class EventTriggerEventArgs : INotifyEventArgs
+    public class EventInfoEventArgs : INotifyEventArgs
     {
         public ulong Index { get; set; }
-        public EventTriggerModel TriggerModel { get; set; }
+        public EventInfoModel EventInfoModel { get; set; }
     }
+
+
     public class UpdatedTimeArgs : INotifyEventArgs
     {
         public float DeltaTime { get; set; }

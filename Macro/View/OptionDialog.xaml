@@ -31,7 +31,7 @@
             <RowDefinition Height="Auto"/>
             <!-- 반복 -->
             <RowDefinition Height="Auto"/>
-            <!-- 아래 여백(남는 공간) -->
+            <!-- 아래 여백(는 공간) -->
             <RowDefinition Height="*"/>
             <!-- 버튼 영역 -->
             <RowDefinition Height="Auto"/>
@@ -51,14 +51,14 @@
         
         <StackPanel x:Name="panelMouseEvent" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
             <Button x:Name="btnMouseEvent" Content="{Binding Path=MouseCoordinates, Source={StaticResource LabelLocator}}"/>
-            <Label x:Name="labelEventDesc" Content="None"></Label>
+            <Label x:Name="MousePointDesc" Content="{Binding Path=MousePointDesc, Mode=TwoWay}"></Label>
         </StackPanel>
         <TextBox x:Name="txtKeyboardCmd" Grid.Row="2" Grid.Column="1" Text="{Binding Path=KeyboardCmd, Mode=TwoWay}"  Visibility="Collapsed" TextAlignment="Left"/>
         <StackPanel x:Name="relativeToImagePanel" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
             <Label Content="X"></Label>
-            <mah:NumericUpDown x:Name="numRelativeX" Value="{Binding Path=RelativeX, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+            <mah:NumericUpDown x:Name="numRelativeX" Value="{Binding Path=PositionRelativeToImageX, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
             <Label Content="Y"></Label>
-            <mah:NumericUpDown x:Name="numRelativeY" Value="{Binding Path=RelativeY, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
+            <mah:NumericUpDown x:Name="numRelativeY" Value="{Binding Path=PositionRelativeToImageY, Mode=TwoWay}" TextAlignment="Left" NumericInputMode="Numbers" ></mah:NumericUpDown>
         </StackPanel>
         
         <!-- 바로 이동 -->

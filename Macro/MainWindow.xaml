@@ -7,11 +7,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:view="clr-namespace:Macro.View"
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:UI="clr-namespace:Macro.UI"
     GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
     BorderThickness="1"
-    Title="{Binding Path=Title, Source={StaticResource LabelLocator}}" Height="600" Width="430" WindowStartupLocation="CenterScreen" 
+    Title="{Binding Path=Title, Source={StaticResource LabelLocator}}" Height="600" Width="400" WindowStartupLocation="CenterScreen" 
     mc:Ignorable="d">
+
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands>
             <Button Name="btnGithub">
@@ -27,7 +27,7 @@
             </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
-    
+
     <Grid>
         <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
             <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="140">
@@ -81,6 +81,5 @@
         <Grid x:Name="AdOverlay" Visibility="Collapsed" Background="#80000000">
             <view:WebViewControl x:Name="EmbeddedWebView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         </Grid>
-
     </Grid>
 </mah:MetroWindow>

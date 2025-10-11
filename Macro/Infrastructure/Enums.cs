@@ -26,6 +26,7 @@
         ScreenCaptureCompleted,
         ROICaptureCompleted,
         EventTriggerSaved,
+        MouseInteractionCaptured,
 
         Max
     }

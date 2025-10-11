@@ -162,6 +162,10 @@ namespace Macro.Models
         {
             get => GetString(1012);
         }
+        public string ShowProcessViewer
+        {
+            get => GetString(1065);
+        }
         public string X
         {
             get => "X";

@@ -128,7 +128,7 @@ namespace Macro.View
                 {
                     dataContext.Clear();
                 }
-                ApplicationManager.Instance.ShowCaptureImageView();
+                ApplicationManager.Instance.ShowCaptureImageViews();
             }
             else if (btn.Equals(btnSave))
             {

@@ -170,9 +170,9 @@ namespace Macro.View
                 {
                     var model = _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>();
                     _eventConfigViewModelCached.TriggerSaves.Add(model);
-                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerInserted, new EventTriggerEventArgs()
+                    NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerInserted, new OldEventInfoEventArgs()
                     {
-                        Index = model.TriggerIndex,
+                        Index = model.ItemIndex,
                         TriggerModel = model
                     });
                 }
@@ -201,9 +201,9 @@ namespace Macro.View
                     _eventConfigViewModelCached.CurrentTreeViewItem.ParentItem.DataContext<EventTriggerModel>().SubEventItems.Remove(model);
                 }
 
-                NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerRemoved, new EventTriggerEventArgs()
+                NotifyHelperOld.InvokeNotify(NotifyEventOldType.EventTriggerRemoved, new OldEventInfoEventArgs()
                 {
-                    Index = model.TriggerIndex,
+                    Index = model.ItemIndex,
                     TriggerModel = model
                 });
 
@@ -420,7 +420,7 @@ namespace Macro.View
                     _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo = new MouseEventInfo();
                 }
                 Application.Current.MainWindow.WindowState = WindowState.Minimized;
-                ApplicationManager.Instance.ShowMousePointView();
+                ApplicationManager.Instance.ShowAndActivateMousePositionViews();
             }
             else if (sender.Equals(btnTreeItemUp) || sender.Equals(btnTreeItemDown))
             {
@@ -454,7 +454,7 @@ namespace Macro.View
             }
             else if (sender.Equals(btnSetROI))
             {
-                ApplicationManager.Instance.ShowSetROIView();
+                ApplicationManager.Instance.ShowSetROIViews();
             }
             else if (sender.Equals(btnRemoveROI))
             {
@@ -570,7 +570,7 @@ namespace Macro.View
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MonitorInfo = e.MonitorInfo;
             _eventConfigViewModelCached.CurrentTreeViewItem.DataContext<EventTriggerModel>().MouseEventInfo = e.MouseEventInfo;
 
-            ApplicationManager.Instance.CloseMousePointView();
+            ApplicationManager.Instance.CloseMousePositionViews();
             Application.Current.MainWindow.WindowState = WindowState.Normal;
         }
 

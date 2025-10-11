@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Macro.Infrastructure.Serialize
 {
+    [Obsolete("2.7.1 버전까지만 허용")]
     public class ObjectSerializer
     {
         public static byte[] SerializeObject<T>(T model)

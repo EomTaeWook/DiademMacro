@@ -8,6 +8,7 @@ using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using Utils.Infrastructure;
 
 namespace Macro.View
 {
@@ -16,7 +17,7 @@ namespace Macro.View
     /// </summary>
     public partial class OptionDialog : MetroWindow
     {
-        private EventTriggerModel _eventTriggerModel;
+        private EventInfoModel _eventInfoModel;
         public OptionDialog()
         {
             InitializeComponent();
@@ -29,7 +30,7 @@ namespace Macro.View
         {
             InitEvent();
 
-            SetRepeatSectionVisibility(_eventTriggerModel.SubEventItems.Count > 0);
+            SetRepeatSectionVisibility(_eventInfoModel.SubEventItems.Count > 0);
             ComboEventType_SelectionChanged(comboEventType, null);
             CheckSameImageDrag_ValueChanged(checkSameImageDrag, null);
         }
@@ -47,27 +48,28 @@ namespace Macro.View
                 viewModel.RepeatItemsSource.Add(new KeyValuePair<RepeatType, string>((RepeatType)type, template.GetString()));
             }
         }
-        public void BindItem(EventTriggerModel eventTriggerModel)
+        public void BindItem(EventInfoModel eventTriggerModel)
         {
-            _eventTriggerModel = eventTriggerModel;
+            _eventInfoModel = eventTriggerModel;
             LoadRepeatItems();
 
             var viewModel = this.DataContext<OptionDialogViewModel>();
 
-            viewModel.SelectedEventType = _eventTriggerModel.EventType;
-            viewModel.MouseEventInfo = _eventTriggerModel.MouseEventInfo;
-            viewModel.KeyboardCmd = _eventTriggerModel.KeyboardCmd;
-            viewModel.AfterDelay = _eventTriggerModel.AfterDelay;
+            viewModel.SelectedEventType = _eventInfoModel.EventType;
+            viewModel.MouseEventInfo = _eventInfoModel.MouseEventInfo;
+            viewModel.KeyboardCmd = _eventInfoModel.KeyboardCmd;
+            viewModel.AfterDelay = _eventInfoModel.AfterDelay;
 
             viewModel.SelectedRepeatType = eventTriggerModel.RepeatInfo.RepeatType;
-            viewModel.RepeatCount = _eventTriggerModel.RepeatInfo.Count;
-            viewModel.EventToNext = _eventTriggerModel.EventToNext;
-            viewModel.SameImageDrag = _eventTriggerModel.SameImageDrag;
-            viewModel.MaxDragCount = _eventTriggerModel.MaxDragCount;
-            viewModel.HardClick = _eventTriggerModel.HardClick;
-            viewModel.RoiDataInfo = _eventTriggerModel.RoiDataInfo;
-            viewModel.RelativeX = (int)_eventTriggerModel.MouseEventInfo?.StartPoint.X;
-            viewModel.RelativeY = (int)_eventTriggerModel.MouseEventInfo?.StartPoint.Y;
+            viewModel.RepeatCount = _eventInfoModel.RepeatInfo.Count;
+            viewModel.EventToNext = _eventInfoModel.EventToNext;
+            viewModel.SameImageDrag = _eventInfoModel.SameImageDrag;
+            viewModel.MaxDragCount = _eventInfoModel.MaxDragCount;
+            viewModel.HardClick = _eventInfoModel.HardClick;
+            viewModel.RoiDataInfo = _eventInfoModel.RoiDataInfo;
+
+            viewModel.PositionRelativeToImageX = _eventInfoModel.PositionRelativeToImage.X;
+            viewModel.PositionRelativeToImageY = _eventInfoModel.PositionRelativeToImage.Y;
         }
         private void SetRepeatSectionVisibility(bool isVisible)
         {
@@ -91,11 +93,27 @@ namespace Macro.View
             checkSameImageDrag.Checked += CheckSameImageDrag_ValueChanged;
             checkSameImageDrag.Unchecked += CheckSameImageDrag_ValueChanged;
 
+            btnMouseEvent.Click += BtnMouseEvent_Click;
+
             btnSetRoi.Click += BtnSetRoi_Click;
             btnRemoveRoi.Click += BtnRemoveRoi_Click;
             btnSave.Click += BtnSave_Click;
 
             NotifyHelper.ROICaptureCompleted += NotifyHelper_ROICaptureCompleted;
+            NotifyHelper.MouseInteractionCaptured += NotifyHelper_MouseInteractionCaptured;
+        }
+
+        private void NotifyHelper_MouseInteractionCaptured(MouseInteractionCapturedEventArgs obj)
+        {
+            ApplicationManager.Instance.CloseMousePositionViews();
+            var viewModel = this.DataContext<OptionDialogViewModel>();
+
+            viewModel.MouseEventInfo = obj.MouseEventInfo;
+        }
+
+        private void BtnMouseEvent_Click(object sender, RoutedEventArgs e)
+        {
+            ApplicationManager.Instance.ShowAndActivateMousePositionViews();
         }
 
         private void NotifyHelper_ROICaptureCompleted(ROICaptureCompletedEventArgs obj)
@@ -111,35 +129,33 @@ namespace Macro.View
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (_eventTriggerModel == null)
+            if (_eventInfoModel == null)
             {
                 return;
             }
             var viewModel = this.DataContext<OptionDialogViewModel>();
 
-            _eventTriggerModel.EventType = viewModel.SelectedEventType;
-            _eventTriggerModel.MouseEventInfo = viewModel.MouseEventInfo;
-            _eventTriggerModel.KeyboardCmd = viewModel.KeyboardCmd;
-            _eventTriggerModel.AfterDelay = viewModel.AfterDelay;
-            _eventTriggerModel.RepeatInfo = new RepeatInfoModel()
+            _eventInfoModel.EventType = viewModel.SelectedEventType;
+            _eventInfoModel.MouseEventInfo = viewModel.MouseEventInfo;
+            _eventInfoModel.KeyboardCmd = viewModel.KeyboardCmd;
+            _eventInfoModel.AfterDelay = viewModel.AfterDelay;
+            _eventInfoModel.RepeatInfo = new RepeatInfoModel()
             {
                 Count = viewModel.RepeatCount,
                 RepeatType = viewModel.SelectedRepeatType
             };
-            _eventTriggerModel.EventToNext = viewModel.EventToNext;
-            _eventTriggerModel.SameImageDrag = viewModel.SameImageDrag;
-            _eventTriggerModel.MaxDragCount = viewModel.MaxDragCount;
-            _eventTriggerModel.HardClick = viewModel.HardClick;
-            _eventTriggerModel.RoiDataInfo = viewModel.RoiDataInfo;
-            _eventTriggerModel.MouseEventInfo.StartPoint = new Point()
+            _eventInfoModel.EventToNext = viewModel.EventToNext;
+            _eventInfoModel.SameImageDrag = viewModel.SameImageDrag;
+            _eventInfoModel.MaxDragCount = viewModel.MaxDragCount;
+            _eventInfoModel.HardClick = viewModel.HardClick;
+            _eventInfoModel.RoiDataInfo = viewModel.RoiDataInfo;
+
+            _eventInfoModel.PositionRelativeToImage = new Point2D(viewModel.PositionRelativeToImageX, viewModel.PositionRelativeToImageY);
+
+            NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerSaved, new EventInfoEventArgs()
             {
-                X = viewModel.RelativeX,
-                Y = viewModel.RelativeY,
-            };
-            NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerSaved, new EventTriggerEventArgs()
-            {
-                Index = _eventTriggerModel.TriggerIndex,
-                TriggerModel = _eventTriggerModel
+                Index = _eventInfoModel.ItemIndex,
+                EventInfoModel = _eventInfoModel
             });
             this.Close();
         }
@@ -151,7 +167,7 @@ namespace Macro.View
         }
         private void BtnSetRoi_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationManager.Instance.ShowSetROIView();
+            ApplicationManager.Instance.ShowSetROIViews();
         }
         private void CheckSameImageDrag_ValueChanged(object sender, RoutedEventArgs e)
         {
@@ -185,11 +201,12 @@ namespace Macro.View
         {
             var viewModel = this.DataContext<OptionDialogViewModel>();
             var currentType = viewModel.SelectedEventType;
+            numMaxDragCount.IsEnabled = false;
 
             if (currentType == Infrastructure.EventType.Image)
             {
                 checkSameImageDrag.IsEnabled = true;
-                numMaxDragCount.IsEnabled = true;
+
                 panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
@@ -199,7 +216,6 @@ namespace Macro.View
             {
                 checkSameImageDrag.IsChecked = false;
                 checkSameImageDrag.IsEnabled = false;
-                numMaxDragCount.IsEnabled = false;
                 panelMouseEvent.Visibility = Visibility.Visible;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
@@ -209,7 +225,6 @@ namespace Macro.View
             {
                 checkSameImageDrag.IsChecked = false;
                 checkSameImageDrag.IsEnabled = false;
-                numMaxDragCount.IsEnabled = false;
                 panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Visible;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
@@ -220,7 +235,6 @@ namespace Macro.View
             {
                 checkSameImageDrag.IsChecked = false;
                 checkSameImageDrag.IsEnabled = false;
-                numMaxDragCount.IsEnabled = false;
                 panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Visible;

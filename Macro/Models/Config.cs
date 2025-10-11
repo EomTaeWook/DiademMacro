@@ -7,116 +7,113 @@ namespace Macro.Models
 {
     public class Config : INotifyPropertyChanged
     {
-        private LanguageType _language = LanguageType.Kor;
-        private string _savePath = "";
-        private int _processPeriod = ConstHelper.MinPeriod;
-        private int _ItemDelay = ConstHelper.MinItemDelay;
-        private int _similarity = ConstHelper.DefaultSimilarity;
-        private bool _searchImageResultDisplay = true;
-        private int _dragDelay = ConstHelper.MinDragDelay;
-        private bool _versionCheck = true;
-        private int _processLocationX;
-        private int _processLocationY;
-        private string _accessKey;
-        private MacroModeType _macroMode = MacroModeType.BatchMode;
-
         public Config()
         {
         }
 
+        private LanguageType _language = LanguageType.Kor;
         public LanguageType Language
         {
             get => _language;
             set
             {
                 _language = value;
-                OnPropertyChanged("Language");
+                OnPropertyChanged(nameof(Language));
             }
         }
 
+        private string _savePath = string.Empty;
         public string SavePath
         {
             get => _savePath;
             set
             {
                 _savePath = value;
-                OnPropertyChanged("SavePath");
+                OnPropertyChanged(nameof(SavePath));
             }
         }
+        private int _processPeriod = ConstHelper.MinPeriod;
         public int ProcessPeriod
         {
             get => _processPeriod;
             set
             {
                 _processPeriod = value;
-                OnPropertyChanged("ProcessPeriod");
+                OnPropertyChanged(nameof(ProcessPeriod));
             }
         }
+        private int _ItemDelay = ConstHelper.MinItemDelay;
         public int ItemDelay
         {
             get => _ItemDelay;
             set
             {
                 _ItemDelay = value;
-                OnPropertyChanged("ItemDelay");
+                OnPropertyChanged(nameof(ItemDelay));
             }
         }
+        private int _similarity = ConstHelper.DefaultSimilarity;
         public int Similarity
         {
             get => _similarity;
             set
             {
                 _similarity = value;
-                OnPropertyChanged("Similarity");
+                OnPropertyChanged(nameof(Similarity));
             }
         }
+        private bool _searchImageResultDisplay = true;
         public bool SearchImageResultDisplay
         {
             get => _searchImageResultDisplay;
             set
             {
                 _searchImageResultDisplay = value;
-                OnPropertyChanged("SearchImageResultDisplay");
+                OnPropertyChanged(nameof(SearchImageResultDisplay));
             }
         }
+        private bool _versionCheck = true;
         public bool VersionCheck
         {
             get => _versionCheck;
             set
             {
                 _versionCheck = value;
-                OnPropertyChanged("VersionCheck");
+                OnPropertyChanged(nameof(VersionCheck));
             }
         }
+        private int _dragDelay = ConstHelper.MinDragDelay;
         public int DragDelay
         {
             get => _dragDelay;
             set
             {
                 _dragDelay = value;
-                OnPropertyChanged("DragDelay");
+                OnPropertyChanged(nameof(DragDelay));
             }
         }
-
+        private int _processLocationX;
         public int ProcessLocationX
         {
             get => _processLocationX;
             set
             {
                 _processLocationX = value;
-                OnPropertyChanged("ProcessLocationX");
+                OnPropertyChanged(nameof(ProcessLocationX));
             }
         }
+        private int _processLocationY;
         public int ProcessLocationY
         {
             get => _processLocationY;
             set
             {
                 _processLocationY = value;
-                OnPropertyChanged("ProcessLocationY");
+                OnPropertyChanged(nameof(ProcessLocationY));
             }
         }
 
+        private string _accessKey;
         public string AccessKey
         {
             get => _accessKey;
@@ -124,10 +121,10 @@ namespace Macro.Models
             set
             {
                 _accessKey = value;
-                OnPropertyChanged("AccessKey");
+                OnPropertyChanged(nameof(AccessKey));
             }
         }
-
+        private MacroModeType _macroMode = MacroModeType.BatchMode;
         public MacroModeType MacroMode
         {
             get => _macroMode;
@@ -135,7 +132,17 @@ namespace Macro.Models
             set
             {
                 _macroMode = value;
-                OnPropertyChanged("MacroMode");
+                OnPropertyChanged(nameof(MacroMode));
+            }
+        }
+        private bool _openProcessPreview = true;
+        public bool OpenProcessPreview
+        {
+            get => _openProcessPreview;
+            set
+            {
+                _openProcessPreview = value;
+                OnPropertyChanged(nameof(OpenProcessPreview));
             }
         }
 

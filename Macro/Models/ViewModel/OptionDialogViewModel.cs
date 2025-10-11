@@ -100,15 +100,34 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(RepeatCount));
             }
         }
-        private MouseEventInfo _mouseEventInfo;
+        private MouseEventInfoV2 _mouseEventInfo;
 
-        public MouseEventInfo MouseEventInfo
+        public MouseEventInfoV2 MouseEventInfo
         {
             get => _mouseEventInfo;
             set
             {
                 _mouseEventInfo = value;
                 OnPropertyChanged(nameof(MouseEventInfo));
+
+                if (_mouseEventInfo == null)
+                {
+                    MousePointDesc = "None";
+                }
+                else
+                {
+                    MousePointDesc = $"E: {_mouseEventInfo.MouseInfoEventType} X: {_mouseEventInfo.MousePoint.X} Y:{_mouseEventInfo.MousePoint.Y}";
+                }
+            }
+        }
+        public string _mousePointDesc;
+        public string MousePointDesc
+        {
+            get => _mousePointDesc;
+            set
+            {
+                _mousePointDesc = value;
+                OnPropertyChanged(nameof(MousePointDesc));
             }
         }
         private int _maxDragCount;
@@ -122,24 +141,24 @@ namespace Macro.Models.ViewModel
             }
         }
 
-        private int _relativeX;
-        public int RelativeX
+        private int _positionRelativeToImageX;
+        public int PositionRelativeToImageX
         {
-            get => _relativeX;
+            get => _positionRelativeToImageX;
             set
             {
-                _relativeX = value;
-                OnPropertyChanged(nameof(RelativeX));
+                _positionRelativeToImageX = value;
+                OnPropertyChanged(nameof(PositionRelativeToImageX));
             }
         }
-        private int _relativeY;
-        public int RelativeY
+        private int _positionRelativeToImageY;
+        public int PositionRelativeToImageY
         {
-            get => _relativeY;
+            get => _positionRelativeToImageY;
             set
             {
-                _relativeY = value;
-                OnPropertyChanged(nameof(RelativeY));
+                _positionRelativeToImageY = value;
+                OnPropertyChanged(nameof(PositionRelativeToImageY));
             }
         }
 

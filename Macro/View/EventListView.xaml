@@ -51,7 +51,7 @@
                     <GridViewColumn Header="Index" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.12*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding TriggerIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding ItemIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

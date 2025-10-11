@@ -1,0 +1,16 @@
+﻿<mah:MetroWindow x:Class="Macro.View.ProcessPreviewPanel"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 Background="Transparent"
+                 WindowStartupLocation="CenterOwner"
+                 ResizeMode="CanResizeWithGrip"
+                 ShowCloseButton="False"
+                 Width="250"
+                 Height="250">
+    <Grid>
+        <Border BorderBrush="#FFBDBDBD">
+            <Canvas x:Name="canvasCaptureImage" Background="White"/>
+        </Border>
+    </Grid>
+</mah:MetroWindow>

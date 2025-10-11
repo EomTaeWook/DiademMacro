@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using Utils.Infrastructure;
 
 namespace Macro.Models
 {
@@ -17,5 +18,12 @@ namespace Macro.Models
         public Point EndPoint { get; set; } = new Point();
 
         public short WheelData { get; set; }
+    }
+
+    public class MouseEventInfoV2
+    {
+        public MouseEventType MouseInfoEventType { get; set; } = MouseEventType.None;
+        public Point2D MousePoint { get; set; } = new Point2D();
+        public List<Point2D> MousePoints { get; set; } = new List<Point2D>();
     }
 }

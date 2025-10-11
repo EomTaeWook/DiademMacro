@@ -44,9 +44,10 @@ namespace Macro.Infrastructure.Manager
         private readonly ChildWindow _drawWindow = new ChildWindow();
 
         private readonly ArrayQueue<CaptureView> _captureViews = new ArrayQueue<CaptureView>();
-        private readonly ArrayQueue<MousePositionView> _mousePointViews = new ArrayQueue<MousePositionView>();
+        private readonly ArrayQueue<MousePositionView> _mouseInteractionViews = new ArrayQueue<MousePositionView>();
         private IntPtr _drawWindowHandle;
         private ScreenCaptureManager _screenCaptureManager;
+
         public ApplicationManager()
         {
             _mainWindow = Application.Current.MainWindow as MetroWindow;
@@ -86,39 +87,40 @@ namespace Macro.Infrastructure.Manager
             {
                 item.Close();
             }
-            foreach (var item in _mousePointViews)
+            foreach (var item in _mouseInteractionViews)
             {
                 item.Close();
             }
             _captureViews.Clear();
-            _mousePointViews.Clear();
+            _mouseInteractionViews.Clear();
 
             foreach (var item in _screenCaptureManager.GetMonitorInfo())
             {
                 _captureViews.Add(new CaptureView(item));
-                _mousePointViews.Add(new MousePositionView(item));
+                _mouseInteractionViews.Add(new MousePositionView(item));
             }
         }
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             Dispose();
         }
-        public void ShowMousePointView()
+        public void ShowAndActivateMousePositionViews()
         {
-            foreach (var item in _mousePointViews)
+            ResetMonitorViews();
+            foreach (var item in _mouseInteractionViews)
             {
-                item.ShowActivate();
+                item.ShowAndActivate();
             }
         }
-        public void CloseMousePointView()
+        public void CloseMousePositionViews()
         {
-            foreach (var item in _mousePointViews)
+            foreach (var item in _mouseInteractionViews)
             {
                 item.Hide();
             }
         }
 
-        public void ShowCaptureImageView()
+        public void ShowCaptureImageViews()
         {
             ResetMonitorViews();
 
@@ -128,7 +130,7 @@ namespace Macro.Infrastructure.Manager
             }
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
-        public void ShowSetROIView()
+        public void ShowSetROIViews()
         {
             ResetMonitorViews();
 
@@ -157,7 +159,7 @@ namespace Macro.Infrastructure.Manager
             {
                 item.Close();
             }
-            foreach (var item in _mousePointViews)
+            foreach (var item in _mouseInteractionViews)
             {
                 item.Close();
             }

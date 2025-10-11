@@ -1,63 +1,47 @@
-﻿using Macro.Infrastructure;
-using Macro.Infrastructure.Serialize;
+﻿using Macro.Extensions;
+using Macro.Infrastructure;
+using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using Utils.Infrastructure;
+using Utils.Serialization;
 
 namespace Macro.Models
 {
-    [Serializable]
-    public class EventTriggerModel : INotifyPropertyChanged
+    public class EventInfoModel : INotifyPropertyChanged
     {
-        public static EventTriggerModel DummyParentEventModel;
-
-        private EventType _eventType = EventType.Image;
-        private MouseEventInfo _mouseEventInfo;
-        private string _keyboardCmd = "";
-        private ProcessInfo _processInfo;
-        private ObservableCollection<EventTriggerModel> _subEventItems;
-        private int _afterDelay;
-        private RepeatInfoModel _repeatInfo;
-        private ulong _eventToNext = 0;
-        private ulong _itemIndex = 0;
-        private bool _sameImageDrag = false;
-        private bool _hardClick = false;
-        private int _maxDragCount = 1;
-        private bool _isChecked = true;
-        private RoiModel _roiData = new RoiModel();
-        private Bitmap _image;
-
-        public EventTriggerModel()
+        [JsonConstructor]
+        public EventInfoModel()
         {
         }
-        public EventTriggerModel(EventTriggerModel other)
+        public EventInfoModel(EventInfoModel other)
         {
-            Image = other.Image;
+            Image = new Bitmap(other.Image);
             EventType = other.EventType;
-            MouseEventInfo = other.MouseEventInfo;
-            MonitorInfo = other.MonitorInfo;
+            MouseEventInfo = other.MouseEventInfo.Clone();
+            MonitorInfo = other.MonitorInfo.Clone();
+
             KeyboardCmd = other.KeyboardCmd;
-            ProcessInfo = other.ProcessInfo;
-            SubEventItems = other.SubEventItems;
+            ProcessInfo = other.ProcessInfo.Clone();
+            SubEventItems = new ObservableCollection<EventInfoModel>(other.SubEventItems);
             AfterDelay = other.AfterDelay;
-            RepeatInfo = other.RepeatInfo;
+            RepeatInfo = other.RepeatInfo.Clone();
             EventToNext = other.EventToNext;
             SameImageDrag = other.SameImageDrag;
             HardClick = other.HardClick;
-            RoiDataInfo = other.RoiDataInfo;
+            RoiDataInfo = other.RoiDataInfo.Clone();
             IsChecked = other.IsChecked;
         }
-
-        [Order(1)]
+        private Bitmap _image;
+        [JsonConverter(typeof(BitmapFileJsonConverter))]
         public Bitmap Image
         {
             get => _image;
             set => _image = value;
         }
-
-        [Order(2)]
+        private EventType _eventType = EventType.Image;
         public EventType EventType
         {
             get => _eventType;
@@ -67,11 +51,10 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(EventType));
             }
         }
-
-        [Order(3)]
-        public MouseEventInfo MouseEventInfo
+        private MouseEventInfoV2 _mouseEventInfo;
+        public MouseEventInfoV2 MouseEventInfo
         {
-            get => _mouseEventInfo ?? (_mouseEventInfo = new MouseEventInfo());
+            get => _mouseEventInfo ?? (_mouseEventInfo = new MouseEventInfoV2());
             set
             {
                 _mouseEventInfo = value;
@@ -79,10 +62,9 @@ namespace Macro.Models
             }
         }
 
-        [Order(4)]
         public MonitorInfo MonitorInfo { get; set; }
 
-        [Order(5)]
+        private string _keyboardCmd = string.Empty;
         public string KeyboardCmd
         {
             get => _keyboardCmd;
@@ -92,8 +74,7 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(KeyboardCmd));
             }
         }
-
-        [Order(6)]
+        private ProcessInfo _processInfo;
         public ProcessInfo ProcessInfo
         {
             get
@@ -110,10 +91,18 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(ProcessInfo));
             }
         }
-        [Order(7)]
-        public ObservableCollection<EventTriggerModel> SubEventItems
+
+        private ObservableCollection<EventInfoModel> _subEventItems;
+        public ObservableCollection<EventInfoModel> SubEventItems
         {
-            get => _subEventItems ?? (_subEventItems = new ObservableCollection<EventTriggerModel>());
+            get
+            {
+                if (_subEventItems == null)
+                {
+                    _subEventItems = new ObservableCollection<EventInfoModel>();
+                }
+                return _subEventItems;
+            }
             set
             {
                 _subEventItems = value;
@@ -121,7 +110,7 @@ namespace Macro.Models
             }
         }
 
-        [Order(8)]
+        private int _afterDelay;
         public int AfterDelay
         {
             get => _afterDelay;
@@ -131,7 +120,8 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(AfterDelay));
             }
         }
-        [Order(9)]
+
+        private RepeatInfoModel _repeatInfo;
         public RepeatInfoModel RepeatInfo
         {
             get
@@ -148,7 +138,8 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(RepeatInfo));
             }
         }
-        [Order(10)]
+
+        private ulong _itemIndex = 0;
         public ulong ItemIndex
         {
             set
@@ -159,7 +150,7 @@ namespace Macro.Models
             get => _itemIndex;
         }
 
-        [Order(11)]
+        private ulong _eventToNext = 0;
         public ulong EventToNext
         {
             set
@@ -170,7 +161,7 @@ namespace Macro.Models
             get => _eventToNext;
         }
 
-        [Order(13)]
+        private bool _sameImageDrag = false;
         public bool SameImageDrag
         {
             set
@@ -180,7 +171,7 @@ namespace Macro.Models
             }
             get => _sameImageDrag;
         }
-        [Order(14)]
+        private int _maxDragCount = 1;
         public int MaxDragCount
         {
             set
@@ -190,7 +181,8 @@ namespace Macro.Models
             }
             get => _maxDragCount;
         }
-        [Order(15)]
+
+        private bool _hardClick = false;
         public bool HardClick
         {
             set
@@ -200,7 +192,7 @@ namespace Macro.Models
             }
             get => _hardClick;
         }
-        [Order(16)]
+        private RoiModel _roiData = new RoiModel();
         public RoiModel RoiDataInfo
         {
             set
@@ -210,7 +202,8 @@ namespace Macro.Models
             }
             get => _roiData;
         }
-        [Order(17)]
+
+        private bool _isChecked = true;
         public bool IsChecked
         {
             set
@@ -219,6 +212,24 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(IsChecked));
             }
             get => _isChecked;
+        }
+
+        private Point2D? _positionRelativeToImage;
+        public Point2D PositionRelativeToImage
+        {
+            get
+            {
+                if (_positionRelativeToImage == null)
+                {
+                    _positionRelativeToImage = new Point2D();
+                }
+                return _positionRelativeToImage.Value;
+            }
+            set
+            {
+                _positionRelativeToImage = value;
+                OnPropertyChanged(nameof(PositionRelativeToImage));
+            }
         }
 
         [field: NonSerialized]

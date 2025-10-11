@@ -388,5 +388,11 @@
     "Name": "1064",
     "Kor": "관심영역",
     "Eng": "Roi"
+  },
+  {
+    "Id": 1065,
+    "Name": "1065",
+    "Kor": "프로세스 뷰어 보기",
+    "Eng": "Show Process Viewer"
   }
 ]

@@ -8,8 +8,8 @@ namespace Macro.Infrastructure
         public static event Action<ConfigEventArgs> ConfigChanged;
         public static event Action<CaptureCompletedEventArgs> ScreenCaptureCompleted;
         public static event Action<ROICaptureCompletedEventArgs> ROICaptureCompleted;
-        public static event Action<EventTriggerEventArgs> EventTriggerSaved;
-
+        public static event Action<EventInfoEventArgs> EventTriggerSaved;
+        public static event Action<MouseInteractionCapturedEventArgs> MouseInteractionCaptured;
         public static void InvokeNotify(NotifyEventType eventType,
             INotifyEventArgs args)
         {
@@ -25,7 +25,10 @@ namespace Macro.Infrastructure
                     ROICaptureCompleted?.Invoke(args as ROICaptureCompletedEventArgs);
                     break;
                 case NotifyEventType.EventTriggerSaved:
-                    EventTriggerSaved?.Invoke(args as EventTriggerEventArgs);
+                    EventTriggerSaved?.Invoke(args as EventInfoEventArgs);
+                    break;
+                case NotifyEventType.MouseInteractionCaptured:
+                    MouseInteractionCaptured?.Invoke(args as MouseInteractionCapturedEventArgs);
                     break;
             }
         }
