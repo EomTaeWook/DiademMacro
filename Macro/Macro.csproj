@@ -225,9 +225,10 @@
     <Compile Include="Extensions\InnerPointExtensions.cs" />
     <Compile Include="Extensions\StringTemplateExtensions.cs" />
     <Compile Include="Infrastructure\Controller\BatchModeController.cs" />
-    <Compile Include="Infrastructure\Controller\InputController.cs" />
-    <Compile Include="Infrastructure\Controller\InputEventProcessorHandler.cs" />
+    <Compile Include="Infrastructure\Controller\InputEventExecutor.cs" />
+    <Compile Include="Infrastructure\Controller\MacroExecutionController.cs" />
     <Compile Include="Infrastructure\Controller\MacroModeControllerBase.cs" />
+    <Compile Include="Infrastructure\Controller\SequentialModeController.cs" />
     <Compile Include="Infrastructure\Old\MacroModeControllerBase.cs" />
     <Compile Include="Infrastructure\Old\SequentialModeController.cs" />
     <Compile Include="Infrastructure\Controller\SelectionStateController.cs" />
@@ -342,8 +343,8 @@
     <Compile Include="View\OptionDialog.xaml.cs">
       <DependentUpon>OptionDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ProcessPreviewPanel.xaml.cs">
-      <DependentUpon>ProcessPreviewPanel.xaml</DependentUpon>
+    <Compile Include="View\ImagePreviewPanel.xaml.cs">
+      <DependentUpon>ImagePreviewPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -428,7 +429,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ProcessPreviewPanel.xaml">
+    <Page Include="View\ImagePreviewPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

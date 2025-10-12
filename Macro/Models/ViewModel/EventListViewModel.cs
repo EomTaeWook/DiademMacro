@@ -5,12 +5,10 @@ namespace Macro.Models.ViewModel
 {
     public class EventListViewModel : INotifyPropertyChanged
     {
-        private double _width;
-        private double _height;
-        private bool _isAllSelected;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
-
+        private double _width;
         public double Width
         {
             get => _width;
@@ -20,6 +18,7 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged("Width");
             }
         }
+        private double _height;
         public double Height
         {
             get => _height;
@@ -29,6 +28,7 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged("Height");
             }
         }
+        private bool _isAllSelected = true;
         public bool IsAllSelected
         {
             get => _isAllSelected;
@@ -36,6 +36,10 @@ namespace Macro.Models.ViewModel
             {
                 _isAllSelected = value;
                 OnPropertyChanged("IsAllSelected");
+                foreach (var item in EventItems)
+                {
+                    item.IsChecked = _isAllSelected;
+                }
             }
         }
         private ObservableCollection<EventInfoModel> _eventItems = new ObservableCollection<EventInfoModel>();

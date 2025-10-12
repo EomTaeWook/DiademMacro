@@ -15,18 +15,17 @@ using Utils.Infrastructure;
 namespace Macro.Infrastructure.Controller
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
-    internal class BatchModeController : MacroModeControllerBase
+    internal class SequentialModeController : MacroModeControllerBase
     {
         private readonly InputEventExecutor _eventProcessorHandler;
-        private readonly CacheDataManager _cacheDataManager;
-        public BatchModeController(Config config,
-            InputEventExecutor inputEventProcessorHandler,
+        private CacheDataManager _cacheDataManager;
+        public SequentialModeController(Config config,
+            InputEventExecutor inputEventProcessor,
             CacheDataManager cacheDataManager) : base(config)
         {
-            _eventProcessorHandler = inputEventProcessorHandler;
+            _eventProcessorHandler = inputEventProcessor;
             _cacheDataManager = cacheDataManager;
         }
-
 
         public override void Execute(
             ArrayQueue<Process> processes,
@@ -40,59 +39,6 @@ namespace Macro.Infrastructure.Controller
                 ProcessEventInfos(process, eventInfoModels, cancellationToken);
 
                 TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
-            }
-        }
-        private void ProcessSubEventTriggers(
-            Process process,
-            EventInfoModel model,
-            CancellationToken cancellationToken)
-        {
-            for (int i = 0; i < model.RepeatInfo.Count; ++i)
-            {
-                if (TaskHelper.TokenCheckDelay(model.AfterDelay, cancellationToken) == false)
-                {
-                    break;
-                }
-
-                if (_screenCaptureManager.CaptureProcessWindow(process,
-                    out Bitmap sourceBmp) == false)
-                {
-                    break;
-                }
-
-                for (int ii = 0; ii < model.SubEventItems.Count; ++ii)
-                {
-                    var childResult = HandleEvent(
-                        sourceBmp,
-                        process,
-                        model.SubEventItems[ii],
-                        cancellationToken);
-                    if (model.RepeatInfo.RepeatType == RepeatType.RepeatOnChildEvent)
-                    {
-                        if (childResult.IsSuccess == false)
-                        {
-                            break;
-                        }
-                    }
-
-                    if (cancellationToken.IsCancellationRequested == true)
-                    {
-                        break;
-                    }
-                }
-
-                if (model.RepeatInfo.RepeatType == RepeatType.StopOnParentImage)
-                {
-                    if (_screenCaptureManager.CaptureProcessWindow(process, out sourceBmp) == false)
-                    {
-                        break;
-                    }
-
-                    if (CalculateSimilarityAndLocation(model.Image, sourceBmp, model).Item1 >= _config.Similarity)
-                    {
-                        break;
-                    }
-                }
             }
         }
         private EventResult HandleEvent(
@@ -115,14 +61,12 @@ namespace Macro.Infrastructure.Controller
                 windowHandle = item != null ? item.Item2 : process.MainWindowHandle;
             }
 
-            var copyBitmap = (Bitmap)capturedImage.Clone();
-
-            var matchResult = CalculateSimilarityAndLocation(eventInfoModel.Image, copyBitmap, eventInfoModel);
+            var matchResult = CalculateSimilarityAndLocation(eventInfoModel.Image, capturedImage, eventInfoModel);
 
             var similarity = matchResult.Item1;
             Point2D matchedLocation = matchResult.Item2;
 
-            Draw(copyBitmap);
+            Draw(capturedImage);
 
             LogHelper.Debug($"Similarity : {matchResult.Item1} % max Loc : X : {matchedLocation.X} Y: {matchedLocation.Y}");
 
@@ -131,10 +75,9 @@ namespace Macro.Infrastructure.Controller
                 TaskHelper.TokenCheckDelay(_config.ItemDelay, cancellationToken);
                 return new EventResult(false, null);
             }
-
             if (eventInfoModel.SubEventItems.Count > 0)
             {
-                ProcessSubEventTriggers(process, eventInfoModel, cancellationToken);
+                ProcessSubEventInfos(process, eventInfoModel, cancellationToken);
             }
             else if (eventInfoModel.SameImageDrag == true)
             {
@@ -212,35 +155,87 @@ namespace Macro.Infrastructure.Controller
             return new EventResult(false, null);
         }
 
+        private void ProcessSubEventInfos(
+            Process process,
+            EventInfoModel model,
+            CancellationToken cancellationToken)
+        {
+            for (int i = 0; i < model.RepeatInfo.Count; ++i)
+            {
+                if (TaskHelper.TokenCheckDelay(model.AfterDelay, cancellationToken) == false)
+                {
+                    break;
+                }
+
+                if (_screenCaptureManager.CaptureProcessWindow(process, out Bitmap sourceBmp) == false)
+                {
+                    break;
+                }
+
+                for (int ii = 0; ii < model.SubEventItems.Count; ++ii)
+                {
+                    var childResult = HandleEvent(
+                        sourceBmp,
+                        process,
+                        model.SubEventItems[ii],
+                        cancellationToken);
+                    if (model.RepeatInfo.RepeatType == RepeatType.RepeatOnChildEvent)
+                    {
+                        if (childResult.IsSuccess == false)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (cancellationToken.IsCancellationRequested == true)
+                    {
+                        break;
+                    }
+                }
+
+                if (model.RepeatInfo.RepeatType == RepeatType.StopOnParentImage)
+                {
+                    if (_screenCaptureManager.CaptureProcessWindow(process, out sourceBmp) == false)
+                    {
+                        break;
+                    }
+
+                    if (CalculateSimilarityAndLocation(model.Image, sourceBmp, model).Item1 >= _config.Similarity)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
         private void ProcessEventInfos(
             Process process,
             ArrayQueue<EventInfoModel> eventInfoModels,
             CancellationToken cancellationToken)
         {
-            if (_screenCaptureManager.CaptureProcessWindow(process,
-                    out Bitmap sourceBmp) == false)
-            {
-                return;
-            }
-
-            Draw(sourceBmp);
-
             for (int i = 0; i < eventInfoModels.Count; ++i)
             {
+                if (_screenCaptureManager.CaptureProcessWindow(process,
+                    out Bitmap sourceBmp) == false)
+                {
+                    TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
+                    continue;
+                }
+
+                Draw(sourceBmp);
+
                 var model = eventInfoModels[i];
                 var result = HandleEvent(sourceBmp, process, model, cancellationToken);
 
                 var nextEventInfo = result.NextEventInfoModel;
                 if (nextEventInfo != null)
                 {
-                    if (TryGetIndexByItemIndex(eventInfoModels, nextEventInfo.ItemIndex, out var sourceIndex))
+                    if (TryGetIndexByItemIndex(eventInfoModels, nextEventInfo.ItemIndex, out int index) == true)
                     {
-                        i = sourceIndex - 1;
+                        i = index - 1;
                     }
                 }
             }
         }
-
         private bool TryGetIndexByItemIndex(ArrayQueue<EventInfoModel> source, ulong findItemIndex, out int sourceIndex)
         {
             sourceIndex = -1;

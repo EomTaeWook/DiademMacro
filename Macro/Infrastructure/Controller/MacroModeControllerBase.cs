@@ -14,7 +14,7 @@ namespace Macro.Infrastructure.Controller
     internal abstract class MacroModeControllerBase : IMacroModeController
     {
         protected Config _config;
-        protected Action<Bitmap> _drawImageCallback;
+        private Action<Bitmap> _drawImageCallback;
         protected ScreenCaptureManager _screenCaptureManager;
         public MacroModeControllerBase(Config config)
         {
@@ -29,6 +29,11 @@ namespace Macro.Infrastructure.Controller
         public void SetDrawImageCallback(Action<Bitmap> drawImageCallback)
         {
             _drawImageCallback = drawImageCallback;
+        }
+
+        public void Draw(Bitmap bitmap)
+        {
+            _drawImageCallback?.Invoke(bitmap);
         }
 
         protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel)

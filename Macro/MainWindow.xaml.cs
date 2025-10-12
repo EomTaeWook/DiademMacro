@@ -1,4 +1,5 @@
 ﻿using DataContainer.Generated;
+using Dignus.Collections;
 using Dignus.Coroutine;
 using Macro.Extensions;
 using Macro.Infrastructure;
@@ -42,7 +43,8 @@ namespace Macro
         private AdManager _adManager;
         private CacheDataManager _cacheDataManager;
         private bool _isEventItemMoveButtonPressed;
-        private ProcessPreviewPanel _processPreview;
+        private ImagePreviewPanel _imagePreviewPanel;
+        private MacroExecutionController _macroExecutionController;
         public MainWindow()
         {
             InitializeComponent();
@@ -51,7 +53,7 @@ namespace Macro
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _processPreview = new ProcessPreviewPanel()
+            _imagePreviewPanel = new ImagePreviewPanel()
             {
                 Owner = this
             };
@@ -73,6 +75,15 @@ namespace Macro
                 _coroutineHandler.Start(ShowAd(true));
             }
             CheckVersion();
+
+            if (_config.OpenProcessPreview)
+            {
+                _imagePreviewPanel.Show();
+                _imagePreviewPanel.Left = this.Left - _imagePreviewPanel.Width;
+                _imagePreviewPanel.Top = this.Top + (this.Height - _imagePreviewPanel.Height) / 2;
+            }
+            _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
+            _macroExecutionController.InitializeController(_imagePreviewPanel.DrawImage);
         }
         private bool CheckSponsor()
         {
@@ -128,6 +139,7 @@ namespace Macro
             this.eventListView.treeGridView.SelectedItemChanged += TreeGridView_SelectedItemChanged;
 
             this.eventListView.Loaded += EventListView_Loaded;
+
             this.KeyDown += MainWindow_KeyDown;
         }
 
@@ -272,11 +284,20 @@ namespace Macro
                 return;
             }
 
+            if (treeGridView.SelectedItem == null)
+            {
+                return;
+            }
+
             var treeGridViewItem = treeGridView.GetSelectItemFromObject<TreeGridViewItem>(treeGridView.SelectedItem);
 
             var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
 
             selectionStateController.SelectTreeGridViewItem = treeGridViewItem;
+
+            var eventInfoModel = treeGridViewItem.DataContext<EventInfoModel>();
+
+            _imagePreviewPanel.DrawImage(eventInfoModel.Image);
 
             RefreshEventItemButton();
         }
@@ -399,6 +420,8 @@ namespace Macro
 
             selectionStateController.UnselectTreeGridViewItem();
 
+            _imagePreviewPanel.ClearImage();
+
             RefreshEventItemButton();
 
             Save();
@@ -438,17 +461,18 @@ namespace Macro
                 checkFix.IsEnabled = false;
                 btnStop.Visibility = Visibility.Visible;
                 btnStart.Visibility = Visibility.Collapsed;
-                if (_config.OpenProcessPreview)
-                {
-                    _processPreview.Show();
-                }
+                var viewModel = eventListView.DataContext<EventListViewModel>();
+                var eventInfos = new ArrayQueue<EventInfoModel>(viewModel.EventItems.Count);
+                eventInfos.AddRange(viewModel.EventItems);
+                _macroExecutionController.Start(eventInfos);
             });
         }
 
         private void BtnStop_Click(object sender, RoutedEventArgs e)
         {
             ApplicationManager.ShowProgressbar();
-            //_contentController.Stop();
+            _macroExecutionController.Stop();
+
             Dispatcher.Invoke(() =>
             {
                 var buttons = this.FindChildren<Button>();
@@ -464,11 +488,6 @@ namespace Macro
                 checkFix.IsEnabled = true;
                 btnStart.Visibility = Visibility.Visible;
                 btnStop.Visibility = Visibility.Collapsed;
-
-                if (_config.OpenProcessPreview)
-                {
-                    _processPreview.Hide();
-                }
             });
             ApplicationManager.HideProgressbar();
         }
@@ -502,7 +521,7 @@ namespace Macro
             {
                 var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
                 selectionStateController.UnselectTreeGridViewItem();
-
+                _imagePreviewPanel.ClearImage();
                 RefreshEventItemButton();
                 BtnStop_Click(btnStop, null);
             }
@@ -618,6 +637,10 @@ namespace Macro
             _config = e.Config;
             Refresh();
             LoadSaveFile(GetSaveFilePath());
+
+            _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
+
+            _macroExecutionController.InitializeController(_imagePreviewPanel.DrawImage);
             ApplicationManager.HideProgressbar();
         }
         private void CheckVersion()

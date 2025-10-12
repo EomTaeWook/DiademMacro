@@ -4,6 +4,7 @@ using Dignus.Log;
 using Dignus.Utils;
 using Dignus.Utils.Extensions;
 using Macro.Extensions;
+using Macro.Infrastructure.Interface;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,15 @@ using Utils.Infrastructure;
 namespace Macro.Infrastructure.Controller
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
-    public class InputEventProcessorHandler
+    public class InputEventExecutor
     {
         private readonly RandomGenerator _randomGenerator;
-        private readonly InputController _inputController;
-        public InputEventProcessorHandler(InputController inputController)
+        public IKeyboardInput Keyboard { get; private set; }
+        public IMouseInput Mouse { get; private set; }
+        public InputEventExecutor(IKeyboardInput keyboardInput, IMouseInput mouse)
         {
-            _inputController = inputController;
+            Keyboard = keyboardInput;
+            Mouse = mouse;
             _randomGenerator = new RandomGenerator();
         }
         public int GetRandomValue(int minValue, int maxValue)
@@ -129,19 +132,19 @@ namespace Macro.Infrastructure.Controller
 
             if (mouseEventType == MouseEventType.LeftClick)
             {
-                _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
-                _inputController.Mouse.LeftButtonDown();
+                Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+                Mouse.LeftButtonDown();
                 Task.Delay(10).GetResult();
-                _inputController.Mouse.LeftButtonUp();
-                _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+                Mouse.LeftButtonUp();
+                Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
             }
             else if (mouseEventType == MouseEventType.RightClick)
             {
-                _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
-                _inputController.Mouse.RightButtonDown();
+                Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+                Mouse.RightButtonDown();
                 Task.Delay(10).GetResult();
-                _inputController.Mouse.RightButtonUp();
-                _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+                Mouse.RightButtonUp();
+                Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
             }
             else
             {
@@ -317,7 +320,7 @@ namespace Macro.Infrastructure.Controller
                 return keyCode;
             }).ToArray();
 
-            _inputController.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
+            Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }

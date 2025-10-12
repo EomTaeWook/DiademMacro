@@ -86,7 +86,7 @@
                         </ComboBox>
 
                         <Label Grid.Row="11" Grid.Column="0" Content="{Binding Path=ShowProcessViewer, Source={StaticResource LabelLocator}}"></Label>
-                        <ComboBox Name="comboProcessPreviewOpen" Grid.Row="11" Grid.Column="1" SelectedValue="{Binding Path=Config.IsProcessPreviewOpen, Mode=TwoWay}">
+                        <ComboBox Name="comboProcessPreviewOpen" Grid.Row="11" Grid.Column="1" SelectedValue="{Binding Path=Config.OpenProcessPreview, Mode=TwoWay}">
                             <ComboBox.Items>
                                 <system:Boolean>True</system:Boolean>
                                 <system:Boolean>False</system:Boolean>
