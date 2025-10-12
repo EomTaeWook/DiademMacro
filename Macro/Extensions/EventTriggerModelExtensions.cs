@@ -1,11 +1,9 @@
 ﻿using Macro.Models;
 using System.Collections.Generic;
-using System.Linq;
 using Utils.Infrastructure;
 
 namespace Macro.Extensions
 {
-
     public static class EventInfoModelExtensions
     {
         public static MouseEventInfoV2 Clone(this MouseEventInfoV2 source)
@@ -42,35 +40,7 @@ namespace Macro.Extensions
             };
             return cloned;
         }
-    }
 
-
-    public static class EventTriggerModelExtensions
-    {
-
-        public static MouseEventInfo Clone(this MouseEventInfo source)
-        {
-            return new MouseEventInfo()
-            {
-                EndPoint = new System.Windows.Point()
-                {
-                    X = source.EndPoint.X,
-                    Y = source.EndPoint.Y
-                },
-                MiddlePoint = source.MiddlePoint.Select(r => new System.Windows.Point()
-                {
-                    X = r.X,
-                    Y = r.Y
-                }).ToList(),
-                MouseInfoEventType = source.MouseInfoEventType,
-                StartPoint = new System.Windows.Point()
-                {
-                    X = source.StartPoint.X,
-                    Y = source.StartPoint.Y
-                },
-                WheelData = source.WheelData
-            };
-        }
         public static IntRect Clone(this IntRect source)
         {
             return new IntRect()
@@ -127,6 +97,5 @@ namespace Macro.Extensions
             }
             return false;
         }
-
     }
 }

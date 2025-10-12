@@ -13,6 +13,13 @@ namespace Macro.View
         public ImagePreviewPanel()
         {
             InitializeComponent();
+            this.Loaded += ImagePreviewPanel_Loaded;
+        }
+
+        private void ImagePreviewPanel_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Left = this.Owner.Left - this.Width;
+            this.Top = this.Owner.Top + (this.Owner.Height - this.Height) / 2;
         }
 
         public void DrawImage(Bitmap bmp)

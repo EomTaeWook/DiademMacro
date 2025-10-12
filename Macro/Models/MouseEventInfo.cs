@@ -6,6 +6,7 @@ using Utils.Infrastructure;
 
 namespace Macro.Models
 {
+    [Obsolete]
     [Serializable]
     public class MouseEventInfo
     {

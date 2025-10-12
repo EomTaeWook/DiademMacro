@@ -229,18 +229,13 @@
     <Compile Include="Infrastructure\Controller\MacroExecutionController.cs" />
     <Compile Include="Infrastructure\Controller\MacroModeControllerBase.cs" />
     <Compile Include="Infrastructure\Controller\SequentialModeController.cs" />
-    <Compile Include="Infrastructure\Old\MacroModeControllerBase.cs" />
-    <Compile Include="Infrastructure\Old\SequentialModeController.cs" />
     <Compile Include="Infrastructure\Controller\SelectionStateController.cs" />
     <Compile Include="Infrastructure\Manager\CoroutineRunner.cs" />
     <Compile Include="Infrastructure\Interface\IMacroModeController.cs" />
-    <Compile Include="Infrastructure\Old\BatchModeController.cs" />
-    <Compile Include="Infrastructure\Old\ContentController.cs" />
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
-    <Compile Include="Infrastructure\Old\InputEventProcessorHandler.cs" />
     <Compile Include="Infrastructure\Manager\AdManager.cs" />
     <Compile Include="Infrastructure\Manager\WebApiManager.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
@@ -254,13 +249,10 @@
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
-    <Compile Include="Infrastructure\Old\InputController.cs" />
-    <Compile Include="Infrastructure\Old\SchedulerManagerOld.cs" />
     <Compile Include="Infrastructure\Manager\ServiceResolver.cs" />
     <Compile Include="Infrastructure\Manager\UIManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
-    <Compile Include="Infrastructure\NotifyHelperOld.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
     <Compile Include="Infrastructure\Serialize\TypeRedirectBinder.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
@@ -268,20 +260,13 @@
     <Compile Include="Models\EventInfoModel.cs" />
     <Compile Include="Models\EventTriggerModel.cs" />
     <Compile Include="Models\ViewModel\OptionDialogViewModel.cs" />
-    <Compile Include="ViewOld\MainWindowOld.xaml.cs">
-      <DependentUpon>MainWindowOld.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\ColorModel.cs" />
-    <Compile Include="Models\EventFactorModel.cs" />
-    <Compile Include="Models\OldEventResult.cs" />
+    <Compile Include="Models\EventResult.cs" />
     <Compile Include="Models\PointModel.cs" />
     <Compile Include="Models\ProcessItem.cs" />
-    <Compile Include="Models\ProcessResult.cs" />
-    <Compile Include="Models\ProcessResultModel.cs" />
     <Compile Include="Models\Protocols\Protocol.CS.cs" />
     <Compile Include="Models\Protocols\Protocol.SC.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
@@ -296,35 +281,9 @@
     <Compile Include="Models\ViewModel\EventListViewModel.cs" />
     <Compile Include="Models\ViewModel\MainViewModel.cs" />
     <Compile Include="UI\UIItem.cs" />
-    <Compile Include="Models\ValueConditionModel.cs" />
-    <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
     <Compile Include="Models\ViewModel\EventSettingViewModel.cs" />
     <Compile Include="Models\ViewModel\SettingViewModel.cs" />
-    <Compile Include="ViewOld\CaptureViewOld.xaml.cs">
-      <DependentUpon>CaptureViewOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\ChildWindowOld.xaml.cs">
-      <DependentUpon>ChildWindowOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\CloseButtonWindowOld.xaml.cs">
-      <DependentUpon>CloseButtonWindowOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\ContentViewOld.xaml.cs">
-      <DependentUpon>ContentViewOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\EventListViewOld.xaml.cs">
-      <DependentUpon>EventListViewOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\EventSettingViewOld.xaml.cs">
-      <DependentUpon>EventSettingViewOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\MousePositionViewOld.xaml.cs">
-      <DependentUpon>MousePositionViewOld.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewOld\WindowEventPopupOld.xaml.cs">
-      <DependentUpon>WindowEventPopupOld.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\CaptureView.xaml.cs">
       <DependentUpon>CaptureView.xaml</DependentUpon>
     </Compile>
@@ -361,10 +320,6 @@
     <Compile Include="View\WebViewControl.xaml.cs">
       <DependentUpon>WebViewControl.xaml</DependentUpon>
     </Compile>
-    <Page Include="ViewOld\MainWindowOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
@@ -372,38 +327,6 @@
     <Page Include="Styles\TreeGridViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ViewOld\CaptureViewOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\ChildWindowOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\CloseButtonWindowOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\ContentViewOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\EventListViewOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\EventSettingViewOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\MousePositionViewOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ViewOld\WindowEventPopupOld.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\CaptureView.xaml">
       <SubType>Designer</SubType>

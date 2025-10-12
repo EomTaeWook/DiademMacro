@@ -14,13 +14,11 @@ namespace Macro.Infrastructure.Controller
     internal class MacroExecutionController
     {
         private CancellationTokenSource _cts;
-        private readonly Process _fixedProcess;
-        private Config _config;
+        private readonly Config _config;
 
         private CancellationToken _cancellationToken;
 
         private MacroModeControllerBase _macroModeController;
-        private Action<Bitmap> _drawImageCallback;
         public MacroExecutionController(Config config)
         {
             _config = config;
@@ -37,7 +35,8 @@ namespace Macro.Infrastructure.Controller
             }
             _macroModeController.SetDrawImageCallback(drawImageCallback);
         }
-        public void Start(ArrayQueue<EventInfoModel> eventInfos)
+        public void Start(ArrayQueue<EventInfoModel> eventInfos,
+            Process fixedProcess = null)
         {
             if (_cts != null)
             {
@@ -45,19 +44,19 @@ namespace Macro.Infrastructure.Controller
             }
             _cts = new CancellationTokenSource();
             _cancellationToken = _cts.Token;
-            var _ = Task.Run(() => ProcessEventLoop(eventInfos));
+            var _ = Task.Run(() => ProcessEventLoop(eventInfos, fixedProcess));
         }
         public void Stop()
         {
             _cts.Cancel();
         }
-        private void ProcessEventLoop(ArrayQueue<EventInfoModel> eventInfos)
+        private void ProcessEventLoop(ArrayQueue<EventInfoModel> eventInfos, Process fixedProcess)
         {
             ArrayQueue<Process> activeProcesses = new ArrayQueue<Process>();
 
-            if (_fixedProcess != null)
+            if (fixedProcess != null)
             {
-                activeProcesses.Add(_fixedProcess);
+                activeProcesses.Add(fixedProcess);
             }
             else
             {

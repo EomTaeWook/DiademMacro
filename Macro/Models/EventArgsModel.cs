@@ -1,8 +1,5 @@
-﻿using Macro.Infrastructure;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.Drawing;
-using System.Windows.Controls;
 using Utils.Infrastructure;
 
 namespace Macro.Models
@@ -31,19 +28,10 @@ namespace Macro.Models
         public MonitorInfo MonitorInfo { get; set; }
         public Bitmap CaptureImage { get; set; }
         public IntRect Position { get; set; }
-
     }
     public class ConfigEventArgs : INotifyEventArgs
     {
         public Config Config { get; set; }
-    }
-    public class EventTriggerOrderChangedEventArgs : INotifyEventArgs
-    {
-        public TreeViewItem SelectedTreeViewItem { get; set; }
-    }
-    public class SelctTreeViewItemChangedEventArgs : INotifyEventArgs
-    {
-        public TreeViewItem TreeViewItem { get; set; }
     }
     public class EventInfoEventArgs : INotifyEventArgs
     {
@@ -51,32 +39,6 @@ namespace Macro.Models
         public EventInfoModel EventInfoModel { get; set; }
     }
 
-
-    public class UpdatedTimeArgs : INotifyEventArgs
-    {
-        public float DeltaTime { get; set; }
-    }
-
-
-    public class SaveEventTriggerModelArgs : INotifyEventArgs
-    {
-        public EventTriggerModel CurrentEventTriggerModel { get; set; }
-    }
-
-    public class DeleteEventTriggerModelArgs : INotifyEventArgs
-    {
-        public EventTriggerModel CurrentEventTriggerModel { get; set; }
-    }
-
-    public class ComboProcessChangedEventArgs : INotifyEventArgs
-    {
-        public Process Process { get; set; }
-    }
-
-    public class TreeGridViewFocusEventArgs : INotifyEventArgs
-    {
-        public InitialTab Mode { get; set; }
-    }
     public class ROICaptureCompletedEventArgs : INotifyEventArgs
     {
         public MonitorInfo MonitorInfo { get; set; }

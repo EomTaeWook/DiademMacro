@@ -17,10 +17,6 @@ namespace Macro.Infrastructure.Manager
     [Injectable(Dignus.DependencyInjection.LifeScope.Singleton)]
     public class ScreenCaptureManager
     {
-        public ScreenCaptureManager()
-        {
-
-        }
         public bool CaptureProcessWindow(Process process, out Bitmap bitmap)
         {
             bitmap = null;

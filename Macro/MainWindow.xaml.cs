@@ -79,8 +79,6 @@ namespace Macro
             if (_config.OpenProcessPreview)
             {
                 _imagePreviewPanel.Show();
-                _imagePreviewPanel.Left = this.Left - _imagePreviewPanel.Width;
-                _imagePreviewPanel.Top = this.Top + (this.Height - _imagePreviewPanel.Height) / 2;
             }
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
             _macroExecutionController.InitializeController(_imagePreviewPanel.DrawImage);
@@ -649,6 +647,15 @@ namespace Macro
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
 
             _macroExecutionController.InitializeController(_imagePreviewPanel.DrawImage);
+
+            if (_config.OpenProcessPreview == false)
+            {
+                _imagePreviewPanel.Hide();
+            }
+            else
+            {
+                _imagePreviewPanel.Show();
+            }
             ApplicationManager.HideProgressbar();
         }
         private void CheckVersion()
