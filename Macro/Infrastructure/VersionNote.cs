@@ -4,9 +4,9 @@ namespace Macro.Infrastructure
 {
     internal class Current
     {
-        public static readonly int Major = 2;
-        public static readonly int Minor = 7;
-        public static readonly int Build = 1;
+        public static readonly int Major = 3;
+        public static readonly int Minor = 0;
+        public static readonly int Build = 0;
     }
 
     public class VersionNote
