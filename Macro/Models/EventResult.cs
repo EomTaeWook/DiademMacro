@@ -3,12 +3,12 @@
     internal class EventResult
     {
         public bool IsSuccess { get; private set; }
-        public EventTriggerModel NextEventTrigger { get; private set; }
+        public EventInfoModel NextEventInfoModel { get; private set; }
 
-        public EventResult(bool success, EventTriggerModel nextEventTrigger)
+        public EventResult(bool success, EventInfoModel nextEventInfoModel)
         {
             IsSuccess = success;
-            NextEventTrigger = nextEventTrigger;
+            NextEventInfoModel = nextEventInfoModel;
         }
     }
 }

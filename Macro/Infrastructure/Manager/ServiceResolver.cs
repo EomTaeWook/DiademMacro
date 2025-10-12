@@ -2,7 +2,7 @@
 
 namespace Macro.Infrastructure.Manager
 {
-    public class ServiceDispatcher
+    public class ServiceResolver
     {
         private static ServiceContainer _serviceContainer;
         public static void SetContainer(ServiceContainer serviceContainer)

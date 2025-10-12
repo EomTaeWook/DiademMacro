@@ -14,16 +14,16 @@ namespace Macro.Infrastructure.Controller
     internal abstract class MacroModeControllerBase : IMacroModeController
     {
         protected Config _config;
-        protected Action<Bitmap> _drawImageCallback;
+        private Action<Bitmap> _drawImageCallback;
         protected ScreenCaptureManager _screenCaptureManager;
         public MacroModeControllerBase(Config config)
         {
             _config = config;
-            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
+            _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
         }
         public abstract void Execute(
             ArrayQueue<Process> processes,
-            ArrayQueue<EventTriggerModel> eventTriggerModels,
+            ArrayQueue<EventInfoModel> eventInfoModels,
             CancellationToken cancellationToken);
 
         public void SetDrawImageCallback(Action<Bitmap> drawImageCallback)
@@ -31,14 +31,19 @@ namespace Macro.Infrastructure.Controller
             _drawImageCallback = drawImageCallback;
         }
 
-        protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventTriggerModel eventTriggerModel)
+        public void Draw(Bitmap bitmap)
+        {
+            _drawImageCallback?.Invoke(bitmap);
+        }
+
+        protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel)
         {
             var similarity = 0;
             Point2D matchedLocation = new Point2D(0, 0);
 
-            if (eventTriggerModel.RoiData.IsExists() == true)
+            if (eventInfoModel.RoiDataInfo.IsExists() == true)
             {
-                var newRect = _screenCaptureManager.AdjustRectForDPI(eventTriggerModel.RoiData.RoiRect, eventTriggerModel.RoiData.MonitorInfo);
+                var newRect = _screenCaptureManager.AdjustRectForDPI(eventInfoModel.RoiDataInfo.RoiRect, eventInfoModel.RoiDataInfo.MonitorInfo);
 
                 int imageWidth = sourceBmp.Width;
                 int imageHeight = sourceBmp.Height;

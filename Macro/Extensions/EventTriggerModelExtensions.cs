@@ -1,48 +1,49 @@
 ﻿using Macro.Models;
 using System.Collections.Generic;
-using System.Linq;
 using Utils.Infrastructure;
-using Utils.Models;
 
 namespace Macro.Extensions
 {
-    public static class EventTriggerModelExtensions
+    public static class EventInfoModelExtensions
     {
+        public static MouseEventInfoV2 Clone(this MouseEventInfoV2 source)
+        {
+            var cloned = new MouseEventInfoV2
+            {
+                MouseEventType = source.MouseEventType,
+                MousePoints = new List<Point2D>(source.MousePoints),
+                MousePoint = new Point2D()
+                {
+                    X = source.MousePoint.X,
+                    Y = source.MousePoint.Y,
+                },
 
-        public static ValueConditionModel Clone(this ValueConditionModel source)
-        {
-            return new ValueConditionModel()
-            {
-                ConditionType = source.ConditionType,
-                Value = source.Value
             };
+
+            return cloned;
         }
-        public static MouseTriggerInfo Clone(this MouseTriggerInfo source)
+        public static RoiModel Clone(this RoiModel source)
         {
-            return new MouseTriggerInfo()
+            var cloned = new RoiModel();
+
+            if (source.IsExists() == false)
             {
-                EndPoint = new System.Windows.Point()
-                {
-                    X = source.EndPoint.X,
-                    Y = source.EndPoint.Y
-                },
-                MiddlePoint = source.MiddlePoint.Select(r => new System.Windows.Point()
-                {
-                    X = r.X,
-                    Y = r.Y
-                }).ToList(),
-                MouseInfoEventType = source.MouseInfoEventType,
-                StartPoint = new System.Windows.Point()
-                {
-                    X = source.StartPoint.X,
-                    Y = source.StartPoint.Y
-                },
-                WheelData = source.WheelData
+                return cloned;
+            }
+            cloned.MonitorInfo = source.MonitorInfo.Clone();
+            cloned.RoiRect = new Rectangle()
+            {
+                Bottom = source.RoiRect.Bottom,
+                Left = source.RoiRect.Left,
+                Right = source.RoiRect.Right,
+                Top = source.RoiRect.Top
             };
+            return cloned;
         }
-        public static Rect Clone(this Rect source)
+
+        public static IntRect Clone(this IntRect source)
         {
-            return new Rect()
+            return new IntRect()
             {
                 Bottom = source.Bottom,
                 Left = source.Left,
@@ -76,7 +77,10 @@ namespace Macro.Extensions
                     Y = source.Dpi.Y
                 },
                 Index = source.Index,
-                Rect = source.Rect.Clone()
+                Rect = source.Rect.Clone(),
+                DeviceName = source.DeviceName,
+                FriendlyName = source.FriendlyName,
+                IsOn = source.IsOn
             };
         }
 
@@ -86,13 +90,12 @@ namespace Macro.Extensions
             foreach (var item in eventTriggerModels)
             {
                 index++;
-                if (item.TriggerIndex == triggerIndex)
+                if (item.ItemIndex == triggerIndex)
                 {
                     return true;
                 }
             }
             return false;
         }
-
     }
 }

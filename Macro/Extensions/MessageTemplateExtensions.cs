@@ -10,7 +10,7 @@ namespace Macro.Extensions
     {
         public static string GetString(this MessageTemplate messageTemplate)
         {
-            var config = ServiceDispatcher.GetService<Config>();
+            var config = ServiceResolver.GetService<Config>();
             if (config.Language == LanguageType.Kor)
             {
                 return messageTemplate.Kor;
@@ -19,7 +19,7 @@ namespace Macro.Extensions
         }
         public static string GetString(this MessageTemplate messageTemplate, params string[] args)
         {
-            var config = ServiceDispatcher.GetService<Config>();
+            var config = ServiceResolver.GetService<Config>();
             if (config.Language == LanguageType.Kor)
             {
                 return string.Format(messageTemplate.Kor, args);

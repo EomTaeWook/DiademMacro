@@ -4,7 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using Utils.Infrastructure;
 
 namespace Macro.Models
@@ -15,18 +14,17 @@ namespace Macro.Models
         public static EventTriggerModel DummyParentEventModel;
 
         private EventType _eventType = EventType.Image;
-        private MouseTriggerInfo _mouseTriggerInfo;
+        private MouseEventInfo _mouseEventInfo;
         private string _keyboardCmd = "";
         private ProcessInfo _processInfo;
-        private ObservableCollection<EventTriggerModel> _subEventTriggers;
+        private ObservableCollection<EventTriggerModel> _subEventItems;
         private int _afterDelay;
         private RepeatInfoModel _repeatInfo;
         private ulong _eventToNext = 0;
-        private ulong _triggerIndex = 0;
-        private bool _imageSearchRequired = false;
+        private ulong _itemIndex = 0;
         private bool _sameImageDrag = false;
         private bool _hardClick = false;
-        private int _maxSameImageCount = 1;
+        private int _maxDragCount = 1;
         private bool _isChecked = true;
         private RoiModel _roiData = new RoiModel();
         private Bitmap _image;
@@ -36,22 +34,20 @@ namespace Macro.Models
         }
         public EventTriggerModel(EventTriggerModel other)
         {
-            _image = other.Image;
-            _eventType = other.EventType;
-            _mouseTriggerInfo = other.MouseTriggerInfo;
-            _keyboardCmd = other.KeyboardCmd;
-            _processInfo = other.ProcessInfo;
-            _subEventTriggers = other.SubEventTriggers;
-            _afterDelay = other.AfterDelay;
-            _repeatInfo = other.RepeatInfo;
-            _eventToNext = other.EventToNext;
-            _triggerIndex = other.TriggerIndex;
-            _imageSearchRequired = other.ImageSearchRequired;
-            _sameImageDrag = other.SameImageDrag;
-            _maxSameImageCount = other.MaxSameImageCount;
-            _hardClick = other._hardClick;
-            _roiData = other._roiData;
-            _isChecked = other._isChecked;
+            Image = other.Image;
+            EventType = other.EventType;
+            MouseEventInfo = other.MouseEventInfo;
+            MonitorInfo = other.MonitorInfo;
+            KeyboardCmd = other.KeyboardCmd;
+            ProcessInfo = other.ProcessInfo;
+            SubEventItems = other.SubEventItems;
+            AfterDelay = other.AfterDelay;
+            RepeatInfo = other.RepeatInfo;
+            EventToNext = other.EventToNext;
+            SameImageDrag = other.SameImageDrag;
+            HardClick = other.HardClick;
+            RoiDataInfo = other.RoiDataInfo;
+            IsChecked = other.IsChecked;
         }
 
         [Order(1)]
@@ -68,20 +64,18 @@ namespace Macro.Models
             set
             {
                 _eventType = value;
-                OnPropertyChanged("EventType");
-                OnPropertyChanged("Desc");
+                OnPropertyChanged(nameof(EventType));
             }
         }
 
         [Order(3)]
-        public MouseTriggerInfo MouseTriggerInfo
+        public MouseEventInfo MouseEventInfo
         {
-            get => _mouseTriggerInfo ?? (_mouseTriggerInfo = new MouseTriggerInfo());
+            get => _mouseEventInfo ?? (_mouseEventInfo = new MouseEventInfo());
             set
             {
-                _mouseTriggerInfo = value;
-                OnPropertyChanged("MouseTriggerInfo");
-                OnPropertyChanged("Desc");
+                _mouseEventInfo = value;
+                OnPropertyChanged(nameof(MouseEventInfo));
             }
         }
 
@@ -95,30 +89,35 @@ namespace Macro.Models
             set
             {
                 _keyboardCmd = value;
-                OnPropertyChanged("KeyboardCmd");
-                OnPropertyChanged("Desc");
+                OnPropertyChanged(nameof(KeyboardCmd));
             }
         }
 
         [Order(6)]
         public ProcessInfo ProcessInfo
         {
-            get => _processInfo ?? (_processInfo = new ProcessInfo() { Position = new Rect(), });
+            get
+            {
+                if (_processInfo == null)
+                {
+                    _processInfo = new ProcessInfo();
+                }
+                return _processInfo;
+            }
             set
             {
                 _processInfo = value;
-                OnPropertyChanged("ProcessInfo");
+                OnPropertyChanged(nameof(ProcessInfo));
             }
         }
-
         [Order(7)]
-        public ObservableCollection<EventTriggerModel> SubEventTriggers
+        public ObservableCollection<EventTriggerModel> SubEventItems
         {
-            get => _subEventTriggers ?? (_subEventTriggers = new ObservableCollection<EventTriggerModel>());
+            get => _subEventItems ?? (_subEventItems = new ObservableCollection<EventTriggerModel>());
             set
             {
-                _subEventTriggers = value;
-                OnPropertyChanged("SubEventTriggers");
+                _subEventItems = value;
+                OnPropertyChanged(nameof(SubEventItems));
             }
         }
 
@@ -129,28 +128,35 @@ namespace Macro.Models
             set
             {
                 _afterDelay = value;
-                OnPropertyChanged("AfterDelay");
+                OnPropertyChanged(nameof(AfterDelay));
             }
         }
         [Order(9)]
         public RepeatInfoModel RepeatInfo
         {
-            get => _repeatInfo ?? (_repeatInfo = new RepeatInfoModel());
+            get
+            {
+                if (_repeatInfo == null)
+                {
+                    _repeatInfo = new RepeatInfoModel();
+                }
+                return _repeatInfo;
+            }
             set
             {
                 _repeatInfo = value;
-                OnPropertyChanged("RepeatInfo");
+                OnPropertyChanged(nameof(RepeatInfo));
             }
         }
         [Order(10)]
-        public ulong TriggerIndex
+        public ulong ItemIndex
         {
             set
             {
-                _triggerIndex = value;
-                OnPropertyChanged("TriggerIndex");
+                _itemIndex = value;
+                OnPropertyChanged(nameof(ItemIndex));
             }
-            get => _triggerIndex;
+            get => _itemIndex;
         }
 
         [Order(11)]
@@ -159,39 +165,30 @@ namespace Macro.Models
             set
             {
                 _eventToNext = value;
-                OnPropertyChanged("EventToNext");
+                OnPropertyChanged(nameof(EventToNext));
             }
             get => _eventToNext;
         }
-        [Order(12)]
-        public bool ImageSearchRequired
-        {
-            set
-            {
-                _imageSearchRequired = value;
-                OnPropertyChanged("ImageSearchRequired");
-            }
-            get => _imageSearchRequired;
-        }
+
         [Order(13)]
         public bool SameImageDrag
         {
             set
             {
                 _sameImageDrag = value;
-                OnPropertyChanged("SameImageDrag");
+                OnPropertyChanged(nameof(SameImageDrag));
             }
             get => _sameImageDrag;
         }
         [Order(14)]
-        public int MaxSameImageCount
+        public int MaxDragCount
         {
             set
             {
-                _maxSameImageCount = value;
-                OnPropertyChanged("MaxSameImageCount");
+                _maxDragCount = value;
+                OnPropertyChanged(nameof(MaxDragCount));
             }
-            get => _maxSameImageCount;
+            get => _maxDragCount;
         }
         [Order(15)]
         public bool HardClick
@@ -199,18 +196,17 @@ namespace Macro.Models
             set
             {
                 _hardClick = value;
-                OnPropertyChanged("HardClick");
+                OnPropertyChanged(nameof(HardClick));
             }
             get => _hardClick;
         }
         [Order(16)]
-        public RoiModel RoiData
+        public RoiModel RoiDataInfo
         {
             set
             {
                 _roiData = value;
-                OnPropertyChanged("RoiData");
-                OnPropertyChanged("Desc");
+                OnPropertyChanged(nameof(RoiDataInfo));
             }
             get => _roiData;
         }
@@ -220,68 +216,11 @@ namespace Macro.Models
             set
             {
                 _isChecked = value;
-                OnPropertyChanged("IsChecked");
+                OnPropertyChanged(nameof(IsChecked));
             }
             get => _isChecked;
         }
-        public string Desc
-        {
-            get
-            {
-                var sb = new StringBuilder();
-                if (RoiData != null)
-                {
-                    if (RoiData.RoiRect != null)
-                    {
-                        sb.Append($"R : [X : {RoiData.RoiRect.Left} W : {RoiData.RoiRect.Width} Y : {RoiData.RoiRect.Top} H : {RoiData.RoiRect.Height}] ");
-                    }
-                }
-                else
-                {
-                    sb.Append($"R : [-] ");
-                }
 
-                if (EventType == EventType.Mouse)
-                {
-                    if (MouseTriggerInfo.MouseInfoEventType != MouseEventType.Drag && MouseTriggerInfo.MouseInfoEventType != MouseEventType.None && MouseTriggerInfo.MouseInfoEventType != MouseEventType.Wheel)
-                    {
-                        sb.Append($"X : {MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}");
-                    }
-                    else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.None)
-                    {
-                        sb.Append($"Mouse None");
-                    }
-                    else if (MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
-                    {
-                        if (MouseTriggerInfo.WheelData > 0)
-                        {
-                            sb.Append($"Wheel Up");
-                        }
-                        else
-                        {
-                            sb.Append($"Wheel Down");
-                        }
-                    }
-                    else
-                    {
-                        sb.Append($"X : {MouseTriggerInfo.StartPoint.X:0} Y : {MouseTriggerInfo.StartPoint.Y:0}{Environment.NewLine}" +
-                            $"X : {MouseTriggerInfo.EndPoint.X:0} Y : {MouseTriggerInfo.EndPoint.Y:0}");
-                    }
-                }
-                else if (EventType == EventType.Keyboard)
-                {
-                    sb.Append(KeyboardCmd);
-                }
-                else if (EventType == EventType.RelativeToImage)
-                {
-                    sb.Append($"X : {MouseTriggerInfo.StartPoint.X} Y : {MouseTriggerInfo.StartPoint.Y}");
-                }
-                else
-                {
-                }
-                return sb.ToString();
-            }
-        }
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 

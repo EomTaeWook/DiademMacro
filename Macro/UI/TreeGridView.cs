@@ -136,7 +136,7 @@ namespace Macro.UI
     }
     internal class TreeGridViewConverter : IValueConverter
     {
-        private readonly double Indentation = 10.0;
+        private readonly double Indentation = 15.0;
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)

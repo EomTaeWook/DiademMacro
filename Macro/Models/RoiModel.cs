@@ -1,14 +1,13 @@
 ﻿using System;
 using Utils.Infrastructure;
-using Utils.Models;
 
 namespace Macro.Models
 {
     [Serializable]
     public class RoiModel
     {
-        public Rectangle RoiRect { get; set; }
-        public MonitorInfo MonitorInfo { get; set; }
+        public Rectangle RoiRect { get; set; } = null;
+        public MonitorInfo MonitorInfo { get; set; } = null;
 
         public bool IsExists()
         {

@@ -8,7 +8,7 @@ namespace Macro.Models
     {
         public string Title
         {
-            get => $"{GetString(1017)} ver {VersionNote.CurrentVersion.Major}.{VersionNote.CurrentVersion.Minor}.{VersionNote.CurrentVersion.Build}";
+            get => $"{GetString(1017)} {VersionNote.CurrentVersion.Major}.{VersionNote.CurrentVersion.Minor}.{VersionNote.CurrentVersion.Build}";
         }
         public string EventType
         {
@@ -64,7 +64,7 @@ namespace Macro.Models
         }
         public string Refresh
         {
-            get => GetString(1055);
+            get => GetString(1054);
         }
         public string Delete
         {
@@ -118,6 +118,10 @@ namespace Macro.Models
         {
             get => GetString(1053);
         }
+        public string Roi
+        {
+            get => GetString(1064);
+        }
         public string RestoreMoveProcessLocation
         {
             get => GetString(1054);
@@ -130,7 +134,7 @@ namespace Macro.Models
         {
             get => GetString(1026);
         }
-        public string RepeatSubItems
+        public string RepeatItems
         {
             get => GetString(1027);
         }
@@ -157,6 +161,10 @@ namespace Macro.Models
         public string Close
         {
             get => GetString(1012);
+        }
+        public string ShowProcessViewer
+        {
+            get => GetString(1065);
         }
         public string X
         {
@@ -186,7 +194,7 @@ namespace Macro.Models
         }
         public string Common
         {
-            get => GetString(1057);
+            get => GetString(1056);
         }
         public string RemoveROI
         {
@@ -194,12 +202,29 @@ namespace Macro.Models
         }
         public string MacroMode
         {
-            get => GetString(1058);
+            get => GetString(1057);
         }
         public string KeyBoardDelay
         {
+            get => GetString(1058);
+        }
+        public string Addition
+        {
             get => GetString(1059);
         }
+        public string Removal
+        {
+            get => GetString(1060);
+        }
+        public string Copy
+        {
+            get => GetString(1061);
+        }
+        public string Option
+        {
+            get => GetString(1063);
+        }
+
         private string GetString(int templateId)
         {
             var template = TemplateContainer<LabelTemplate>.Find(templateId);

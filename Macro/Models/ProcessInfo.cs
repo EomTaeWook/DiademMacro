@@ -7,6 +7,6 @@ namespace Macro.Models
     public class ProcessInfo
     {
         public string ProcessName { get; set; }
-        public Rect Position { get; set; } = new Rect();
+        public IntRect Position { get; set; } = new IntRect();
     }
 }

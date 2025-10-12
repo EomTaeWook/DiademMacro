@@ -22,11 +22,22 @@
 
     public enum NotifyEventType
     {
+        ConfigChanged,
+        ScreenCaptureCompleted,
+        ROICaptureCompleted,
+        EventTriggerSaved,
+        MouseInteractionCaptured,
+
+        Max
+    }
+
+    public enum NotifyEventOldType
+    {
         ComboProcessChanged,
 
         ConfigChanged,
         MousePointDataBind,
-        ScreenCaptureDataBind,
+        ScreenCaptureCompleted,
         TreeItemOrderChanged,
         SelctTreeViewItemChanged,
         EventTriggerOrderChanged,
@@ -37,9 +48,7 @@
         Delete,
 
         TreeGridViewFocus,
-
-        UpdatedTime,
-        ROICaptureDataBind,
+        ROICaptureCompleted,
 
         Max
     }
@@ -47,8 +56,8 @@
     public enum RepeatType
     {
         Count,
-        NoSearchChild,
-        SearchParent,
+        RepeatOnChildEvent,
+        StopOnParentImage,
 
         Max
     }

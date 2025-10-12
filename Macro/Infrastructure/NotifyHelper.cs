@@ -1,78 +1,34 @@
-﻿using Dignus.Log;
-using Macro.Models;
+﻿using Macro.Models;
 using System;
 
 namespace Macro.Infrastructure
 {
-    public class NotifyHelper
+    internal class NotifyHelper
     {
-        public static event Action<UpdatedTimeArgs> UpdatedTime;
-
         public static event Action<ConfigEventArgs> ConfigChanged;
-        public static event Action<MousePointEventArgs> MousePositionDataBind;
-        public static event Action<CaptureEventArgs> ScreenCaptureDataBind;
-        public static event Action<EventTriggerOrderChangedEventArgs> TreeItemOrderChanged;
-        public static event Action<EventTriggerOrderChangedEventArgs> EventTriggerOrderChanged;
-        public static event Action<EventTriggerEventArgs> EventTriggerInserted;
-        public static event Action<EventTriggerEventArgs> EventTriggerRemoved;
-        public static event Action<ComboProcessChangedEventArgs> ComboProcessChanged;
-
-        public static event Action<SelctTreeViewItemChangedEventArgs> SelectTreeViewChanged;
-        public static event Action<SaveEventTriggerModelArgs> SaveEventTriggerModel;
-        public static event Action<DeleteEventTriggerModelArgs> DeleteEventTriggerModel;
-
-        public static event Action<TreeGridViewFocusEventArgs> TreeGridViewFocus;
-        public static event Action<ROICaptureEventArgs> ROICaptureDataBind;
-
-        public static void InvokeNotify(NotifyEventType eventType, INotifyEventArgs args)
+        public static event Action<CaptureCompletedEventArgs> ScreenCaptureCompleted;
+        public static event Action<ROICaptureCompletedEventArgs> ROICaptureCompleted;
+        public static event Action<EventInfoEventArgs> EventTriggerSaved;
+        public static event Action<MouseInteractionCapturedEventArgs> MouseInteractionCaptured;
+        public static void InvokeNotify(NotifyEventType eventType,
+            INotifyEventArgs args)
         {
             switch (eventType)
             {
                 case NotifyEventType.ConfigChanged:
                     ConfigChanged?.Invoke(args as ConfigEventArgs);
                     break;
-                case NotifyEventType.MousePointDataBind:
-                    MousePositionDataBind?.Invoke(args as MousePointEventArgs);
+                case NotifyEventType.ScreenCaptureCompleted:
+                    ScreenCaptureCompleted?.Invoke(args as CaptureCompletedEventArgs);
                     break;
-                case NotifyEventType.ScreenCaptureDataBind:
-                    ScreenCaptureDataBind?.Invoke(args as CaptureEventArgs);
+                case NotifyEventType.ROICaptureCompleted:
+                    ROICaptureCompleted?.Invoke(args as ROICaptureCompletedEventArgs);
                     break;
-                case NotifyEventType.TreeItemOrderChanged:
-                    TreeItemOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
+                case NotifyEventType.EventTriggerSaved:
+                    EventTriggerSaved?.Invoke(args as EventInfoEventArgs);
                     break;
-                case NotifyEventType.SelctTreeViewItemChanged:
-                    SelectTreeViewChanged?.Invoke(args as SelctTreeViewItemChangedEventArgs);
-                    break;
-                case NotifyEventType.EventTriggerOrderChanged:
-                    EventTriggerOrderChanged?.Invoke(args as EventTriggerOrderChangedEventArgs);
-                    break;
-                case NotifyEventType.EventTriggerInserted:
-                    EventTriggerInserted?.Invoke(args as EventTriggerEventArgs);
-                    break;
-                case NotifyEventType.EventTriggerRemoved:
-                    EventTriggerRemoved?.Invoke(args as EventTriggerEventArgs);
-                    break;
-                case NotifyEventType.Save:
-                    SaveEventTriggerModel?.Invoke(args as SaveEventTriggerModelArgs);
-                    break;
-                case NotifyEventType.Delete:
-                    DeleteEventTriggerModel?.Invoke(args as DeleteEventTriggerModelArgs);
-                    break;
-                case NotifyEventType.ComboProcessChanged:
-                    ComboProcessChanged?.Invoke(args as ComboProcessChangedEventArgs);
-                    break;
-                case NotifyEventType.TreeGridViewFocus:
-                    TreeGridViewFocus?.Invoke(args as TreeGridViewFocusEventArgs);
-                    break;
-                case NotifyEventType.UpdatedTime:
-                    UpdatedTime?.Invoke(args as UpdatedTimeArgs);
-                    break;
-                case NotifyEventType.ROICaptureDataBind:
-                    ROICaptureDataBind?.Invoke(args as ROICaptureEventArgs);
-                    break;
-                case NotifyEventType.Max:
-                default:
-                    LogHelper.Debug($"what the case?");
+                case NotifyEventType.MouseInteractionCaptured:
+                    MouseInteractionCaptured?.Invoke(args as MouseInteractionCapturedEventArgs);
                     break;
             }
         }

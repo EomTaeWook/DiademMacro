@@ -6,6 +6,7 @@ using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,7 +36,7 @@ namespace Macro.View
             var macroModeValues = Enum.GetValues(typeof(MacroModeType)).Cast<MacroModeType>();
             comboMacroMode.ItemsSource = macroModeValues;
 
-            DataContext = ServiceDispatcher.GetService<SettingViewModel>();
+            DataContext = ServiceResolver.GetService<SettingViewModel>();
         }
         private void SettingView_Loaded(object sender, RoutedEventArgs e)
         {
@@ -71,8 +72,8 @@ namespace Macro.View
         }
         private void Save(Config model)
         {
-            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
-            var fileService = ServiceDispatcher.GetService<FileService>();
+            var path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
+            var fileService = ServiceResolver.GetService<FileService>();
             var saved = fileService.SaveJson(path, model);
 
             if (saved == true)

@@ -40,7 +40,6 @@ namespace Macro
             };
             LogBuilder.Configuration(LogConfigXmlReader.Load("DignusLog.config"));
             LogBuilder.Build();
-            MovePatcherFile();
             Init();
             base.OnStartup(e);
         }
@@ -79,7 +78,8 @@ namespace Macro
         }
         private void DependenciesResolved()
         {
-            var path = Environment.CurrentDirectory + $@"\{ConstHelper.DefaultConfigFile}";
+            var path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
+
             if (!File.Exists(path))
             {
                 File.WriteAllText(path, JsonHelper.SerializeObject(new Config(), true));
@@ -92,15 +92,12 @@ namespace Macro
             serviceContainer.RegisterType(config);
 
             serviceContainer.RegisterType<FileService, FileService>();
-
             serviceContainer.RegisterType<IKeyboardInput, KeyboardInput>();
             serviceContainer.RegisterType<IMouseInput, MouseInput>();
-            serviceContainer.RegisterType(CacheDataManager.Instance);
 
             serviceContainer.RegisterType<EventSettingViewModel, EventSettingViewModel>();
             serviceContainer.RegisterType<SettingViewModel, SettingViewModel>();
-
-            ServiceDispatcher.SetContainer(serviceContainer);
+            ServiceResolver.SetContainer(serviceContainer);
 
             serviceContainer.Build();
         }

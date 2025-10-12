@@ -1,5 +1,6 @@
 ﻿using Dignus.Collections;
 using Dignus.Framework;
+using Macro.Infrastructure.Controller;
 using Macro.View;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -43,9 +44,10 @@ namespace Macro.Infrastructure.Manager
         private readonly ChildWindow _drawWindow = new ChildWindow();
 
         private readonly ArrayQueue<CaptureView> _captureViews = new ArrayQueue<CaptureView>();
-        private readonly ArrayQueue<MousePositionView> _mousePointViews = new ArrayQueue<MousePositionView>();
+        private readonly ArrayQueue<MousePositionView> _mouseInteractionViews = new ArrayQueue<MousePositionView>();
         private IntPtr _drawWindowHandle;
         private ScreenCaptureManager _screenCaptureManager;
+
         public ApplicationManager()
         {
             _mainWindow = Application.Current.MainWindow as MetroWindow;
@@ -55,7 +57,6 @@ namespace Macro.Infrastructure.Manager
                 RenderSize = _mainWindow.RenderSize
             };
         }
-
         public Window GetDrawWindow()
         {
             return _drawWindow;
@@ -67,7 +68,7 @@ namespace Macro.Infrastructure.Manager
         public void Init()
         {
             Application.Current.MainWindow.Unloaded += MainWindow_Unloaded;
-            _screenCaptureManager = ServiceDispatcher.GetService<ScreenCaptureManager>();
+            _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
             _drawWindow.Opacity = 0;
 #if DEBUG
             _drawWindow.Opacity = 1;
@@ -79,7 +80,6 @@ namespace Macro.Infrastructure.Manager
             ResetMonitorViews();
 
             _drawWindowHandle = new WindowInteropHelper(_drawWindow).Handle;
-            SchedulerManager.Instance.Start();
         }
         private void ResetMonitorViews()
         {
@@ -87,39 +87,40 @@ namespace Macro.Infrastructure.Manager
             {
                 item.Close();
             }
-            foreach (var item in _mousePointViews)
+            foreach (var item in _mouseInteractionViews)
             {
                 item.Close();
             }
             _captureViews.Clear();
-            _mousePointViews.Clear();
+            _mouseInteractionViews.Clear();
 
             foreach (var item in _screenCaptureManager.GetMonitorInfo())
             {
                 _captureViews.Add(new CaptureView(item));
-                _mousePointViews.Add(new MousePositionView(item));
+                _mouseInteractionViews.Add(new MousePositionView(item));
             }
         }
         private void MainWindow_Unloaded(object sender, RoutedEventArgs e)
         {
             Dispose();
         }
-        public void ShowMousePointView()
+        public void ShowAndActivateMousePositionViews()
         {
-            foreach (var item in _mousePointViews)
+            ResetMonitorViews();
+            foreach (var item in _mouseInteractionViews)
             {
-                item.ShowActivate();
+                item.ShowAndActivate();
             }
         }
-        public void CloseMousePointView()
+        public void CloseMousePositionViews()
         {
-            foreach (var item in _mousePointViews)
+            foreach (var item in _mouseInteractionViews)
             {
                 item.Hide();
             }
         }
 
-        public void ShowImageCaptureView()
+        public void ShowCaptureImageViews()
         {
             ResetMonitorViews();
 
@@ -129,8 +130,10 @@ namespace Macro.Infrastructure.Manager
             }
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
-        public void ShowSetROIView()
+        public void ShowSetROIViews()
         {
+            ResetMonitorViews();
+
             foreach (var item in _captureViews)
             {
                 item.ShowActivate(CaptureModeType.ROICapture);
@@ -150,13 +153,13 @@ namespace Macro.Infrastructure.Manager
         public void Dispose()
         {
             _drawWindow.Close();
-            SchedulerManager.Instance.Stop();
             _progress.Close();
+            CoroutineRunner.Dispose();
             foreach (var item in _captureViews)
             {
                 item.Close();
             }
-            foreach (var item in _mousePointViews)
+            foreach (var item in _mouseInteractionViews)
             {
                 item.Close();
             }

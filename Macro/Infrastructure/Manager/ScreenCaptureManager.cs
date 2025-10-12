@@ -17,10 +17,6 @@ namespace Macro.Infrastructure.Manager
     [Injectable(Dignus.DependencyInjection.LifeScope.Singleton)]
     public class ScreenCaptureManager
     {
-        public ScreenCaptureManager()
-        {
-
-        }
         public bool CaptureProcessWindow(Process process, out Bitmap bitmap)
         {
             bitmap = null;
@@ -51,13 +47,13 @@ namespace Macro.Infrastructure.Manager
             return bitmap != null;
         }
 
-        public Rect AdjustRectForDPI(Utils.Infrastructure.Rectangle rect, MonitorInfo monitorInfo)
+        public IntRect AdjustRectForDPI(Utils.Infrastructure.Rectangle rect, MonitorInfo monitorInfo)
         {
             var factor = NativeHelper.GetSystemDPI();
             var factorX = 1.0F * factor.X / monitorInfo.Dpi.X;
             var factorY = 1.0F * factor.Y / monitorInfo.Dpi.Y;
 
-            var newRect = new Rect()
+            var newRect = new IntRect()
             {
                 Left = Convert.ToInt32(rect.Left * factorX),
                 Top = Convert.ToInt32(rect.Top * factorY),
@@ -73,7 +69,7 @@ namespace Macro.Infrastructure.Manager
             int index = 0;
 
             NativeHelper.EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero,
-                (IntPtr hMonitor, IntPtr hdcMonitor, ref Rect rect, int data) =>
+                (IntPtr hMonitor, IntPtr hdcMonitor, ref IntRect rect, int data) =>
                 {
                     DisplayDevice displayDevice = new DisplayDevice();
                     displayDevice.cb = Marshal.SizeOf(displayDevice);
@@ -119,7 +115,7 @@ namespace Macro.Infrastructure.Manager
                 }
 
                 NativeHelper.DwmQueryThumbnailSourceSize(thumbHandle, out InterSize size);
-                var destRect = new Rect
+                var destRect = new IntRect
                 {
                     Right = size.X,
                     Bottom = size.Y
@@ -138,7 +134,7 @@ namespace Macro.Infrastructure.Manager
                 };
                 NativeHelper.DwmUpdateThumbnailProperties(thumbHandle, ref props);
 
-                var currentRect = new Rect();
+                var currentRect = new IntRect();
                 NativeHelper.GetWindowRect(drawHandle, ref currentRect);
 
                 currentRect.Right = currentRect.Left + size.X;
@@ -198,7 +194,7 @@ namespace Macro.Infrastructure.Manager
         private Bitmap ApplyDPI(IntPtr hWnd, bool useMonitorDPI)
         {
             var factor = NativeHelper.GetSystemDPI();
-            Rect rect = new Rect();
+            IntRect rect = new IntRect();
             NativeHelper.GetWindowRect(hWnd, ref rect);
             if (rect.Width == 0 || rect.Height == 0)
             {

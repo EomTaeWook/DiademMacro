@@ -4,6 +4,7 @@ using Dignus.Log;
 using Dignus.Utils;
 using Dignus.Utils.Extensions;
 using Macro.Extensions;
+using Macro.Infrastructure.Interface;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,15 @@ using Utils.Infrastructure;
 namespace Macro.Infrastructure.Controller
 {
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
-    public class InputEventProcessorHandler
+    public class InputEventExecutor
     {
         private readonly RandomGenerator _randomGenerator;
-        private readonly InputController _inputController;
-        public InputEventProcessorHandler(InputController inputController)
+        public IKeyboardInput Keyboard { get; private set; }
+        public IMouseInput Mouse { get; private set; }
+        public InputEventExecutor(IKeyboardInput keyboardInput, IMouseInput mouse)
         {
-            _inputController = inputController;
+            Keyboard = keyboardInput;
+            Mouse = mouse;
             _randomGenerator = new RandomGenerator();
         }
         public int GetRandomValue(int minValue, int maxValue)
@@ -38,67 +41,67 @@ namespace Macro.Infrastructure.Controller
                 return _randomGenerator.Next(minValue, maxValue);
             }
         }
-        public void HandleMouseEvent(IntPtr hWnd,
-            EventTriggerModel model,
+        public void ProcessMouseEvent(IntPtr hWnd,
+            EventInfoModel model,
             Point2D matchedLocation,
             ApplicationTemplate applicationTemplate,
             int dragDelay)
         {
-            var processLocation = new Utils.Infrastructure.Rect();
+            var processLocation = new IntRect();
             NativeHelper.GetWindowRect(hWnd, ref processLocation);
 
-            var currentProcessLocation = model.ProcessInfo.Position -
-processLocation;
-
+            var currentProcessLocation = model.ProcessInfo.Position - processLocation;
 
             if (model.HardClick == false)
             {
                 matchedLocation.X = applicationTemplate.OffsetX;
                 matchedLocation.Y = applicationTemplate.OffsetY;
-                MouseTriggerProcess(hWnd, matchedLocation, model, dragDelay);
+                ProcessMouseEvent(hWnd, matchedLocation, model, dragDelay);
             }
             else
             {
                 var clickPoint = new Point2D
                 {
-                    X = model.MouseTriggerInfo.StartPoint.X - currentProcessLocation.Left,
-                    Y = model.MouseTriggerInfo.StartPoint.Y - currentProcessLocation.Top
+                    X = model.MouseEventInfo.MousePoint.X - currentProcessLocation.Left,
+                    Y = model.MouseEventInfo.MousePoint.Y - currentProcessLocation.Top
                 };
-                HardClickProcess(clickPoint, model.MouseTriggerInfo.MouseInfoEventType);
+                ProcessHardClick(clickPoint, model.MouseEventInfo.MouseEventType);
             }
         }
 
-        public void HandleRelativeToImageEvent(IntPtr hWnd,
-            EventTriggerModel model,
-            Point matchedLocation,
+        public void ProcessRelativeToImageEvent(IntPtr hWnd,
+            EventInfoModel model,
+            Point2D matchedLocation,
             ApplicationTemplate applicationTemplate)
         {
             matchedLocation.X = (matchedLocation.X + applicationTemplate.OffsetX) + (model.Image.Width / 2);
             matchedLocation.Y = (matchedLocation.Y + applicationTemplate.OffsetY) + (model.Image.Height / 2);
 
-            ImageTriggerProcess(hWnd,
-                matchedLocation,
-                model);
+            matchedLocation.X += model.PositionRelativeToImage.X;
+            matchedLocation.Y += model.PositionRelativeToImage.Y;
+
+            ProcessImageEvent(hWnd,
+                matchedLocation);
         }
 
-        public void HandleImageEvent(IntPtr hWnd,
-            EventTriggerModel model,
+        public void ProcessImageEvent(IntPtr hWnd,
+            EventInfoModel model,
             Point2D matchedLocation,
             ApplicationTemplate applicationTemplate)
         {
-            var percentageX = _randomGenerator.NextDouble();
-            var percentageY = _randomGenerator.NextDouble();
+            var percentageX = (int)_randomGenerator.NextDouble();
+            var percentageY = (int)_randomGenerator.NextDouble();
 
             matchedLocation.X = (matchedLocation.X + applicationTemplate.OffsetX) + (model.Image.Width * percentageX);
             matchedLocation.Y = (matchedLocation.Y + applicationTemplate.OffsetY) + (model.Image.Height * percentageY);
 
             if (model.HardClick == false)
             {
-                ImageTriggerProcess(hWnd, matchedLocation, model);
+                ProcessImageEvent(hWnd, matchedLocation);
             }
             else
             {
-                var processLocation = new Utils.Infrastructure.Rect();
+                var processLocation = new Utils.Infrastructure.IntRect();
                 NativeHelper.GetWindowRect(hWnd, ref processLocation);
 
                 var clickPoint = new Point2D()
@@ -106,54 +109,50 @@ processLocation;
                     X = matchedLocation.X,
                     Y = matchedLocation.Y
                 };
-                clickPoint.X += processLocation.Left + model.MouseTriggerInfo.StartPoint.X;
-                clickPoint.Y += processLocation.Top + model.MouseTriggerInfo.StartPoint.Y;
-                HardClickProcess(clickPoint, MouseEventType.LeftClick);
+                clickPoint.X += processLocation.Left + model.MouseEventInfo.MousePoint.X;
+                clickPoint.Y += processLocation.Top + model.MouseEventInfo.MousePoint.Y;
+                ProcessHardClick(clickPoint, model.MouseEventInfo.MouseEventType);
             }
         }
 
-        private void ImageTriggerProcess(IntPtr hWnd,
-                                        Point location,
-                                        EventTriggerModel model)
+        private void ProcessImageEvent(IntPtr hWnd,
+                                        Point2D location)
         {
-            var position = new Point2D(location.X + model.MouseTriggerInfo.StartPoint.X,
-                location.Y + model.MouseTriggerInfo.StartPoint.Y);
+            LogHelper.Debug($">>>>Image Location X : {location.X} Location Y : {location.Y}");
 
-            LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
-
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, location.ToLParam());
             Task.Delay(10).GetResult();
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, location.ToLParam());
         }
-        public void HardClickProcess(Point clickPoint, MouseEventType mouseEventType)
+        public void ProcessHardClick(Point clickPoint, MouseEventType mouseEventType)
         {
             var currentPosition = NativeHelper.GetCursorPosition();
 
             if (mouseEventType == MouseEventType.LeftClick)
             {
-                _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
-                _inputController.Mouse.LeftButtonDown();
+                Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+                Mouse.LeftButtonDown();
                 Task.Delay(10).GetResult();
-                _inputController.Mouse.LeftButtonUp();
-                _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+                Mouse.LeftButtonUp();
+                Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
             }
             else if (mouseEventType == MouseEventType.RightClick)
             {
-                _inputController.Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
-                _inputController.Mouse.RightButtonDown();
+                Mouse.MoveMouseTo((int)clickPoint.X, (int)clickPoint.Y);
+                Mouse.RightButtonDown();
                 Task.Delay(10).GetResult();
-                _inputController.Mouse.RightButtonUp();
-                _inputController.Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
+                Mouse.RightButtonUp();
+                Mouse.MoveMouseTo((int)currentPosition.X, (int)currentPosition.Y);
             }
             else
             {
                 LogHelper.Error($"unsupported MouseEventType: {mouseEventType}");
             }
         }
-        public void SameImageMouseDragTriggerProcess(IntPtr hWnd,
+        public void ProcessSameImageMouseDragEvent(IntPtr hWnd,
                                             Point2D start,
                                             Point2D arrive,
-                                            EventTriggerModel model,
+                                            EventInfoModel model,
                                             int dragDelay)
         {
             LogHelper.Debug($">>>>Same Drag Mouse Start Target X : {arrive.X} Target Y : {arrive.Y}");
@@ -195,7 +194,7 @@ processLocation;
             while (recent.Subtract(arrive).Length > interval)
             {
                 LogHelper.Debug($">>> Get Middle Interval Drag Mouse : {recent.Subtract(arrive).Length}");
-                double middleX;
+                int middleX;
                 if (recent.X > arrive.X)
                 {
                     middleX = recent.X - interval;
@@ -209,7 +208,7 @@ processLocation;
                     middleX = recent.X;
                 }
 
-                double middleY;
+                int middleY;
                 if (recent.Y > arrive.Y)
                 {
                     middleY = recent.Y - interval;
@@ -229,67 +228,49 @@ processLocation;
 
             return middlePosition;
         }
-        private void MouseTriggerProcess(IntPtr hWnd, Point location, EventTriggerModel model, int dragDelay)
+        private void ProcessMouseEvent(IntPtr hWnd, Point location, EventInfoModel model, int dragDelay)
         {
-            var mousePosition = new Point2D(Math.Abs(model.ProcessInfo.Position.Left + (model.MouseTriggerInfo.StartPoint.X + location.X) * -1),
-                Math.Abs(model.ProcessInfo.Position.Top + (model.MouseTriggerInfo.StartPoint.Y + location.Y) * -1));
+            var mousePosition = new Point2D(Math.Abs(model.ProcessInfo.Position.Left + (model.MouseEventInfo.MousePoint.X + location.X) * -1),
+                Math.Abs(model.ProcessInfo.Position.Top + (model.MouseEventInfo.MousePoint.Y + location.Y) * -1));
 
-            if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.LeftClick)
+            if (model.MouseEventInfo.MouseEventType == MouseEventType.LeftClick)
             {
-                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
+                LogHelper.Debug($">>>>LMouse Save Position X : {model.MouseEventInfo.MousePoint.X} Save Position Y : {model.MouseEventInfo.MousePoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
 
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).GetResult();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
             }
-            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.RightClick)
+            else if (model.MouseEventInfo.MouseEventType == MouseEventType.RightClick)
             {
-                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
+                LogHelper.Debug($">>>>RMouse Save Position X : {model.MouseEventInfo.MousePoint.X} Save Position Y : {model.MouseEventInfo.MousePoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).GetResult();
                 NativeHelper.PostMessage(hWnd, WindowMessage.RButtonDown, 0, mousePosition.ToLParam());
             }
-            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Drag)
+            else if (model.MouseEventInfo.MouseEventType == MouseEventType.Drag)
             {
-                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
+                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseEventInfo.MousePoint.X} Save Position Y : {model.MouseEventInfo.MousePoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
                 Task.Delay(10).GetResult();
-                for (int i = 0; i < model.MouseTriggerInfo.MiddlePoint.Count; ++i)
+                for (int i = 0; i < model.MouseEventInfo.MousePoints.Count; ++i)
                 {
-                    var x = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.MiddlePoint[i].X * -1);
-                    var y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.MiddlePoint[i].Y * -1);
+                    var x = Math.Abs(model.ProcessInfo.Position.Left + model.MouseEventInfo.MousePoints[i].X * -1);
+                    var y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseEventInfo.MousePoints[i].Y * -1);
                     mousePosition = new Point2D(x, y);
 
                     NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                     Task.Delay(dragDelay).GetResult();
                 }
 
-                {
-                    var x = Math.Abs(model.ProcessInfo.Position.Left + model.MouseTriggerInfo.EndPoint.X * -1);
-                    var y = Math.Abs(model.ProcessInfo.Position.Top + model.MouseTriggerInfo.EndPoint.Y * -1);
-                    mousePosition = new Point2D(x, y);
-                }
-
                 NativeHelper.PostMessage(hWnd, WindowMessage.MouseMove, 1, mousePosition.ToLParam());
                 Task.Delay(10).GetResult();
                 NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-                LogHelper.Debug($">>>>Drag Mouse Save Position X : {model.MouseTriggerInfo.EndPoint.X} Save Position Y : {model.MouseTriggerInfo.EndPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
-            }
-            else if (model.MouseTriggerInfo.MouseInfoEventType == MouseEventType.Wheel)
-            {
-                LogHelper.Debug($">>>>Wheel Save Position X : {model.MouseTriggerInfo.StartPoint.X} Save Position Y : {model.MouseTriggerInfo.StartPoint.Y} Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
-
-                //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, mousePosition.ToLParam());
-                //Task.Delay(100).Wait();
-                //NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, mousePosition.ToLParam());
-                //NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam((uint)WindowMessage.MKControl, (uint)(model.MouseTriggerInfo.WheelData * -1)), 0);
-                //var hwnd = NativeHelper.FindWindowEx(NativeHelper.FindWindow(null, "Test.txt - 메모장"), IntPtr.Zero, "Edit", null);
-                //var p = new System.Drawing.Point(0, 0);
-                NativeHelper.PostMessage(hWnd, WindowMessage.MouseWheel, ObjectExtensions.MakeWParam(0, model.MouseTriggerInfo.WheelData * ConstHelper.WheelDelta), mousePosition.ToLParam());
+                LogHelper.Debug($">>>>Drag Mouse Target X : {mousePosition.X} Target Y : {mousePosition.Y}");
             }
         }
 
-        public void KeyboardTriggerProcess(IntPtr hWnd, EventTriggerModel model)
+        public void ProcessKeyboardEvent(IntPtr hWnd, EventInfoModel model)
         {
             var hWndActive = NativeHelper.GetForegroundWindow();
             NativeHelper.SetForegroundWindow(hWnd);
@@ -337,7 +318,7 @@ processLocation;
                 return keyCode;
             }).ToArray();
 
-            _inputController.Keyboard.ModifiedKeyStroke(modifiedKey, keys);
+            Keyboard.ModifiedKeyStroke(modifiedKey, keys);
             LogHelper.Debug($">>>>Keyboard Event");
             NativeHelper.SetForegroundWindow(hWndActive);
         }

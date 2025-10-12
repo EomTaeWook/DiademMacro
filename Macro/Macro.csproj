@@ -123,8 +123,7 @@
     <Reference Include="Dignus">
       <HintPath>..\Dll\Dignus.dll</HintPath>
     </Reference>
-    <Reference Include="Dignus.Log, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Dignus.Log">
       <HintPath>..\Dll\Dignus.Log.dll</HintPath>
     </Reference>
     <Reference Include="Dignus.Utils">
@@ -150,6 +149,9 @@
     </Reference>
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.135\lib\net462\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.4.11.0.20250507\lib\net48\OpenCvSharp.dll</HintPath>
@@ -195,6 +197,9 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
@@ -219,16 +224,18 @@
     <Compile Include="Extensions\MessageTemplateExtensions.cs" />
     <Compile Include="Extensions\InnerPointExtensions.cs" />
     <Compile Include="Extensions\StringTemplateExtensions.cs" />
+    <Compile Include="Infrastructure\Controller\BatchModeController.cs" />
+    <Compile Include="Infrastructure\Controller\InputEventExecutor.cs" />
+    <Compile Include="Infrastructure\Controller\MacroExecutionController.cs" />
     <Compile Include="Infrastructure\Controller\MacroModeControllerBase.cs" />
     <Compile Include="Infrastructure\Controller\SequentialModeController.cs" />
+    <Compile Include="Infrastructure\Controller\SelectionStateController.cs" />
+    <Compile Include="Infrastructure\Manager\CoroutineRunner.cs" />
     <Compile Include="Infrastructure\Interface\IMacroModeController.cs" />
-    <Compile Include="Infrastructure\Controller\BatchModeController.cs" />
-    <Compile Include="Infrastructure\Controller\ContentController.cs" />
     <Compile Include="Extensions\EventTriggerModelExtensions.cs" />
     <Compile Include="Extensions\KeyCodeExtension.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\SizeObserver.cs" />
-    <Compile Include="Infrastructure\Controller\InputEventProcessorHandler.cs" />
     <Compile Include="Infrastructure\Manager\AdManager.cs" />
     <Compile Include="Infrastructure\Manager\WebApiManager.cs" />
     <Compile Include="Infrastructure\Manager\ApplicationManager.cs" />
@@ -242,39 +249,38 @@
     <Compile Include="Infrastructure\Interface\IMouseInput.cs" />
     <Compile Include="Infrastructure\KeyboardInput.cs" />
     <Compile Include="Infrastructure\Manager\CacheDataManager.cs" />
-    <Compile Include="Infrastructure\Controller\InputController.cs" />
-    <Compile Include="Infrastructure\Manager\SchedulerManager.cs" />
-    <Compile Include="Infrastructure\Manager\ServiceDispatcher.cs" />
+    <Compile Include="Infrastructure\Manager\ServiceResolver.cs" />
     <Compile Include="Infrastructure\Manager\UIManager.cs" />
     <Compile Include="Infrastructure\MouseInput.cs" />
     <Compile Include="Infrastructure\NotifyHelper.cs" />
     <Compile Include="Infrastructure\OpenCVHelper.cs" />
+    <Compile Include="Infrastructure\Serialize\TypeRedirectBinder.cs" />
     <Compile Include="Infrastructure\TaskHelper.cs" />
+    <Compile Include="Models\Converters\EventModelConverter.cs" />
+    <Compile Include="Models\EventInfoModel.cs" />
+    <Compile Include="Models\EventTriggerModel.cs" />
+    <Compile Include="Models\ViewModel\OptionDialogViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\ColorModel.cs" />
-    <Compile Include="Models\EventFactorModel.cs" />
     <Compile Include="Models\EventResult.cs" />
     <Compile Include="Models\PointModel.cs" />
-    <Compile Include="Models\ProcessResult.cs" />
-    <Compile Include="Models\ProcessResultModel.cs" />
+    <Compile Include="Models\ProcessItem.cs" />
     <Compile Include="Models\Protocols\Protocol.CS.cs" />
     <Compile Include="Models\Protocols\Protocol.SC.cs" />
     <Compile Include="Models\RepeatInfoModel.cs" />
     <Compile Include="Infrastructure\Serialize\Attributes.cs" />
     <Compile Include="Infrastructure\Serialize\ObjectSerializer.cs" />
     <Compile Include="Models\EventArgsModel.cs" />
-    <Compile Include="Models\MouseTriggerInfo.cs" />
+    <Compile Include="Models\MouseEventInfo.cs" />
     <Compile Include="Models\ProcessInfo.cs" />
     <Compile Include="Infrastructure\VersionNote.cs" />
     <Compile Include="Models\RoiModel.cs" />
     <Compile Include="Models\LabelLocator.cs" />
+    <Compile Include="Models\ViewModel\EventListViewModel.cs" />
     <Compile Include="Models\ViewModel\MainViewModel.cs" />
     <Compile Include="UI\UIItem.cs" />
-    <Compile Include="Models\ValueConditionModel.cs" />
-    <Compile Include="Models\ViewModel\LabelViewModel.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
     <Compile Include="Models\ViewModel\EventSettingViewModel.cs" />
     <Compile Include="Models\ViewModel\SettingViewModel.cs" />
@@ -287,14 +293,17 @@
     <Compile Include="View\CloseButtonWindow.xaml.cs">
       <DependentUpon>CloseButtonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ContentView.xaml.cs">
-      <DependentUpon>ContentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\EventSettingView.xaml.cs">
-      <DependentUpon>EventSettingView.xaml</DependentUpon>
+    <Compile Include="View\EventListView.xaml.cs">
+      <DependentUpon>EventListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MousePositionView.xaml.cs">
       <DependentUpon>MousePositionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OptionDialog.xaml.cs">
+      <DependentUpon>OptionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ImagePreviewPanel.xaml.cs">
+      <DependentUpon>ImagePreviewPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -331,15 +340,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ContentView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="View\EventListView.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\EventSettingView.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MousePositionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\OptionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ImagePreviewPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -358,7 +371,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Config.cs" />
-    <Compile Include="Models\EventTriggerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -396,6 +408,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /S/Y "$(SolutionDir)Datas\*.json" "$(TargetDir)Datas\"
@@ -422,14 +435,14 @@ del /S/Q $(SolutionDir)Release\exe\Datas\VersionNote.json
 IF EXIST $(SolutionDir)\Release\exe\ rd /S/Q $(SolutionDir)Release\exe
 mkdir $(SolutionDir)Release\exe )</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3485.44\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3485.44\build\Microsoft.Web.WebView2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.3485.44\build\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.3485.44\build\Microsoft.Web.WebView2.targets'))" />
     <Error Condition="!Exists('..\packages\OpenCvSharp4.runtime.win.4.11.0.20250507\build\net48\OpenCvSharp4.runtime.win.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCvSharp4.runtime.win.4.11.0.20250507\build\net48\OpenCvSharp4.runtime.win.props'))" />
     <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.Web.WebView2.1.0.3485.44\build\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.3485.44\build\Microsoft.Web.WebView2.targets')" />
   <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
 </Project>

@@ -181,13 +181,13 @@
   },
   {
     "Id": 1030,
-    "Name": "NoSearchChild",
+    "Name": "RepeatOnChildEvent",
     "Kor": "자식 이벤트 실행 시 반복",
     "Eng": "Repeat when child event runs"
   },
   {
     "Id": 1031,
-    "Name": "SearchParent",
+    "Name": "StopOnParentImage",
     "Kor": "부모 이미지 검색 시 종료",
     "Eng": "End when parent image is found"
   },
@@ -332,31 +332,67 @@
   {
     "Id": 1055,
     "Name": "1055",
-    "Kor": "취소",
-    "Eng": "Cancel"
-  },
-  {
-    "Id": 1056,
-    "Name": "1056",
     "Kor": "동일한 내용 추가",
     "Eng": "Add the same content"
   },
   {
-    "Id": 1057,
-    "Name": "1057",
+    "Id": 1056,
+    "Name": "1056",
     "Kor": "일반",
     "Eng": "Common"
   },
   {
-    "Id": 1058,
-    "Name": "1058",
+    "Id": 1057,
+    "Name": "1057",
     "Kor": "MacroMode",
     "Eng": "MacroMode"
   },
   {
-    "Id": 1059,
-    "Name": "1059",
+    "Id": 1058,
+    "Name": "1058",
     "Kor": "키보드 딜레이(ms)",
     "Eng": "KeyboardDelay(ms)"
+  },
+  {
+    "Id": 1059,
+    "Name": "1059",
+    "Kor": "추가",
+    "Eng": "Addition"
+  },
+  {
+    "Id": 1060,
+    "Name": "1060",
+    "Kor": "제거",
+    "Eng": "Removal"
+  },
+  {
+    "Id": 1061,
+    "Name": "1061",
+    "Kor": "복사",
+    "Eng": "Copy"
+  },
+  {
+    "Id": 1062,
+    "Name": "1062",
+    "Kor": "알림",
+    "Eng": "Alert"
+  },
+  {
+    "Id": 1063,
+    "Name": "1063",
+    "Kor": "옵션",
+    "Eng": "Option"
+  },
+  {
+    "Id": 1064,
+    "Name": "1064",
+    "Kor": "관심영역",
+    "Eng": "Roi"
+  },
+  {
+    "Id": 1065,
+    "Name": "1065",
+    "Kor": "이미지 뷰어 보기",
+    "Eng": "Show Image Viewer"
   }
 ]
