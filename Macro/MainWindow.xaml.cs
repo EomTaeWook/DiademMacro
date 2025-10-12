@@ -446,6 +446,14 @@ namespace Macro
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
+            var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
+
+            if (selectionStateController.SelectTreeGridViewItem != null)
+            {
+                selectionStateController.UnselectTreeGridViewItem();
+                RefreshEventItemButton();
+            }
+
             Dispatcher.Invoke(() =>
             {
                 var buttons = this.FindChildren<Button>();
@@ -463,7 +471,7 @@ namespace Macro
                 btnStart.Visibility = Visibility.Collapsed;
                 var viewModel = eventListView.DataContext<EventListViewModel>();
                 var eventInfos = new ArrayQueue<EventInfoModel>(viewModel.EventItems.Count);
-                eventInfos.AddRange(viewModel.EventItems);
+                eventInfos.AddRange(viewModel.EventItems.Where(r => r.IsChecked == true));
                 _macroExecutionController.Start(eventInfos);
             });
         }

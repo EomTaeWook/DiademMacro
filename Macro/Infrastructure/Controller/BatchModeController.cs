@@ -168,7 +168,7 @@ namespace Macro.Infrastructure.Controller
             {
                 if (eventInfoModel.EventType == EventType.Mouse)
                 {
-                    _eventProcessorHandler.HandleMouseEvent(windowHandle,
+                    _eventProcessorHandler.ProcessMouseEvent(windowHandle,
                         eventInfoModel,
                         matchedLocation,
                         template,
@@ -176,14 +176,14 @@ namespace Macro.Infrastructure.Controller
                 }
                 else if (eventInfoModel.EventType == EventType.Image)
                 {
-                    _eventProcessorHandler.HandleImageEvent(windowHandle,
+                    _eventProcessorHandler.ProcessImageEvent(windowHandle,
                         eventInfoModel,
                         matchedLocation,
                         template);
                 }
                 else if (eventInfoModel.EventType == EventType.RelativeToImage)
                 {
-                    _eventProcessorHandler.HandleRelativeToImageEvent(windowHandle,
+                    _eventProcessorHandler.ProcessRelativeToImageEvent(windowHandle,
                         eventInfoModel,
                         matchedLocation,
                         template);

@@ -41,7 +41,7 @@ namespace Macro.Infrastructure.Controller
                 return _randomGenerator.Next(minValue, maxValue);
             }
         }
-        public void HandleMouseEvent(IntPtr hWnd,
+        public void ProcessMouseEvent(IntPtr hWnd,
             EventInfoModel model,
             Point2D matchedLocation,
             ApplicationTemplate applicationTemplate,
@@ -69,20 +69,22 @@ namespace Macro.Infrastructure.Controller
             }
         }
 
-        public void HandleRelativeToImageEvent(IntPtr hWnd,
+        public void ProcessRelativeToImageEvent(IntPtr hWnd,
             EventInfoModel model,
-            Point matchedLocation,
+            Point2D matchedLocation,
             ApplicationTemplate applicationTemplate)
         {
             matchedLocation.X = (matchedLocation.X + applicationTemplate.OffsetX) + (model.Image.Width / 2);
             matchedLocation.Y = (matchedLocation.Y + applicationTemplate.OffsetY) + (model.Image.Height / 2);
 
+            matchedLocation.X += model.PositionRelativeToImage.X;
+            matchedLocation.Y += model.PositionRelativeToImage.Y;
+
             ProcessImageEvent(hWnd,
-                matchedLocation,
-                model);
+                matchedLocation);
         }
 
-        public void HandleImageEvent(IntPtr hWnd,
+        public void ProcessImageEvent(IntPtr hWnd,
             EventInfoModel model,
             Point2D matchedLocation,
             ApplicationTemplate applicationTemplate)
@@ -95,7 +97,7 @@ namespace Macro.Infrastructure.Controller
 
             if (model.HardClick == false)
             {
-                ProcessImageEvent(hWnd, matchedLocation, model);
+                ProcessImageEvent(hWnd, matchedLocation);
             }
             else
             {
@@ -114,17 +116,13 @@ namespace Macro.Infrastructure.Controller
         }
 
         private void ProcessImageEvent(IntPtr hWnd,
-                                        Point location,
-                                        EventInfoModel model)
+                                        Point2D location)
         {
-            var position = new Point2D(location.X + model.MouseEventInfo.MousePoint.X,
-                location.Y + model.MouseEventInfo.MousePoint.Y);
+            LogHelper.Debug($">>>>Image Location X : {location.X} Location Y : {location.Y}");
 
-            LogHelper.Debug($">>>>Image Location X : {position.X} Location Y : {position.Y}");
-
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, position.ToLParam());
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonDown, 1, location.ToLParam());
             Task.Delay(10).GetResult();
-            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, position.ToLParam());
+            NativeHelper.PostMessage(hWnd, WindowMessage.LButtonUp, 0, location.ToLParam());
         }
         public void ProcessHardClick(Point clickPoint, MouseEventType mouseEventType)
         {
