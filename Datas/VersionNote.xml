@@ -2,9 +2,14 @@
   <Version>
     <Major>2</Major>
     <Minor>7</Minor>
-    <Build>0</Build>
+    <Build>1</Build>
   </Version>
   <Description>
+  2.7.1
+  사용 중인 라이브러리 업데이트
+
+  Updated libraries in use
+
   2.7.0
   모니터 전원 꺼짐 지원:
     - 모니터가 꺼진 상태에서도 프로세스 캡처를 지원하도록 수정되었습니다.
@@ -12,15 +17,5 @@
 
   Monitor Power-Off Support:
     - Updated to allow process capture even when the monitor is powered off, provided the process window is not minimized and the corresponding process is running.
-
-  2.6.20
-  설정에 매크로 모드가 추가되었습니다.
-    - 배치 모드(기본) : 프로세스 화면을 캡처 하고 저장한 아이템 리스트 순회하면서 이미지 찾음 -> 이벤트 발생
-    - 순회 모드 : 아이템 리스트를 순회하면서 프로세스 화면을 캡처하고 비교 이미지 찾음 -> 이벤트 발생
-
-  A macro mode has been added to the settings. 
-    - Batch Mode(default) : Captures the process screen and iterates through the saved item list to find matching images -> triggers an event.
-    - Sequential Mode : Iterates through the item list while capturing the process screen and searching for comparison images -> triggers an event.
-    
   </Description>
 </VersionNote>
