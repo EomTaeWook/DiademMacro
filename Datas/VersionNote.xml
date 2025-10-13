@@ -6,9 +6,9 @@
   </Version>
   <Description>
     3.0.0
-    UI 개선
+    기존의 UI를 변경했습니다. 조금 더 직관적으로 이벤트를 구성합니다.
 
-    UI improvements
+    The existing UI has been updated to organize events in a more intuitive way.
 
     2.7.1
     사용 중인 라이브러리 업데이트
