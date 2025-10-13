@@ -97,7 +97,6 @@
   <ItemGroup>
     <Compile Include="ConstHelper.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
-    <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Infrastructure\DisplayDevice.cs" />
     <Compile Include="Infrastructure\DWMThumbnailProperties.cs" />
     <Compile Include="Infrastructure\InputBuilder.cs" />
