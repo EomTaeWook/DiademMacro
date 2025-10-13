@@ -38,11 +38,8 @@ namespace Utils
         public static string SerializeObject(object obj, bool pretty = false)
         {
             var formatting = pretty ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
-#if DEBUG
+
             return Newtonsoft.Json.JsonConvert.SerializeObject(obj, formatting, _jsonSerializerSettings);
-#else
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj, formatting, setting);
-#endif
         }
     }
 }
