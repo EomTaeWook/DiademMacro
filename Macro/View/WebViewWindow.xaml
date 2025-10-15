@@ -1,0 +1,16 @@
+﻿<mah:MetroWindow x:Class="Macro.View.WebViewWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+                 Title="Web"
+                 WindowStartupLocation="CenterOwner"
+                 ResizeMode="NoResize"
+                 ShowCloseButton="False"
+                 SizeToContent="Manual"
+                 Width="600" Height="600"
+                 WindowState="Normal">
+    <Grid>
+        <wv2:WebView2 x:Name="webViewControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+    </Grid>
+</mah:MetroWindow>

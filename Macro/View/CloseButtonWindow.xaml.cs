@@ -8,31 +8,31 @@ namespace Macro.View
     /// </summary>
     public partial class CloseButtonWindow : Window
     {
-        private readonly Window _mainWindow;
         private Action _onCloseCallback;
-        public CloseButtonWindow(Window mainWindow,
-            Action onCloseCallback)
+        public CloseButtonWindow(Action onCloseCallback)
         {
             InitializeComponent();
             this.Loaded += CloseButtonWindow_Loaded;
-            this.Owner = mainWindow;
-            _mainWindow = mainWindow;
             _onCloseCallback = onCloseCallback;
+        }
+        public void SetOwner(Window owner)
+        {
+            this.Owner = owner;
         }
 
         private void CloseButtonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _mainWindow.LocationChanged += MainWindow_LocationChanged;
-            _mainWindow.SizeChanged += MainWindow_SizeChanged;
-            _mainWindow.Closed += MainWindow_Closed;
+            this.Owner.LocationChanged += MainWindow_LocationChanged;
+            this.Owner.SizeChanged += MainWindow_SizeChanged;
+            this.Owner.Closed += MainWindow_Closed;
             MainWindow_LocationChanged(null, null);
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            _mainWindow.LocationChanged -= MainWindow_LocationChanged;
-            _mainWindow.SizeChanged -= MainWindow_SizeChanged;
-            _mainWindow.Closed -= MainWindow_Closed;
+            this.Owner.LocationChanged -= MainWindow_LocationChanged;
+            this.Owner.SizeChanged -= MainWindow_SizeChanged;
+            this.Owner.Closed -= MainWindow_Closed;
         }
 
         private void MainWindow_SizeChanged(object sender, EventArgs e)
@@ -45,9 +45,9 @@ namespace Macro.View
         }
         private void UpdatePosition()
         {
-            var mainWindowPosition = _mainWindow.PointToScreen(new Point(0, 0));
+            var mainWindowPosition = this.Owner.PointToScreen(new Point(0, 0));
 
-            this.Left = mainWindowPosition.X + _mainWindow.ActualWidth - this.Width;
+            this.Left = mainWindowPosition.X + this.Owner.ActualWidth - this.Width;
             this.Top = mainWindowPosition.Y;
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)

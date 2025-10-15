@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -43,29 +44,50 @@ namespace Macro
         private AdManager _adManager;
         private CacheDataManager _cacheDataManager;
         private bool _isEventItemMoveButtonPressed;
-        private ImagePreviewPanel _imagePreviewPanel;
+        private ImagePreviewWindow _imagePreviewWindow;
+        private WebViewWindow _webViewWindow;
         private MacroExecutionController _macroExecutionController;
         public MainWindow()
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
         }
-
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            _imagePreviewPanel = new ImagePreviewPanel()
+            Task.Run(() =>
+            {
+                var latestUpdateTicks = DateTime.Now.Ticks;
+                while (true)
+                {
+                    var nowTicks = DateTime.Now.Ticks;
+                    var elapsedTime = (float)TimeSpan.FromTicks(nowTicks - latestUpdateTicks).TotalSeconds;
+                    Dispatcher.Invoke(() =>
+                    {
+                        _coroutineHandler.UpdateCoroutines(elapsedTime);
+                    });
+                    latestUpdateTicks = nowTicks;
+                    Task.Delay(33);
+                }
+            });
+            _imagePreviewWindow = new ImagePreviewWindow()
             {
                 Owner = this
             };
+
+            _webViewWindow = new WebViewWindow()
+            {
+                Owner = this
+            };
+            _closeButtonWindow = new CloseButtonWindow(() =>
+            {
+                _webViewWindow.Hide();
+            });
+
             _config = ServiceResolver.GetService<Config>();
             _cacheDataManager = ServiceResolver.GetService<CacheDataManager>();
 
             InitEvent();
             Init();
-            _closeButtonWindow = new CloseButtonWindow(this, () =>
-            {
-                AdOverlay.Visibility = Visibility.Collapsed;
-            });
 
             ApplicationManager.Instance.Init();
             _adManager = ServiceResolver.GetService<AdManager>();
@@ -78,10 +100,10 @@ namespace Macro
 
             if (_config.OpenProcessPreview)
             {
-                _imagePreviewPanel.Show();
+                _imagePreviewWindow.Show();
             }
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
-            _macroExecutionController.InitializeController(_imagePreviewPanel.DrawImage);
+            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage);
         }
         private bool CheckSponsor()
         {
@@ -295,7 +317,7 @@ namespace Macro
 
             var eventInfoModel = treeGridViewItem.DataContext<EventInfoModel>();
 
-            _imagePreviewPanel.DrawImage(eventInfoModel.Image);
+            _imagePreviewWindow.DrawImage(eventInfoModel.Image);
 
             RefreshEventItemButton();
         }
@@ -418,7 +440,7 @@ namespace Macro
 
             selectionStateController.UnselectTreeGridViewItem();
 
-            _imagePreviewPanel.ClearImage();
+            _imagePreviewWindow.ClearImage();
 
             RefreshEventItemButton();
 
@@ -527,7 +549,7 @@ namespace Macro
             {
                 var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
                 selectionStateController.UnselectTreeGridViewItem();
-                _imagePreviewPanel.ClearImage();
+                _imagePreviewWindow.ClearImage();
                 RefreshEventItemButton();
                 BtnStop_Click(btnStop, null);
             }
@@ -646,15 +668,15 @@ namespace Macro
 
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
 
-            _macroExecutionController.InitializeController(_imagePreviewPanel.DrawImage);
+            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage);
 
             if (_config.OpenProcessPreview == false)
             {
-                _imagePreviewPanel.Hide();
+                _imagePreviewWindow.Hide();
             }
             else
             {
-                _imagePreviewPanel.Show();
+                _imagePreviewWindow.Show();
             }
             ApplicationManager.HideProgressbar();
         }
@@ -690,8 +712,10 @@ namespace Macro
 #endif
             Dispatcher.Invoke(async () =>
             {
-                AdOverlay.Visibility = Visibility.Visible;
-                await EmbeddedWebView.LoadUrlAsync(_adManager.GetRandomAdUrl());
+                _webViewWindow.Show();
+
+                _closeButtonWindow.SetOwner(_webViewWindow);
+                await _webViewWindow.LoadUrlAsync(_adManager.GetRandomAdUrl());
             });
 
             yield return new DelayInSeconds(3.5F);

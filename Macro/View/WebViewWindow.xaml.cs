@@ -1,16 +1,16 @@
 ﻿using Dignus.Log;
+using MahApps.Metro.Controls;
 using System;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace Macro.View
 {
     /// <summary>
     /// WebViewControl.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class WebViewControl : UserControl
+    public partial class WebViewWindow : MetroWindow
     {
-        public WebViewControl()
+        public WebViewWindow()
         {
             InitializeComponent();
         }

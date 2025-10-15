@@ -5,7 +5,7 @@
     <Build>0</Build>
   </Version>
   <Description>
-    3.0.0
+    3.0.1
     기존의 UI를 변경했습니다. 조금 더 직관적으로 이벤트를 구성합니다.
 
     The existing UI has been updated to organize events in a more intuitive way.

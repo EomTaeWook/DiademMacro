@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="Macro.View.ImagePreviewPanel"
+﻿<mah:MetroWindow x:Class="Macro.View.ImagePreviewWindow"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"

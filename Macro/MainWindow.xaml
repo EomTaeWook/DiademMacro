@@ -78,8 +78,5 @@
                 <view:EventListView x:Name="eventListView"/>
             </DockPanel>
         </DockPanel>
-        <Grid x:Name="AdOverlay" Visibility="Collapsed" Background="#80000000">
-            <view:WebViewControl x:Name="EmbeddedWebView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-        </Grid>
     </Grid>
 </mah:MetroWindow>

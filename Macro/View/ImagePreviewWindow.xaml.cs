@@ -8,9 +8,9 @@ namespace Macro.View
     /// <summary>
     /// ProcessCaptureDialog.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ImagePreviewPanel : MetroWindow
+    public partial class ImagePreviewWindow : MetroWindow
     {
-        public ImagePreviewPanel()
+        public ImagePreviewWindow()
         {
             InitializeComponent();
             this.Loaded += ImagePreviewPanel_Loaded;

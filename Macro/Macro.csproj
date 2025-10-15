@@ -302,8 +302,8 @@
     <Compile Include="View\OptionDialog.xaml.cs">
       <DependentUpon>OptionDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ImagePreviewPanel.xaml.cs">
-      <DependentUpon>ImagePreviewPanel.xaml</DependentUpon>
+    <Compile Include="View\ImagePreviewWindow.xaml.cs">
+      <DependentUpon>ImagePreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProgressView.xaml.cs">
       <DependentUpon>ProgressView.xaml</DependentUpon>
@@ -317,8 +317,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions\ImageExtensions.cs" />
-    <Compile Include="View\WebViewControl.xaml.cs">
-      <DependentUpon>WebViewControl.xaml</DependentUpon>
+    <Compile Include="View\WebViewWindow.xaml.cs">
+      <DependentUpon>WebViewWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
@@ -352,7 +352,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ImagePreviewPanel.xaml">
+    <Page Include="View\ImagePreviewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -364,7 +364,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\WebViewControl.xaml">
+    <Page Include="View\WebViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
