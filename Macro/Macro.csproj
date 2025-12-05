@@ -120,8 +120,8 @@
     <Reference Include="ControlzEx, Version=5.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.5.0.2\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
-    <Reference Include="Dignus, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dignus.1.0.10\lib\net48\Dignus.dll</HintPath>
+    <Reference Include="Dignus, Version=1.0.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dignus.1.0.11\lib\net48\Dignus.dll</HintPath>
     </Reference>
     <Reference Include="Dignus.Log, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dignus.Log.1.0.7\lib\net48\Dignus.Log.dll</HintPath>
