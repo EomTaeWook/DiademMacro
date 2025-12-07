@@ -2,25 +2,17 @@
   <Version>
     <Major>3</Major>
     <Minor>0</Minor>
-    <Build>1</Build>
+    <Build>2</Build>
   </Version>
   <Description>
+    3.0.2
+    프로세스 고정 버그 수정
+
+    Process pinning bug fix
+
     3.0.1
     기존의 UI를 변경했습니다. 조금 더 직관적으로 이벤트를 구성합니다.
 
     The existing UI has been updated to organize events in a more intuitive way.
-
-    2.7.1
-    사용 중인 라이브러리 업데이트
-
-    Updated libraries in use
-
-    2.7.0
-    모니터 전원 꺼짐 지원:
-    - 모니터가 꺼진 상태에서도 프로세스 캡처를 지원하도록 수정되었습니다.
-    - 단, 창이 최소화되지 않고, 해당 프로세스가 작동 중인 경우에만 동작합니다.
-
-    Monitor Power-Off Support:
-    - Updated to allow process capture even when the monitor is powered off, provided the process window is not minimized and the corresponding process is running.
   </Description>
 </VersionNote>

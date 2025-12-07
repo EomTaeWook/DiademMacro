@@ -36,7 +36,7 @@ namespace Macro.Infrastructure.Controller
             _macroModeController.SetDrawImageCallback(drawImageCallback);
         }
         public void Start(ArrayQueue<EventInfoModel> eventInfos,
-            Process fixedProcess = null)
+            Process fixedProcess)
         {
             if (_cts != null)
             {
