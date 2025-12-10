@@ -95,24 +95,7 @@ namespace Macro.Infrastructure.Controller
             matchedLocation.X = (matchedLocation.X + applicationTemplate.OffsetX) + (model.Image.Width * percentageX);
             matchedLocation.Y = (matchedLocation.Y + applicationTemplate.OffsetY) + (model.Image.Height * percentageY);
 
-            if (model.HardClick == false)
-            {
-                ProcessImageEvent(hWnd, matchedLocation);
-            }
-            else
-            {
-                var processLocation = new Utils.Infrastructure.IntRect();
-                NativeHelper.GetWindowRect(hWnd, ref processLocation);
-
-                var clickPoint = new Point2D()
-                {
-                    X = matchedLocation.X,
-                    Y = matchedLocation.Y
-                };
-                clickPoint.X += processLocation.Left + model.MouseEventInfo.MousePoint.X;
-                clickPoint.Y += processLocation.Top + model.MouseEventInfo.MousePoint.Y;
-                ProcessHardClick(clickPoint, model.MouseEventInfo.MouseEventType);
-            }
+            ProcessImageEvent(hWnd, matchedLocation);
         }
 
         private void ProcessImageEvent(IntPtr hWnd,

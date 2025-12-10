@@ -210,7 +210,8 @@ namespace Macro.View
                 panelMouseEvent.Visibility = Visibility.Collapsed;
                 txtKeyboardCmd.Visibility = Visibility.Collapsed;
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
-                checkHardClick.IsEnabled = true;
+                checkHardClick.IsChecked = false;
+                checkHardClick.IsEnabled = false;
             }
             else if (currentType == Infrastructure.EventType.Mouse)
             {

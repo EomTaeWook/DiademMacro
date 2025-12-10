@@ -474,6 +474,12 @@ namespace Macro
                 RefreshEventItemButton();
             }
 
+            Process process = null;
+            if(selectionStateController.SelectProcessItem != null)
+            {
+                process = selectionStateController.SelectProcessItem.Process;
+            }
+
             Dispatcher.Invoke(() =>
             {
                 var buttons = this.FindChildren<Button>();
@@ -493,7 +499,7 @@ namespace Macro
                 var eventInfos = new ArrayQueue<EventInfoModel>(viewModel.EventItems.Count);
                 eventInfos.AddRange(viewModel.EventItems.Where(r => r.IsChecked == true));
                 _macroExecutionController.Start(eventInfos,
-                    selectionStateController.SelectProcessItem.Process);
+                    process);
             });
         }
 
