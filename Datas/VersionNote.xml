@@ -2,10 +2,10 @@
   <Version>
     <Major>3</Major>
     <Minor>0</Minor>
-    <Build>2</Build>
+    <Build>3</Build>
   </Version>
   <Description>
-    3.0.2
+    3.0.3
     프로세스 고정 버그 수정
 
     Process pinning bug fix
