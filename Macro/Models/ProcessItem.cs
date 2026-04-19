@@ -8,7 +8,7 @@ namespace Macro.Models
 
         public Process Process { get; private set; }
 
-        private string _processName;
+        private readonly string _processName;
         public ProcessItem(Process process)
         {
             Process = process;

@@ -104,7 +104,7 @@ namespace Macro.Infrastructure.Manager
             }
             return null;
         }
-
+        [Obsolete("2.7.1 버전까지만 허용")]
         public void Save(string path, ObservableCollection<EventTriggerModel> list)
         {
             if (File.Exists(path))

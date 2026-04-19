@@ -203,7 +203,7 @@ namespace Macro.View
             var currentType = viewModel.SelectedEventType;
             numMaxDragCount.IsEnabled = false;
 
-            if (currentType == Infrastructure.EventType.Image)
+            if (currentType == EventType.Image)
             {
                 checkSameImageDrag.IsEnabled = true;
 
@@ -213,7 +213,7 @@ namespace Macro.View
                 checkHardClick.IsChecked = false;
                 checkHardClick.IsEnabled = false;
             }
-            else if (currentType == Infrastructure.EventType.Mouse)
+            else if (currentType == EventType.Mouse)
             {
                 checkSameImageDrag.IsChecked = false;
                 checkSameImageDrag.IsEnabled = false;
@@ -222,7 +222,7 @@ namespace Macro.View
                 relativeToImagePanel.Visibility = Visibility.Collapsed;
                 checkHardClick.IsEnabled = true;
             }
-            else if (currentType == Infrastructure.EventType.Keyboard)
+            else if (currentType == EventType.Keyboard)
             {
                 checkSameImageDrag.IsChecked = false;
                 checkSameImageDrag.IsEnabled = false;
@@ -232,7 +232,7 @@ namespace Macro.View
                 checkHardClick.IsChecked = false;
                 checkHardClick.IsEnabled = false;
             }
-            else if (currentType == Infrastructure.EventType.RelativeToImage)
+            else if (currentType == EventType.RelativeToImage)
             {
                 checkSameImageDrag.IsChecked = false;
                 checkSameImageDrag.IsEnabled = false;

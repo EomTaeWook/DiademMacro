@@ -9,7 +9,7 @@ namespace Macro.Infrastructure.Serialize
         {
             if (typeName == "Macro.Models.MouseTriggerInfo")
             {
-                return typeof(Macro.Models.MouseEventInfo);
+                return typeof(Models.MouseEventInfo);
             }
             return Type.GetType($"{typeName}, {assemblyName}");
         }
