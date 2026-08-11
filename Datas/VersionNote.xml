@@ -1,10 +1,15 @@
 <VersionNote>
   <Version>
     <Major>3</Major>
-    <Minor>0</Minor>
-    <Build>4</Build>
+    <Minor>1</Minor>
+    <Build>0</Build>
   </Version>
   <Description>
+    3.1.0
+    항목별 이미지 유사도 설정 추가
+
+    add per-item image similarity setting
+
     3.0.4
     NuGet 패키지 최신 버전으로 업데이트
 
