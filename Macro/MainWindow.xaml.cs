@@ -103,7 +103,7 @@ namespace Macro
                 _imagePreviewWindow.Show();
             }
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
-            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage);
+            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage, UpdateStatus);
         }
         private bool CheckSponsor()
         {
@@ -185,7 +185,7 @@ namespace Macro
             };
             optionDialog.BindItem(eventInfoModel);
 
-            bool? result = optionDialog.ShowDialog();
+            _ = optionDialog.ShowDialog();
         }
 
         private void BtnUpEventItem_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -527,6 +527,11 @@ namespace Macro
             ApplicationManager.HideProgressbar();
         }
 
+        private void UpdateStatus(EventInfoModel model, string status)
+        {
+            Dispatcher.BeginInvoke(new Action(() => model.Status = status));
+        }
+
         private void CheckFix_Click(object sender, RoutedEventArgs e)
         {
             var selectionStateController = ServiceResolver.GetService<SelectionStateController>();
@@ -675,7 +680,7 @@ namespace Macro
 
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
 
-            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage);
+            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage, UpdateStatus);
 
             if (_config.OpenProcessPreview == false)
             {

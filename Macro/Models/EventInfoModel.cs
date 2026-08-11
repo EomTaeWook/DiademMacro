@@ -33,6 +33,7 @@ namespace Macro.Models
             HardClick = other.HardClick;
             RoiDataInfo = other.RoiDataInfo.Clone();
             IsChecked = other.IsChecked;
+            Similarity = other.Similarity;
         }
         private Bitmap _image;
         [JsonConverter(typeof(BitmapFileJsonConverter))]
@@ -212,6 +213,33 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(IsChecked));
             }
             get => _isChecked;
+        }
+
+        private int _similarity;
+        public int Similarity
+        {
+            get => _similarity;
+            set
+            {
+                _similarity = value;
+                OnPropertyChanged(nameof(Similarity));
+                OnPropertyChanged(nameof(SimilarityDisplay));
+            }
+        }
+
+        [JsonIgnore]
+        public string SimilarityDisplay => Similarity > 0 ? $"{Similarity}%" : "-";
+
+        private string _status = "-";
+        [JsonIgnore]
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                OnPropertyChanged(nameof(Status));
+            }
         }
 
         private Point2D? _positionRelativeToImage;

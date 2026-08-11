@@ -88,7 +88,7 @@ namespace Macro.Infrastructure.Controller
                         break;
                     }
 
-                    if (CalculateSimilarityAndLocation(model.Image, sourceBmp, model).Item1 >= _config.Similarity)
+                    if (CalculateSimilarityAndLocation(model.Image, sourceBmp, model).Item1 >= GetSimilarityThreshold(model))
                     {
                         break;
                     }
@@ -101,6 +101,7 @@ namespace Macro.Infrastructure.Controller
             EventInfoModel eventInfoModel,
             CancellationToken cancellationToken)
         {
+            ReportStatus(eventInfoModel, "Searching");
             var windowHandle = IntPtr.Zero;
             var template = TemplateContainer<ApplicationTemplate>.Find(process.ProcessName);
 
@@ -126,8 +127,9 @@ namespace Macro.Infrastructure.Controller
 
             LogHelper.Debug($"Similarity : {matchResult.Item1} % max Loc : X : {matchedLocation.X} Y: {matchedLocation.Y}");
 
-            if (similarity < _config.Similarity)
+            if (similarity < GetSimilarityThreshold(eventInfoModel))
             {
+                ReportStatus(eventInfoModel, $"Failed ({similarity}%)");
                 TaskHelper.TokenCheckDelay(_config.ItemDelay, cancellationToken);
                 return new EventResult(false, null);
             }
@@ -140,7 +142,7 @@ namespace Macro.Infrastructure.Controller
             {
                 for (int i = 0; i < eventInfoModel.MaxDragCount; ++i)
                 {
-                    var locations = OpenCVHelper.MultipleSearch(capturedImage, eventInfoModel.Image, _config.Similarity, 2, _config.SearchImageResultDisplay);
+                    var locations = OpenCVHelper.MultipleSearch(capturedImage, eventInfoModel.Image, GetSimilarityThreshold(eventInfoModel), 2, _config.SearchImageResultDisplay);
 
                     if (locations.Count > 1)
                     {
@@ -206,9 +208,11 @@ namespace Macro.Infrastructure.Controller
                 }
                 TaskHelper.TokenCheckDelay(eventInfoModel.AfterDelay, cancellationToken);
 
+                ReportStatus(eventInfoModel, $"Success ({similarity}%)");
                 return new EventResult(true, nextModel);
             }
 
+            ReportStatus(eventInfoModel, $"Success ({similarity}%)");
             return new EventResult(false, null);
         }
 

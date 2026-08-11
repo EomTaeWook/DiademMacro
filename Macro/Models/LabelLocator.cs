@@ -102,6 +102,10 @@ namespace Macro.Models
         {
             get => GetString(1022);
         }
+        public string ItemSimilarity
+        {
+            get => GetString(1066);
+        }
         public string AfterDelay
         {
             get => GetString(1023);

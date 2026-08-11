@@ -23,7 +23,7 @@ namespace Macro.Infrastructure.Controller
         {
             _config = config;
         }
-        public void InitializeController(Action<Bitmap> drawImageCallback)
+        public void InitializeController(Action<Bitmap> drawImageCallback, Action<EventInfoModel, string> statusCallback)
         {
             if (_config.MacroMode == MacroModeType.SequentialMode)
             {
@@ -34,6 +34,7 @@ namespace Macro.Infrastructure.Controller
                 _macroModeController = ServiceResolver.GetService<BatchModeController>();
             }
             _macroModeController.SetDrawImageCallback(drawImageCallback);
+            _macroModeController.SetStatusCallback(statusCallback);
         }
         public void Start(ArrayQueue<EventInfoModel> eventInfos,
             Process fixedProcess)

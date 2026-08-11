@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,13 +26,13 @@ namespace DataContainer.Generated
             }
             return _nameKeyToMap[name];
         }
-        public static void Load(string path, string fileName)
+        public static void Load(string path, string fileName, ITemplateDeserializer deserializer)
         {
             string fullPath = Path.Combine(path, fileName);
             using (var stream = new StreamReader(File.OpenRead(fullPath)))
             {
                 var content = stream.ReadToEnd();
-                var templateDatas = DeserializeTemplates(content);
+                var templateDatas = deserializer.Deserialize<T>(content);
 
                 foreach (var template in templateDatas)
                 {
@@ -41,10 +41,10 @@ namespace DataContainer.Generated
                 }
             }
         }
-        public static void Load(string fileName, Func<string, string> funcLoadJson)
+        public static void Load(string fileName, Func<string, string> funcLoadJson, ITemplateDeserializer deserializer)
         {
             var json = funcLoadJson(fileName);
-            var templateDatas = DeserializeTemplates(json);
+            var templateDatas = deserializer.Deserialize<T>(json);
 
             foreach (var template in templateDatas)
             {
@@ -65,10 +65,6 @@ namespace DataContainer.Generated
             {
                 template.Combine();
             }
-        }
-        private static List<T> DeserializeTemplates(string json)
-        {
-            return JsonConvert.DeserializeObject<List<T>>(json);
         }
     }
 }

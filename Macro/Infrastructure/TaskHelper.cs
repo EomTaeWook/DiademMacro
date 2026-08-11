@@ -17,13 +17,17 @@ namespace Macro.Infrastructure
                     Task.Delay(millisecondsDelay, token).GetResult();
                 }
             }
-            catch (TaskCanceledException ex)
+            catch (OperationCanceledException)
             {
-                LogHelper.Error(ex.Message);
+                return false;
             }
             catch (AggregateException ex)
             {
-                LogHelper.Error(ex.Message);
+                if (!(ex.InnerException is TaskCanceledException) && !(ex.InnerException is OperationCanceledException))
+                {
+                    LogHelper.Error(ex.Message);
+                }
+                return false;
             }
             return !token.IsCancellationRequested;
         }

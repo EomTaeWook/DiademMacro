@@ -59,6 +59,16 @@ namespace Macro.Models.ViewModel
                 OnPropertyChanged(nameof(AfterDelay));
             }
         }
+        private int _similarity;
+        public int Similarity
+        {
+            get => _similarity;
+            set
+            {
+                _similarity = value;
+                OnPropertyChanged(nameof(Similarity));
+            }
+        }
         private ulong _eventToNext;
         public ulong EventToNext
         {

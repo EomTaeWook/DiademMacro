@@ -28,6 +28,7 @@ namespace Macro.Models
         private bool _isChecked = true;
         private RoiModel _roiData = new RoiModel();
         private Bitmap _image;
+        private int _similarity;
 
         public EventTriggerModel()
         {
@@ -48,6 +49,7 @@ namespace Macro.Models
             HardClick = other.HardClick;
             RoiDataInfo = other.RoiDataInfo;
             IsChecked = other.IsChecked;
+            Similarity = other.Similarity;
         }
 
         [Order(1)]
@@ -219,6 +221,17 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(IsChecked));
             }
             get => _isChecked;
+        }
+
+        [Order(18)]
+        public int Similarity
+        {
+            get => _similarity;
+            set
+            {
+                _similarity = value;
+                OnPropertyChanged(nameof(Similarity));
+            }
         }
 
         [field: NonSerialized]

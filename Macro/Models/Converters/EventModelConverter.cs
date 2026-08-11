@@ -32,6 +32,7 @@ namespace Macro.Models.Converters
                 RepeatInfo = sourceEventTriggerModel.RepeatInfo,
                 RoiDataInfo = sourceEventTriggerModel.RoiDataInfo,
                 SameImageDrag = sourceEventTriggerModel.SameImageDrag,
+                Similarity = sourceEventTriggerModel.Similarity,
                 SubEventItems = new ObservableCollection<EventInfoModel>()
             };
 

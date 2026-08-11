@@ -1,4 +1,5 @@
 ﻿using DataContainer.Generated;
+using DataContainer;
 using Dignus.DependencyInjection;
 using Dignus.DependencyInjection.Extensions;
 using Dignus.Log;
@@ -8,10 +9,13 @@ using Macro.Infrastructure.Manager;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Utils;
 
@@ -20,7 +24,7 @@ namespace Macro
     /// <summary>
     /// App.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, ITemplateDeserializer
     {
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -73,8 +77,13 @@ namespace Macro
         }
         private void InitTemplate()
         {
-            TemplateLoader.Load("Datas");
+            TemplateLoader.Load("Datas", this);
             TemplateLoader.MakeRefTemplate();
+        }
+
+        public IEnumerable<T> Deserialize<T>(string json) where T : TemplateBase, new()
+        {
+            return JsonHelper.DeserializeObject<List<T>>(json);
         }
         private void DependenciesResolved()
         {

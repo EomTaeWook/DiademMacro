@@ -8,121 +8,121 @@
   {
     "Id": 1001,
     "Name": "1001",
-    "Kor": "이미지 설정을 해주세요.",
+    "Kor": "\uC774\uBBF8\uC9C0 \uC124\uC815\uC744 \uD574\uC8FC\uC138\uC694.",
     "Eng": "Failed Image Invalidate"
   },
   {
     "Id": 1002,
     "Name": "1002",
-    "Kor": "마우스 위치 설정을 해주세요.",
+    "Kor": "\uB9C8\uC6B0\uC2A4 \uC704\uCE58 \uC124\uC815\uC744 \uD574\uC8FC\uC138\uC694.",
     "Eng": "Failed Mouse Coordinates Invalidate"
   },
   {
     "Id": 1003,
     "Name": "1003",
-    "Kor": "키보드 입력 설정을 해주세요.",
+    "Kor": "\uD0A4\uBCF4\uB4DC \uC785\uB825 \uC124\uC815\uC744 \uD574\uC8FC\uC138\uC694.",
     "Eng": "Failed KeyboardCommand Invalidate"
   },
   {
     "Id": 1004,
     "Name": "1004",
-    "Kor": "연결 프로세스 설정을 해주세요.",
+    "Kor": "\uC5F0\uACB0 \uD504\uB85C\uC138\uC2A4 \uC124\uC815\uC744 \uD574\uC8FC\uC138\uC694.",
     "Eng": "Failed Process Invalidate"
   },
   {
     "Id": 1005,
     "Name": "1005",
-    "Kor": "Save File을 로드할 수 없습니다.",
+    "Kor": "Save File\uC744 \uB85C\uB4DC\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
     "Eng": "Failed to Load Save File"
   },
   {
     "Id": 1006,
     "Name": "1006",
-    "Kor": "Window 7 이하는 사용 할 수 없습니다. 죄송합니다.",
+    "Kor": "Window 7 \uC774\uD558\uB294 \uC0AC\uC6A9 \uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC8C4\uC1A1\uD569\uB2C8\uB2E4.",
     "Eng": "Window 7 and earlier can not be used. Sorry."
   },
   {
     "Id": 1007,
     "Name": "1007",
-    "Kor": "파일을 읽는 도중에 에러가 발생했습니다.",
+    "Kor": "\uD30C\uC77C\uC744 \uC77D\uB294 \uB3C4\uC911\uC5D0 \uC5D0\uB7EC\uAC00 \uBC1C\uC0DD\uD588\uC2B5\uB2C8\uB2E4.",
     "Eng": "The file is broken."
   },
   {
     "Id": 1008,
     "Name": "1008",
-    "Kor": "프로세싱 주기는 100이상 입력 부탁드립니다.",
+    "Kor": "\uD504\uB85C\uC138\uC2F1 \uC8FC\uAE30\uB294 100\uC774\uC0C1 \uC785\uB825 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4.",
     "Eng": "Please enter a processing cycle of 100 or more."
   },
   {
     "Id": 1009,
     "Name": "1009",
-    "Kor": "프로세싱 딜레이는 100이상 입력 부탁드립니다.",
+    "Kor": "\uD504\uB85C\uC138\uC2F1 \uB51C\uB808\uC774\uB294 100\uC774\uC0C1 \uC785\uB825 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4.",
     "Eng": "Please input 100 or more processing delays."
   },
   {
     "Id": 1010,
     "Name": "1010",
-    "Kor": "유사도는 0이상 입력 부탁드립니다.",
+    "Kor": "\uC720\uC0AC\uB3C4\uB294 0\uC774\uC0C1 \uC785\uB825 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4.",
     "Eng": "The degree of similarity is 0 or more."
   },
   {
     "Id": 1011,
     "Name": "1011",
-    "Kor": "새로운 버전이 있습니다. 다운로드 하시겠습니까?",
+    "Kor": "\uC0C8\uB85C\uC6B4 \uBC84\uC804\uC774 \uC788\uC2B5\uB2C8\uB2E4. \uB2E4\uC6B4\uB85C\uB4DC \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
     "Eng": "There is a new version."
   },
   {
     "Id": 1012,
     "Name": "1012",
-    "Kor": "패치 내용 : {0}",
+    "Kor": "\uD328\uCE58 \uB0B4\uC6A9 : {0}",
     "Eng": "Patch Content : {0}"
   },
   {
     "Id": 1013,
     "Name": "1013",
-    "Kor": "패치를 중단하시겠습니까?",
+    "Kor": "\uD328\uCE58\uB97C \uC911\uB2E8\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
     "Eng": "Stop patching?"
   },
   {
     "Id": 1014,
     "Name": "1014",
-    "Kor": "패치에 실패하였습니다. 재설치 부탁드립니다. 죄송합니다.",
+    "Kor": "\uD328\uCE58\uC5D0 \uC2E4\uD328\uD558\uC600\uC2B5\uB2C8\uB2E4. \uC7AC\uC124\uCE58 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4. \uC8C4\uC1A1\uD569\uB2C8\uB2E4.",
     "Eng": "Patch failed. Please reinstall. Sorry."
   },
   {
     "Id": 1015,
     "Name": "1015",
-    "Kor": "파일 저장에 실패하였습니다.",
+    "Kor": "\uD30C\uC77C \uC800\uC7A5\uC5D0 \uC2E4\uD328\uD558\uC600\uC2B5\uB2C8\uB2E4.",
     "Eng": "File Save Failed."
   },
   {
     "Id": 1016,
     "Name": "1016",
-    "Kor": "잘못된 정보가 입력되었습니다.",
+    "Kor": "\uC798\uBABB\uB41C \uC815\uBCF4\uAC00 \uC785\uB825\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
     "Eng": "Failed Invalidate Data"
   },
   {
     "Id": 1017,
     "Name": "1017",
-    "Kor": "프로세스를 먼저 선택하세요.",
+    "Kor": "\uD504\uB85C\uC138\uC2A4\uB97C \uBA3C\uC800 \uC120\uD0DD\uD558\uC138\uC694.",
     "Eng": "Please select a process first"
   },
   {
     "Id": 1018,
     "Name": "1018",
-    "Kor": "관심 영역의 사이즈가 프로세스 윈도우 크기보다 큽니다.",
+    "Kor": "\uAD00\uC2EC \uC601\uC5ED\uC758 \uC0AC\uC774\uC988\uAC00 \uD504\uB85C\uC138\uC2A4 \uC708\uB3C4\uC6B0 \uD06C\uAE30\uBCF4\uB2E4 \uD07D\uB2C8\uB2E4.",
     "Eng": "The size of the region of interest is larger than the process window size."
   },
   {
     "Id": 1019,
     "Name": "1019",
-    "Kor": "패치가 적용되었습니다.",
+    "Kor": "\uD328\uCE58\uAC00 \uC801\uC6A9\uB418\uC5C8\uC2B5\uB2C8\uB2E4.",
     "Eng": "Complete Patch!"
   },
   {
     "Id": 1020,
     "Name": "1020",
-    "Kor": "다운로드 페이지로 이동하시겠습니까?",
+    "Kor": "\uB2E4\uC6B4\uB85C\uB4DC \uD398\uC774\uC9C0\uB85C \uC774\uB3D9\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
     "Eng": "Do you want to go to the download page?"
   }
 ]

@@ -15,6 +15,7 @@ namespace Macro.Infrastructure.Controller
     {
         protected Config _config;
         private Action<Bitmap> _drawImageCallback;
+        private Action<EventInfoModel, string> _statusCallback;
         protected ScreenCaptureManager _screenCaptureManager;
         public MacroModeControllerBase(Config config)
         {
@@ -29,6 +30,21 @@ namespace Macro.Infrastructure.Controller
         public void SetDrawImageCallback(Action<Bitmap> drawImageCallback)
         {
             _drawImageCallback = drawImageCallback;
+        }
+
+        public void SetStatusCallback(Action<EventInfoModel, string> statusCallback)
+        {
+            _statusCallback = statusCallback;
+        }
+
+        protected void ReportStatus(EventInfoModel model, string status)
+        {
+            _statusCallback?.Invoke(model, status);
+        }
+
+        protected int GetSimilarityThreshold(EventInfoModel model)
+        {
+            return model.Similarity > 0 ? model.Similarity : _config.Similarity;
         }
 
         public void Draw(Bitmap bitmap)

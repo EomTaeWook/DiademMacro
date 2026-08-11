@@ -59,6 +59,7 @@ namespace Macro.View
             viewModel.MouseEventInfo = _eventInfoModel.MouseEventInfo;
             viewModel.KeyboardCmd = _eventInfoModel.KeyboardCmd;
             viewModel.AfterDelay = _eventInfoModel.AfterDelay;
+            viewModel.Similarity = _eventInfoModel.Similarity;
 
             viewModel.SelectedRepeatType = eventTriggerModel.RepeatInfo.RepeatType;
             viewModel.RepeatCount = _eventInfoModel.RepeatInfo.Count;
@@ -139,6 +140,7 @@ namespace Macro.View
             _eventInfoModel.MouseEventInfo = viewModel.MouseEventInfo;
             _eventInfoModel.KeyboardCmd = viewModel.KeyboardCmd;
             _eventInfoModel.AfterDelay = viewModel.AfterDelay;
+            _eventInfoModel.Similarity = viewModel.Similarity;
             _eventInfoModel.RepeatInfo = new RepeatInfoModel()
             {
                 Count = viewModel.RepeatCount,

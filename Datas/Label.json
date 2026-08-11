@@ -2,97 +2,97 @@
   {
     "Id": 1000,
     "Name": "1000",
-    "Kor": "연결된 프로세스",
+    "Kor": "\uC5F0\uACB0\uB41C \uD504\uB85C\uC138\uC2A4",
     "Eng": "Select Process"
   },
   {
     "Id": 1001,
     "Name": "1001",
-    "Kor": "비교할 이미지",
+    "Kor": "\uBE44\uAD50\uD560 \uC774\uBBF8\uC9C0",
     "Eng": "Compare Image"
   },
   {
     "Id": 1002,
     "Name": "1002",
-    "Kor": "이미지 캡쳐",
+    "Kor": "\uC774\uBBF8\uC9C0 \uCEA1\uCCD0",
     "Eng": "Image Capture"
   },
   {
     "Id": 1003,
     "Name": "1003",
-    "Kor": "저장",
+    "Kor": "\uC800\uC7A5",
     "Eng": "Save"
   },
   {
     "Id": 1004,
     "Name": "1004",
-    "Kor": "구성",
+    "Kor": "\uAD6C\uC131",
     "Eng": "Config"
   },
   {
     "Id": 1005,
     "Name": "1005",
-    "Kor": "환경 설정",
+    "Kor": "\uD658\uACBD \uC124\uC815",
     "Eng": "Preferences"
   },
   {
     "Id": 1006,
     "Name": "1006",
-    "Kor": "이벤트 타입",
+    "Kor": "\uC774\uBCA4\uD2B8 \uD0C0\uC785",
     "Eng": "EventType"
   },
   {
     "Id": 1007,
     "Name": "1007",
-    "Kor": "이벤트 데이터",
+    "Kor": "\uC774\uBCA4\uD2B8 \uB370\uC774\uD130",
     "Eng": "EventDataSet"
   },
   {
     "Id": 1008,
     "Name": "1008",
-    "Kor": "트리거 리스트",
+    "Kor": "\uD2B8\uB9AC\uAC70 \uB9AC\uC2A4\uD2B8",
     "Eng": "TriggerList"
   },
   {
     "Id": 1009,
     "Name": "1009",
-    "Kor": "마우스 좌표 지정",
+    "Kor": "\uB9C8\uC6B0\uC2A4 \uC88C\uD45C \uC9C0\uC815",
     "Eng": "MouseCoordinates"
   },
   {
     "Id": 1010,
     "Name": "1010",
-    "Kor": "마우스 휠",
+    "Kor": "\uB9C8\uC6B0\uC2A4 \uD720",
     "Eng": "MouseWheel"
   },
   {
     "Id": 1011,
     "Name": "1011",
-    "Kor": "휠 스크롤",
+    "Kor": "\uD720 \uC2A4\uD06C\uB864",
     "Eng": "MouseWheelScroll"
   },
   {
     "Id": 1012,
     "Name": "1012",
-    "Kor": "닫기",
+    "Kor": "\uB2EB\uAE30",
     "Eng": "Close"
   },
   {
     "Id": 1013,
     "Name": "1013",
-    "Kor": "삭제",
+    "Kor": "\uC0AD\uC81C",
     "Eng": "Delete"
   },
   {
     "Id": 1014,
     "Name": "1014",
-    "Kor": "시작",
+    "Kor": "\uC2DC\uC791",
     "Eng": "Start"
   },
   {
     "Id": 1015,
     "Name": "1015",
-    "Kor": "중지",
+    "Kor": "\uC911\uC9C0",
     "Eng": "Stop"
   },
   {
@@ -104,241 +104,241 @@
   {
     "Id": 1017,
     "Name": "1017",
-    "Kor": "Diadem 매크로",
+    "Kor": "Diadem \uB9E4\uD06C\uB85C",
     "Eng": "Diadem Macro"
   },
   {
     "Id": 1018,
     "Name": "1018",
-    "Kor": "언어",
+    "Kor": "\uC5B8\uC5B4",
     "Eng": "Language"
   },
   {
     "Id": 1019,
     "Name": "1019",
-    "Kor": "저장 경로",
+    "Kor": "\uC800\uC7A5 \uACBD\uB85C",
     "Eng": "SavePath"
   },
   {
     "Id": 1020,
     "Name": "1020",
-    "Kor": "전체 프로세싱 주기(ms)",
+    "Kor": "\uC804\uCCB4 \uD504\uB85C\uC138\uC2F1 \uC8FC\uAE30(ms)",
     "Eng": "Period(ms)"
   },
   {
     "Id": 1021,
     "Name": "1021",
-    "Kor": "아이템 딜레이(ms)",
+    "Kor": "\uC544\uC774\uD15C \uB51C\uB808\uC774(ms)",
     "Eng": "ItemDelay(ms)"
   },
   {
     "Id": 1022,
     "Name": "1022",
-    "Kor": "유사도",
+    "Kor": "\uC720\uC0AC\uB3C4",
     "Eng": "Similarity"
   },
   {
     "Id": 1023,
     "Name": "1023",
-    "Kor": "후(後) 작업 딜레이(ms)",
+    "Kor": "\uD6C4(\u5F8C) \uC791\uC5C5 \uB51C\uB808\uC774(ms)",
     "Eng": "AfterDelay(ms)"
   },
   {
     "Id": 1024,
     "Name": "1024",
-    "Kor": "이미지 검색 결과 표시",
+    "Kor": "\uC774\uBBF8\uC9C0 \uAC80\uC0C9 \uACB0\uACFC \uD45C\uC2DC",
     "Eng": "Display Search Result"
   },
   {
     "Id": 1025,
     "Name": "1025",
-    "Kor": "버전 정보 확인",
+    "Kor": "\uBC84\uC804 \uC815\uBCF4 \uD655\uC778",
     "Eng": "VersionCheck"
   },
   {
     "Id": 1026,
     "Name": "1026",
-    "Kor": "고정",
+    "Kor": "\uACE0\uC815",
     "Eng": "Fix"
   },
   {
     "Id": 1027,
     "Name": "1027",
-    "Kor": "아이템 반복",
+    "Kor": "\uC544\uC774\uD15C \uBC18\uBCF5",
     "Eng": "Repeat Items"
   },
   {
     "Id": 1028,
     "Name": "Once",
-    "Kor": "한번",
+    "Kor": "\uD55C\uBC88",
     "Eng": "Once"
   },
   {
     "Id": 1029,
     "Name": "Count",
-    "Kor": "횟수",
+    "Kor": "\uD69F\uC218",
     "Eng": "Count"
   },
   {
     "Id": 1030,
     "Name": "RepeatOnChildEvent",
-    "Kor": "자식 이벤트 실행 시 반복",
+    "Kor": "\uC790\uC2DD \uC774\uBCA4\uD2B8 \uC2E4\uD589 \uC2DC \uBC18\uBCF5",
     "Eng": "Repeat when child event runs"
   },
   {
     "Id": 1031,
     "Name": "StopOnParentImage",
-    "Kor": "부모 이미지 검색 시 종료",
+    "Kor": "\uBD80\uBAA8 \uC774\uBBF8\uC9C0 \uAC80\uC0C9 \uC2DC \uC885\uB8CC",
     "Eng": "End when parent image is found"
   },
   {
     "Id": 1032,
     "Name": "1032",
-    "Kor": "취소",
+    "Kor": "\uCDE8\uC18C",
     "Eng": "Cancel"
   },
   {
     "Id": 1033,
     "Name": "1033",
-    "Kor": "백업 중",
+    "Kor": "\uBC31\uC5C5 \uC911",
     "Eng": "Backup"
   },
   {
     "Id": 1034,
     "Name": "1034",
-    "Kor": "변경을 되돌리는 중입니다.",
+    "Kor": "\uBCC0\uACBD\uC744 \uB418\uB3CC\uB9AC\uB294 \uC911\uC785\uB2C8\uB2E4.",
     "Eng": "Rollback is in progress."
   },
   {
     "Id": 1035,
     "Name": "1035",
-    "Kor": "다운로드",
+    "Kor": "\uB2E4\uC6B4\uB85C\uB4DC",
     "Eng": "Download"
   },
   {
     "Id": 1036,
     "Name": "1036",
-    "Kor": "패치 목록 검색",
+    "Kor": "\uD328\uCE58 \uBAA9\uB85D \uAC80\uC0C9",
     "Eng": "SearchPatchList"
   },
   {
     "Id": 1037,
     "Name": "1037",
-    "Kor": "패치 진행",
+    "Kor": "\uD328\uCE58 \uC9C4\uD589",
     "Eng": "Patch in progress"
   },
   {
     "Id": 1038,
     "Name": "1038",
-    "Kor": "동일한 내용 추가",
+    "Kor": "\uB3D9\uC77C\uD55C \uB0B4\uC6A9 \uCD94\uAC00",
     "Eng": "Add the same content"
   },
   {
     "Id": 1039,
     "Name": "1039",
-    "Kor": "바로 이동",
+    "Kor": "\uBC14\uB85C \uC774\uB3D9",
     "Eng": "ToNext"
   },
   {
     "Id": 1040,
     "Name": "1040",
-    "Kor": "패치 실패",
+    "Kor": "\uD328\uCE58 \uC2E4\uD328",
     "Eng": "FailedPatch"
   },
   {
     "Id": 1041,
     "Name": "1041",
-    "Kor": "이상",
+    "Kor": "\uC774\uC0C1",
     "Eng": "Above"
   },
   {
     "Id": 1042,
     "Name": "1042",
-    "Kor": "이하",
+    "Kor": "\uC774\uD558",
     "Eng": "Below"
   },
   {
     "Id": 1043,
     "Name": "1043",
-    "Kor": "이미지 검색 필수",
+    "Kor": "\uC774\uBBF8\uC9C0 \uAC80\uC0C9 \uD544\uC218",
     "Eng": "Image Search Required"
   },
   {
     "Id": 1044,
     "Name": "1044",
-    "Kor": "초기 탭",
+    "Kor": "\uCD08\uAE30 \uD0ED",
     "Eng": "Initial Tab"
   },
   {
     "Id": 1045,
     "Name": "1045",
-    "Kor": "같은 이미지 드래그",
+    "Kor": "\uAC19\uC740 \uC774\uBBF8\uC9C0 \uB4DC\uB798\uADF8",
     "Eng": "Drag the same image"
   },
   {
     "Id": 1046,
     "Name": "1046",
-    "Kor": "같은 이미지 찾기 반복",
+    "Kor": "\uAC19\uC740 \uC774\uBBF8\uC9C0 \uCC3E\uAE30 \uBC18\uBCF5",
     "Eng": "Repeat finding the same image"
   },
   {
     "Id": 1047,
     "Name": "1047",
-    "Kor": "드래그 딜레이",
+    "Kor": "\uB4DC\uB798\uADF8 \uB51C\uB808\uC774",
     "Eng": "Drag Delay"
   },
   {
     "Id": 1048,
     "Name": "1048",
-    "Kor": "물리 클릭",
+    "Kor": "\uBB3C\uB9AC \uD074\uB9AD",
     "Eng": "Hard Click"
   },
   {
     "Id": 1049,
     "Name": "1049",
-    "Kor": "관심영역 설정",
+    "Kor": "\uAD00\uC2EC\uC601\uC5ED \uC124\uC815",
     "Eng": "Set ROI"
   },
   {
     "Id": 1050,
     "Name": "1050",
-    "Kor": "관심영역 제거",
+    "Kor": "\uAD00\uC2EC\uC601\uC5ED \uC81C\uAC70",
     "Eng": "Remove ROI"
   },
   {
     "Id": 1051,
     "Name": "1051",
-    "Kor": "연결된 프로세스 위치 설정",
+    "Kor": "\uC5F0\uACB0\uB41C \uD504\uB85C\uC138\uC2A4 \uC704\uCE58 \uC124\uC815",
     "Eng": "Setting Process Location"
   },
   {
     "Id": 1052,
     "Name": "1052",
-    "Kor": "프로세스 위치 이동",
+    "Kor": "\uD504\uB85C\uC138\uC2A4 \uC704\uCE58 \uC774\uB3D9",
     "Eng": "Process Location Movement"
   },
   {
     "Id": 1053,
     "Name": "1053",
-    "Kor": "프로세스 위치 복구",
+    "Kor": "\uD504\uB85C\uC138\uC2A4 \uC704\uCE58 \uBCF5\uAD6C",
     "Eng": "Process Location Restoration"
   },
   {
     "Id": 1054,
     "Name": "1054",
-    "Kor": "새로고침",
+    "Kor": "\uC0C8\uB85C\uACE0\uCE68",
     "Eng": "Refresh"
   },
   {
     "Id": 1055,
     "Name": "1055",
-    "Kor": "동일한 내용 추가",
+    "Kor": "\uB3D9\uC77C\uD55C \uB0B4\uC6A9 \uCD94\uAC00",
     "Eng": "Add the same content"
   },
   {
     "Id": 1056,
     "Name": "1056",
-    "Kor": "일반",
+    "Kor": "\uC77C\uBC18",
     "Eng": "Common"
   },
   {
@@ -350,49 +350,55 @@
   {
     "Id": 1058,
     "Name": "1058",
-    "Kor": "키보드 딜레이(ms)",
+    "Kor": "\uD0A4\uBCF4\uB4DC \uB51C\uB808\uC774(ms)",
     "Eng": "KeyboardDelay(ms)"
   },
   {
     "Id": 1059,
     "Name": "1059",
-    "Kor": "추가",
+    "Kor": "\uCD94\uAC00",
     "Eng": "Addition"
   },
   {
     "Id": 1060,
     "Name": "1060",
-    "Kor": "제거",
+    "Kor": "\uC81C\uAC70",
     "Eng": "Removal"
   },
   {
     "Id": 1061,
     "Name": "1061",
-    "Kor": "복사",
+    "Kor": "\uBCF5\uC0AC",
     "Eng": "Copy"
   },
   {
     "Id": 1062,
     "Name": "1062",
-    "Kor": "알림",
+    "Kor": "\uC54C\uB9BC",
     "Eng": "Alert"
   },
   {
     "Id": 1063,
     "Name": "1063",
-    "Kor": "옵션",
+    "Kor": "\uC635\uC158",
     "Eng": "Option"
   },
   {
     "Id": 1064,
     "Name": "1064",
-    "Kor": "관심영역",
+    "Kor": "\uAD00\uC2EC\uC601\uC5ED",
     "Eng": "Roi"
   },
   {
     "Id": 1065,
     "Name": "1065",
-    "Kor": "이미지 뷰어 보기",
+    "Kor": "\uC774\uBBF8\uC9C0 \uBDF0\uC5B4 \uBCF4\uAE30",
     "Eng": "Show Image Viewer"
+  },
+  {
+    "Id": 1066,
+    "Name": "1066",
+    "Kor": "\uD56D\uBAA9\uBCC4 \uC720\uC0AC\uB3C4",
+    "Eng": "Item Similarity"
   }
 ]

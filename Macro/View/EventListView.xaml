@@ -69,6 +69,13 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn Header="Status" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.14*, UpdateSourceTrigger=PropertyChanged}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Status}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </UI:TreeGridView.Columns>
             </UI:TreeGridView>
         </DockPanel>
