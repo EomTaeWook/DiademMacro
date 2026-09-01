@@ -328,21 +328,21 @@ namespace Macro
 
             if (selectionStateController.SelectTreeGridViewItem != null)
             {
-                btnAddEventItem.Visibility = Visibility.Collapsed;
-                btnRemoveEventItem.Visibility = Visibility.Visible;
-                btnCopyEventItem.Visibility = Visibility.Visible;
-                btnUpEventItem.Visibility = Visibility.Visible;
-                btnDownEventItem.Visibility = Visibility.Visible;
-                btnOptionEventItem.Visibility = Visibility.Visible;
+                btnAddEventItem.IsEnabled = true;
+                btnRemoveEventItem.IsEnabled = true;
+                btnCopyEventItem.IsEnabled = true;
+                btnUpEventItem.IsEnabled = true;
+                btnDownEventItem.IsEnabled = true;
+                btnOptionEventItem.IsEnabled = true;
             }
             else
             {
-                btnAddEventItem.Visibility = Visibility.Visible;
-                btnRemoveEventItem.Visibility = Visibility.Collapsed;
-                btnCopyEventItem.Visibility = Visibility.Collapsed;
-                btnUpEventItem.Visibility = Visibility.Collapsed;
-                btnDownEventItem.Visibility = Visibility.Collapsed;
-                btnOptionEventItem.Visibility = Visibility.Collapsed;
+                btnAddEventItem.IsEnabled = true;
+                btnRemoveEventItem.IsEnabled = false;
+                btnCopyEventItem.IsEnabled = false;
+                btnUpEventItem.IsEnabled = false;
+                btnDownEventItem.IsEnabled = false;
+                btnOptionEventItem.IsEnabled = false;
             }
         }
 

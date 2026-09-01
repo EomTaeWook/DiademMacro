@@ -9,7 +9,9 @@
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
     BorderThickness="1"
-    Title="{Binding Path=Title, Source={StaticResource LabelLocator}}" Height="600" Width="400" WindowStartupLocation="CenterScreen" 
+    Title="{Binding Path=Title, Source={StaticResource LabelLocator}}"
+    Height="680" Width="720" MinHeight="520" MinWidth="620"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
     <mah:MetroWindow.RightWindowCommands>
@@ -30,49 +32,50 @@
 
     <Grid>
         <DockPanel HorizontalAlignment="Stretch" LastChildFill="True" VerticalAlignment="Stretch">
-            <Border BorderBrush="Black" BorderThickness="2" DockPanel.Dock="Top" Height="140">
-                <DockPanel LastChildFill="True" Margin="0,0,0,6">
-                    <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                        <Label Height="35" VerticalAlignment="Top" Content="{Binding Path=SelectProcess, Source={StaticResource LabelLocator}}" DockPanel.Dock="Left"/>
-                        <Button Name="btnStart" Width="50" Content="{Binding Path=Start, Source={StaticResource LabelLocator}}" DockPanel.Dock="Right"></Button>
-                        <Button Name="btnStop" Width="50" Visibility="Collapsed" Content="{Binding Path=Stop, Source={StaticResource LabelLocator}}" DockPanel.Dock="Right"/>
-                    </DockPanel>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="6*"></RowDefinition>
-                            <RowDefinition Height="4*"></RowDefinition>
-                        </Grid.RowDefinitions>
+            <Border BorderBrush="#DDDDDD" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
+                <Grid Margin="10,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Row="0" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="7*"></ColumnDefinition>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox Grid.Column="0" Name="comboProcess" Height="40" Margin="0,0,0,0"/>
-                        <Grid Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40"></ColumnDefinition>
-                                <ColumnDefinition Width="60"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="35" Height="35" >
-                                <IconPacks:PackIconMaterial Width="15" Height="15" Kind="Refresh" />
-                            </Button>
-                            <CheckBox x:Name="checkFix" Grid.Column="1" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="5,0,0,0" Width="50"></CheckBox>
-                        </Grid>
-                        <Grid Grid.Row="2" Grid.ColumnSpan="2">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Name="btnAddEventItem" Content="{Binding Path=Addition, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible"/>
-                                <Button Name="btnRemoveEventItem" Content="{Binding Path=Removal, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                                <Button Name="btnCopyEventItem" Content="{Binding Path=Copy, Source={StaticResource LabelLocator}}" Width="100" Height="27" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
-                                <Button Name="btnUpEventItem" Background="Transparent" VerticalAlignment="Stretch" Height="27" Visibility="Collapsed">
-                                    <IconPacks:PackIconMaterial Width="auto" Height="auto" Kind="ArrowUpDropCircleOutline" />
-                                </Button>
-                                <Button Name="btnDownEventItem" Background="Transparent" VerticalAlignment="Stretch" Height="27" Visibility="Collapsed">
-                                    <IconPacks:PackIconMaterial Width="auto" Height="auto" Kind="ArrowDownDropCircleOutline" />
-                                </Button>
-                                <Button Name="btnOptionEventItem" Content="{Binding Path=Option, Source={StaticResource LabelLocator}}" Width="80" Height="27" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed"/>
-                            </StackPanel>
+                        <Label Grid.Column="0" VerticalAlignment="Center" Content="{Binding Path=SelectProcess, Source={StaticResource LabelLocator}}"/>
+                        <ComboBox Grid.Column="1" Name="comboProcess" Height="36" Margin="8,0"/>
+                        <Button Grid.Column="2" Style="{DynamicResource MahApps.Styles.Button.Circle}" x:Name="btnRefresh" Width="34" Height="34">
+                            <IconPacks:PackIconMaterial Width="16" Height="16" Kind="Refresh" />
+                        </Button>
+                        <CheckBox Grid.Column="3" x:Name="checkFix" Content="{Binding Path=Fix, Source={StaticResource LabelLocator}}" Margin="8,0" VerticalAlignment="Center"/>
+                        <Grid Grid.Column="4" Width="72">
+                            <Button Name="btnStart" Content="{Binding Path=Start, Source={StaticResource LabelLocator}}"/>
+                            <Button Name="btnStop" Visibility="Collapsed" Content="{Binding Path=Stop, Source={StaticResource LabelLocator}}"/>
                         </Grid>
                     </Grid>
-                </DockPanel>
+
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,8,0,0">
+                        <Button Name="btnAddEventItem" Content="{Binding Path=Addition, Source={StaticResource LabelLocator}}" MinWidth="86" Height="32"/>
+                        <Button Name="btnRemoveEventItem" Content="{Binding Path=Removal, Source={StaticResource LabelLocator}}" MinWidth="86" Height="32" IsEnabled="False"/>
+                        <Button Name="btnCopyEventItem" Content="{Binding Path=Copy, Source={StaticResource LabelLocator}}" MinWidth="86" Height="32" IsEnabled="False"/>
+                        <Button Name="btnUpEventItem" Background="Transparent" Width="38" Height="32" IsEnabled="False">
+                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="ArrowUpDropCircleOutline" />
+                        </Button>
+                        <Button Name="btnDownEventItem" Background="Transparent" Width="38" Height="32" IsEnabled="False">
+                            <IconPacks:PackIconMaterial Width="20" Height="20" Kind="ArrowDownDropCircleOutline" />
+                        </Button>
+                        <Button Name="btnOptionEventItem" Content="{Binding Path=Option, Source={StaticResource LabelLocator}}" MinWidth="80" Height="32" IsEnabled="False"/>
+                    </StackPanel>
+                </Grid>
             </Border>
             <DockPanel DockPanel.Dock="Left">
                 <view:EventListView x:Name="eventListView"/>

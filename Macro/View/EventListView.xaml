@@ -26,7 +26,7 @@
                 </UI:TreeGridView.ItemTemplate>
 
                 <UI:TreeGridView.Columns>
-                    <GridViewColumn Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.09*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.06*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.Header>
                             <CheckBox IsChecked="{Binding Path=DataContext.IsAllSelected, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" />
                         </GridViewColumn.Header>
@@ -37,7 +37,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Image" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Header="Image" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.17*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -48,28 +48,28 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Index" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.12*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Header="Index" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.09*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding ItemIndex}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="EventType" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.2*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Header="EventType" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding EventType}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn  Header="ProcessName" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.25*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Header="ProcessName" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.30*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding ProcessInfo.ProcessName}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Status" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.14*, UpdateSourceTrigger=PropertyChanged}">
+                    <GridViewColumn Header="Status" Width="{Binding Path=Width, Mode=TwoWay, Converter={StaticResource ResourceKey=WidthConverter}, ConverterParameter=0.18*, UpdateSourceTrigger=PropertyChanged}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Status}" Padding="0,30,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" />

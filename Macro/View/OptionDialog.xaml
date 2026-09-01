@@ -10,7 +10,7 @@
         SizeToContent="Manual"
         d:DataContext="{d:DesignInstance Type=viewmodel:OptionDialogViewModel}"
         mc:Ignorable="d"
-        Title="OptionDialog" Height="500" Width="450">
+        Title="{Binding Path=Option, Source={StaticResource LabelLocator}}" Height="540" Width="460">
     <Grid Margin="10" x:Name="gridMain">
         <Grid.RowDefinitions>
             <!-- 구분 라벨 -->
@@ -39,11 +39,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="165"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Option" FontWeight="Bold" FontSize="14" />
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Path=Option, Source={StaticResource LabelLocator}}" FontWeight="Bold" FontSize="16" Margin="0,0,0,8" />
         <!-- 이벤트 타입 -->
         <Label Grid.Row="1" Grid.Column="0" Content="{Binding Path=EventType, Source={StaticResource LabelLocator}}"></Label>
         <ComboBox Name="comboEventType" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding EventTypes}" SelectedItem="{Binding SelectedEventType, Mode=TwoWay}"/>
@@ -85,12 +85,12 @@
 
         <!-- 물리 클릭 -->
         <Label Grid.Row="7" Grid.Column="0" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}"></Label>
-        <CheckBox x:Name="checkHardClick" IsEnabled="True" IsChecked="{Binding Path=HardClick, Mode=TwoWay}" Content="{Binding Path=HardClick, Source={StaticResource LabelLocator}}" Grid.Row="7" Grid.Column="1"></CheckBox>
+        <CheckBox x:Name="checkHardClick" IsEnabled="True" IsChecked="{Binding Path=HardClick, Mode=TwoWay}" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center"></CheckBox>
 
         <!-- 같은 이미지 드래그 -->
         <Label Grid.Row="8" Grid.Column="0" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}"></Label>
         <StackPanel Grid.Row="8" Grid.Column="1">
-            <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=SameImageDrag, Mode=TwoWay}" Content="{Binding Path=SameImageDrag, Source={StaticResource LabelLocator}}"></CheckBox>
+            <CheckBox x:Name="checkSameImageDrag" IsEnabled="True" IsChecked="{Binding Path=SameImageDrag, Mode=TwoWay}"></CheckBox>
             <mah:NumericUpDown x:Name="numMaxDragCount" Value="{Binding Path=MaxDragCount, Mode=TwoWay}" TextAlignment="Left" Minimum="0" NumericInputMode="Numbers" IsEnabled="False" ></mah:NumericUpDown>
         </StackPanel>
 
@@ -103,7 +103,7 @@
 
         <!-- 버튼 영역 -->
         <DockPanel HorizontalAlignment="Center" Grid.Row="11" Grid.ColumnSpan="2">
-            <Button x:Name="btnSave" Content="저장" Width="200"></Button>
+            <Button x:Name="btnSave" Content="{Binding Path=Save, Source={StaticResource LabelLocator}}" Width="180"></Button>
         </DockPanel>
     </Grid>
 </mah:MetroWindow>
