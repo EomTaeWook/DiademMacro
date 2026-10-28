@@ -1,5 +1,6 @@
 .vs/
 packages/
+/artifacts/
 Release/exe/
 Release/Install/Setup.exe
 Patcher/.vs/
