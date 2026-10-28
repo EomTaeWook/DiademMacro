@@ -1,0 +1,3 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Macro.View.ChildWindow" WindowDecorations="None" Width="450" Height="450" CanResize="False" ShowInTaskbar="False" WindowStartupLocation="Manual" Background="Transparent" TransparencyLevelHint="Transparent">
+  <Grid />
+</Window>

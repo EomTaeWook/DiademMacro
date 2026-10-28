@@ -39,19 +39,19 @@
     "Id": 1006,
     "Name": "1006",
     "Kor": "\uC774\uBCA4\uD2B8 \uD0C0\uC785",
-    "Eng": "EventType"
+    "Eng": "Event type"
   },
   {
     "Id": 1007,
     "Name": "1007",
     "Kor": "\uC774\uBCA4\uD2B8 \uB370\uC774\uD130",
-    "Eng": "EventDataSet"
+    "Eng": "Input details"
   },
   {
     "Id": 1008,
     "Name": "1008",
     "Kor": "\uD2B8\uB9AC\uAC70 \uB9AC\uC2A4\uD2B8",
-    "Eng": "TriggerList"
+    "Eng": "Events"
   },
   {
     "Id": 1009,
@@ -98,8 +98,8 @@
   {
     "Id": 1016,
     "Name": "1016",
-    "Kor": "Setting",
-    "Eng": "Setting"
+    "Kor": "\uC124\uC815",
+    "Eng": "Settings"
   },
   {
     "Id": 1017,
@@ -117,19 +117,19 @@
     "Id": 1019,
     "Name": "1019",
     "Kor": "\uC800\uC7A5 \uACBD\uB85C",
-    "Eng": "SavePath"
+    "Eng": "Save folder"
   },
   {
     "Id": 1020,
     "Name": "1020",
     "Kor": "\uC804\uCCB4 \uD504\uB85C\uC138\uC2F1 \uC8FC\uAE30(ms)",
-    "Eng": "Period(ms)"
+    "Eng": "Process interval (ms)"
   },
   {
     "Id": 1021,
     "Name": "1021",
     "Kor": "\uC544\uC774\uD15C \uB51C\uB808\uC774(ms)",
-    "Eng": "ItemDelay(ms)"
+    "Eng": "Event interval (ms)"
   },
   {
     "Id": 1022,
@@ -141,7 +141,7 @@
     "Id": 1023,
     "Name": "1023",
     "Kor": "\uD6C4(\u5F8C) \uC791\uC5C5 \uB51C\uB808\uC774(ms)",
-    "Eng": "AfterDelay(ms)"
+    "Eng": "Delay after event (ms)"
   },
   {
     "Id": 1024,
@@ -237,7 +237,7 @@
     "Id": 1039,
     "Name": "1039",
     "Kor": "\uBC14\uB85C \uC774\uB3D9",
-    "Eng": "ToNext"
+    "Eng": "Next event"
   },
   {
     "Id": 1040,
@@ -291,7 +291,7 @@
     "Id": 1048,
     "Name": "1048",
     "Kor": "\uBB3C\uB9AC \uD074\uB9AD",
-    "Eng": "Hard Click"
+    "Eng": "Physical click"
   },
   {
     "Id": 1049,
@@ -344,8 +344,8 @@
   {
     "Id": 1057,
     "Name": "1057",
-    "Kor": "MacroMode",
-    "Eng": "MacroMode"
+    "Kor": "\uC2E4\uD589 \uBAA8\uB4DC",
+    "Eng": "Execution mode"
   },
   {
     "Id": 1058,
@@ -400,5 +400,125 @@
     "Name": "1066",
     "Kor": "\uD56D\uBAA9\uBCC4 \uC720\uC0AC\uB3C4",
     "Eng": "Item Similarity"
+  },
+  {
+    "Id": 1067,
+    "Name": "1067",
+    "Kor": "\uC571 \uC5C5\uB370\uC774\uD2B8",
+    "Eng": "Application update"
+  },
+  {
+    "Id": 1068,
+    "Name": "1068",
+    "Kor": "\uD604\uC7AC \uBC84\uC804",
+    "Eng": "Current version"
+  },
+  {
+    "Id": 1069,
+    "Name": "1069",
+    "Kor": "\uCD5C\uC2E0 \uC815\uC2DD \uBC84\uC804",
+    "Eng": "Latest stable version"
+  },
+  {
+    "Id": 1070,
+    "Name": "1070",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uD655\uC778",
+    "Eng": "Check for updates"
+  },
+  {
+    "Id": 1071,
+    "Name": "1071",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uD6C4 \uC7AC\uC2DC\uC791",
+    "Eng": "Update and restart"
+  },
+  {
+    "Id": 1072,
+    "Name": "1072",
+    "Kor": "\uB9B4\uB9AC\uC2A4 \uC5F4\uAE30",
+    "Eng": "Open releases"
+  },
+  {
+    "Id": 1073,
+    "Name": "1073",
+    "Kor": "\uC774\uBBF8\uC9C0",
+    "Eng": "Image"
+  },
+  {
+    "Id": 1074,
+    "Name": "1074",
+    "Kor": "\uBC88\uD638",
+    "Eng": "Index"
+  },
+  {
+    "Id": 1075,
+    "Name": "1075",
+    "Kor": "\uD504\uB85C\uC138\uC2A4",
+    "Eng": "Process"
+  },
+  {
+    "Id": 1076,
+    "Name": "1076",
+    "Kor": "\uC2E4\uD589 \uC0C1\uD0DC",
+    "Eng": "Status"
+  },
+  {
+    "Id": 1077,
+    "Name": "1077",
+    "Kor": "\uC704\uB85C \uC774\uB3D9",
+    "Eng": "Move up"
+  },
+  {
+    "Id": 1078,
+    "Name": "1078",
+    "Kor": "\uC544\uB798\uB85C \uC774\uB3D9",
+    "Eng": "Move down"
+  },
+  {
+    "Id": 1079,
+    "Name": "1079",
+    "Kor": "\uC785\uB825 \uC124\uC815",
+    "Eng": "Input"
+  },
+  {
+    "Id": 1080,
+    "Name": "1080",
+    "Kor": "\uC2E4\uD589 \uC124\uC815",
+    "Eng": "Execution"
+  },
+  {
+    "Id": 1081,
+    "Name": "1081",
+    "Kor": "\uD654\uBA74 \uC124\uC815",
+    "Eng": "Display"
+  },
+  {
+    "Id": 1082,
+    "Name": "1082",
+    "Kor": "\uC544\uC9C1 \uB4F1\uB85D\uB41C \uC774\uBCA4\uD2B8\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "No events yet."
+  },
+  {
+    "Id": 1083,
+    "Name": "1083",
+    "Kor": "\uD504\uB85C\uC138\uC2A4\uB97C \uC120\uD0DD\uD558\uACE0 \uCD94\uAC00 \uBC84\uD2BC\uC744 \uB20C\uB7EC \uCCAB \uC774\uBBF8\uC9C0\uB97C \uCEA1\uCC98\uD558\uC138\uC694.",
+    "Eng": "Select a process and choose Add to capture your first image."
+  },
+  {
+    "Id": 1084,
+    "Name": "1084",
+    "Kor": "\uB300\uC0C1 \uCC3D\uC744 \uD654\uBA74\uC5D0 \uD45C\uC2DC\uD574 \uB450\uC138\uC694. \uCC3D\uC744 \uD65C\uC131\uD654\uD558\uACE0 \uC2E4\uC81C \uB9C8\uC6B0\uC2A4 \uCEE4\uC11C\uB97C \uC6C0\uC9C1\uC5EC \uD074\uB9AD\uD569\uB2C8\uB2E4. \uAC19\uC740 \uC774\uBBF8\uC9C0 \uB4DC\uB798\uADF8\uC640\uB294 \uD568\uAED8 \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "Keep the target window visible. This activates the window and moves your mouse cursor to click. Not available with same-image dragging."
+  },
+  {
+    "Id": 1085,
+    "Name": "1085",
+    "Kor": "\uC804\uCCB4 \uC120\uD0DD",
+    "Eng": "Select all"
+  },
+  {
+    "Id": 1086,
+    "Name": "1086",
+    "Kor": "\uC2E4\uD589\uD560 \uD504\uB85C\uC138\uC2A4\uC640 \uC774\uBCA4\uD2B8\uB97C \uC120\uD0DD\uD558\uC138\uC694.",
+    "Eng": "Choose a process and the events to run."
   }
 ]

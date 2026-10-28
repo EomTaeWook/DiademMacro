@@ -1,0 +1,16 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style Selector="TreeViewItem">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Padding" Value="4,0" />
+    <Setter Property="Margin" Value="4,0" />
+    <Setter Property="CornerRadius" Value="7" />
+  </Style>
+  <Style Selector="TreeViewItem /template/ ContentPresenter#PART_HeaderPresenter">
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+  </Style>
+  <Style Selector="TreeViewItem.dragTarget">
+    <Setter Property="Background" Value="{StaticResource AccentSurfaceBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource AccentTextBrush}" />
+    <Setter Property="BorderThickness" Value="0,0,0,2" />
+  </Style>
+</Styles>

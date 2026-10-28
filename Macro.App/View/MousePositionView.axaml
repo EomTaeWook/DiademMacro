@@ -1,0 +1,3 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Macro.View.MousePositionView" WindowDecorations="None" CanResize="False" Opacity="0.5" Background="Gainsboro" WindowStartupLocation="Manual" TransparencyLevelHint="Transparent" ShowInTaskbar="False">
+  <Path x:Name="pathMousePoint" Stroke="Black" StrokeThickness="1" />
+</Window>

@@ -1,0 +1,99 @@
+<Application xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:models="clr-namespace:Macro.Models" x:Class="Macro.App" RequestedThemeVariant="Light">
+  <Application.Resources>
+    <models:LabelLocator x:Key="LabelLocator" />
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F4F6FA" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="SubtleSurfaceBrush" Color="#F8FAFD" />
+    <SolidColorBrush x:Key="OutlineBrush" Color="#E3E8F0" />
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#1E293B" />
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#64748B" />
+    <SolidColorBrush x:Key="AccentSurfaceBrush" Color="#EDF2FF" />
+    <SolidColorBrush x:Key="AccentTextBrush" Color="#4663D8" />
+  </Application.Resources>
+  <Application.Styles>
+    <FluentTheme />
+    <Style Selector="Window">
+      <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+      <Setter Property="FontFamily" Value="Segoe UI" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="MinHeight" Value="38" />
+      <Setter Property="Padding" Value="12,8" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource OutlineBrush}" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.icon">
+      <Setter Property="Width" Value="38" />
+      <Setter Property="Height" Value="38" />
+      <Setter Property="Padding" Value="10" />
+    </Style>
+    <Style Selector="Button.accent">
+      <Setter Property="Background" Value="{StaticResource AccentTextBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentTextBrush}" />
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="#C83E4D" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderBrush" Value="#C83E4D" />
+    </Style>
+    <Style Selector="Label">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Padding" Value="0,8" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="ComboBoxItem">
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="NumericUpDown">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="CornerRadius" Value="9" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="CheckBox">
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBlock.heading">
+      <Setter Property="FontSize" Value="24" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.section">
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.caption">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Foreground" Value="{StaticResource SecondaryTextBrush}" />
+    </Style>
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource OutlineBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="Padding" Value="20" />
+    </Style>
+    <StyleInclude Source="/Styles/TreeGridViewStyle.axaml" />
+  </Application.Styles>
+</Application>

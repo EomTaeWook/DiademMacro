@@ -1,4 +1,3 @@
-﻿using System.IO;
 
 namespace Utils
 {
@@ -9,10 +8,6 @@ namespace Utils
         public static readonly string DefaultConfigFile = "config.json";
         public static readonly string DefaultDatasFilePath = @".\Datas\";
         public static readonly string DefaultSaveCacheFile = @"Cache.dll";
-        public static readonly string DefaultPatcherName = @"Patcher.exe";
-
-        public static readonly string TempPath = Path.GetTempPath() + $"Macro\\";
-        public static readonly string TempBackupPath = $"{TempPath}backup\\";
 
         public static readonly int MinPeriod = 0;
         public static readonly int MinItemDelay = 0;
@@ -25,8 +20,6 @@ namespace Utils
         public static readonly int DefaultMaxSameImageCount = 5;
 
         public static readonly string MacroUri = @"https://itdah.com/macro";
-
-        public static readonly string VersionInfoPageUrl = @"https://itdah.com/MacroVersion";
 
         public static readonly string HelpUrl = @"https://www.itdah.com/MacroVersion/Help";
 

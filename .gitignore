@@ -8,7 +8,7 @@ Patcher/Patcher/bin/
 Patcher/Patcher/obj/
 .gitattributes
 Patcher/Patcher/Patcher.csproj.user
-Macro/Macro.csproj.user
+Macro.App/Macro.App.csproj.user
 *.user
 Release/Install/
 **/obj/*

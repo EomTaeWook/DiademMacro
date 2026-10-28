@@ -124,5 +124,173 @@
     "Name": "1020",
     "Kor": "\uB2E4\uC6B4\uB85C\uB4DC \uD398\uC774\uC9C0\uB85C \uC774\uB3D9\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
     "Eng": "Do you want to go to the download page?"
+  },
+  {
+    "Id": 1021,
+    "Name": "1021",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uD655\uC778\uC744 \uB20C\uB7EC \uCD5C\uC2E0 \uC815\uC2DD \uBC84\uC804\uC744 \uC870\uD68C\uD558\uC138\uC694.",
+    "Eng": "Check for updates to find the latest stable version."
+  },
+  {
+    "Id": 1022,
+    "Name": "1022",
+    "Kor": "\uCD5C\uC2E0 \uC815\uC2DD \uBC84\uC804\uC744 \uD655\uC778\uD558\uB294 \uC911\uC785\uB2C8\uB2E4.",
+    "Eng": "Checking the latest stable version."
+  },
+  {
+    "Id": 1023,
+    "Name": "1023",
+    "Kor": "\uD604\uC7AC \uCD5C\uC2E0 \uC815\uC2DD \uBC84\uC804\uC744 \uC0AC\uC6A9\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The application is up to date."
+  },
+  {
+    "Id": 1024,
+    "Name": "1024",
+    "Kor": "\uAC8C\uC2DC\uB41C \uC815\uC2DD \uB9B4\uB9AC\uC2A4\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "No stable release is available."
+  },
+  {
+    "Id": 1025,
+    "Name": "1025",
+    "Kor": "\uC0C8 \uC815\uC2DD \uBC84\uC804 {0}\uC744 \uC124\uCE58\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+    "Eng": "Stable version {0} is available."
+  },
+  {
+    "Id": 1026,
+    "Name": "1026",
+    "Kor": "\uC790\uB3D9 \uC124\uCE58\uB294 Windows x64 \uB2E8\uC77C \uC2E4\uD589 \uD30C\uC77C \uBC30\uD3EC\uC5D0\uC11C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+    "Eng": "Automatic installation requires a published Windows x64 single executable."
+  },
+  {
+    "Id": 1027,
+    "Name": "1027",
+    "Kor": "\uD604\uC7AC \uC571\uC758 \uBC84\uC804 \uC815\uBCF4\uB97C \uC77D\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The current application version is invalid."
+  },
+  {
+    "Id": 1028,
+    "Name": "1028",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uC870\uD68C\uAC00 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694.",
+    "Eng": "The update request failed. Try again later."
+  },
+  {
+    "Id": 1029,
+    "Name": "1029",
+    "Kor": "\uACF5\uC2DD \uB9B4\uB9AC\uC2A4 \uC815\uBCF4\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uB9B4\uB9AC\uC2A4 \uD398\uC774\uC9C0\uB97C \uD655\uC778\uD558\uC138\uC694.",
+    "Eng": "The official release information is invalid. Open the releases page."
+  },
+  {
+    "Id": 1030,
+    "Name": "1030",
+    "Kor": "\uB9B4\uB9AC\uC2A4 \uD30C\uC77C\uC5D0 SHA-256 \uC815\uBCF4\uAC00 \uC5C6\uC5B4 \uC790\uB3D9 \uC124\uCE58\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The release asset has no SHA-256 digest and cannot be installed automatically."
+  },
+  {
+    "Id": 1031,
+    "Name": "1031",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uC11C\uBC84\uC5D0 \uC5F0\uACB0\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The update service is unavailable."
+  },
+  {
+    "Id": 1032,
+    "Name": "1032",
+    "Kor": "\uC774 \uB9B4\uB9AC\uC2A4\uC5D0\uB294 \uC9C0\uC6D0\uB418\uB294 \uB2E8\uC77C \uC2E4\uD589 \uD30C\uC77C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4. \uB9B4\uB9AC\uC2A4 \uD398\uC774\uC9C0\uB97C \uD655\uC778\uD558\uC138\uC694.",
+    "Eng": "This release has no supported single executable. Open the releases page."
+  },
+  {
+    "Id": 1033,
+    "Name": "1033",
+    "Kor": "\uB2E4\uC6B4\uB85C\uB4DC\uD55C \uD30C\uC77C\uC758 \uD06C\uAE30\uAC00 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694.",
+    "Eng": "The downloaded file size does not match. Try again."
+  },
+  {
+    "Id": 1034,
+    "Name": "1034",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uD30C\uC77C\uC744 \uB2E4\uC6B4\uB85C\uB4DC\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The update could not be downloaded."
+  },
+  {
+    "Id": 1035,
+    "Name": "1035",
+    "Kor": "\uB2E4\uC6B4\uB85C\uB4DC\uD55C \uD30C\uC77C\uC758 SHA-256\uC774 \uC77C\uCE58\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC124\uCE58\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The downloaded SHA-256 does not match. The update was not installed."
+  },
+  {
+    "Id": 1036,
+    "Name": "1036",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uC124\uCE58\uB97C \uC900\uBE44\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uD30C\uC77C \uAD8C\uD55C\uC744 \uD655\uC778\uD558\uC138\uC694.",
+    "Eng": "The update could not be prepared. Check file permissions."
+  },
+  {
+    "Id": 1037,
+    "Name": "1037",
+    "Kor": "\uC2E4\uD589 \uD30C\uC77C \uAD50\uCCB4\uC5D0 \uC2E4\uD328\uD558\uC5EC \uAE30\uC874 \uC571\uC744 \uC720\uC9C0\uD588\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The executable could not be replaced. The previous application was kept."
+  },
+  {
+    "Id": 1038,
+    "Name": "1038",
+    "Kor": "\uAE30\uC874 \uC2E4\uD589 \uD30C\uC77C \uBCF5\uC6D0\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4. \uBCF4\uC874\uB41C \uBC31\uC5C5\uC73C\uB85C \uBCF5\uAD6C\uD558\uC138\uC694.",
+    "Eng": "The previous executable could not be restored. Recover it from the retained backup."
+  },
+  {
+    "Id": 1039,
+    "Name": "1039",
+    "Kor": "\uC815\uC0C1 \uC885\uB8CC\uB97C \uC694\uCCAD\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4. \uC791\uC5C5\uC744 \uB9C8\uCE5C \uB4A4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694.",
+    "Eng": "Normal shutdown is unavailable. Finish current work and try again."
+  },
+  {
+    "Id": 1040,
+    "Name": "1040",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uB2E4\uC6B4\uB85C\uB4DC \uC694\uCCAD\uC774 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694.",
+    "Eng": "The update download request failed. Try again later."
+  },
+  {
+    "Id": 1041,
+    "Name": "1041",
+    "Kor": "\uC0C8 \uC571 \uC2E4\uD589\uC5D0 \uC2E4\uD328\uD558\uC5EC \uAE30\uC874 \uC2E4\uD589 \uD30C\uC77C\uB85C \uB3CC\uC544\uC654\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The updated application could not be started. The previous executable was restored."
+  },
+  {
+    "Id": 1042,
+    "Name": "1042",
+    "Kor": "\uB9E4\uD06C\uB85C \uC2E4\uD589\uC774\uB098 \uC785\uB825 \uC120\uD0DD\uC744 \uB9C8\uCE5C \uB4A4 \uC5C5\uB370\uC774\uD2B8\uD558\uC138\uC694.",
+    "Eng": "Finish macro execution or input selection before updating."
+  },
+  {
+    "Id": 1043,
+    "Name": "1043",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uD30C\uC77C\uC744 \uB2E4\uC6B4\uB85C\uB4DC\uD558\uACE0 \uD655\uC778\uD558\uB294 \uC911\uC785\uB2C8\uB2E4.",
+    "Eng": "Downloading and verifying the update."
+  },
+  {
+    "Id": 1044,
+    "Name": "1044",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uD6C4 \uC7AC\uC2DC\uC791\uC744 \uC900\uBE44\uD558\uB294 \uC911\uC785\uB2C8\uB2E4.",
+    "Eng": "Preparing to update and restart."
+  },
+  {
+    "Id": 1045,
+    "Name": "1045",
+    "Kor": "\uC815\uC0C1 \uC885\uB8CC \uD6C4 \uC5C5\uB370\uC774\uD2B8\uD558\uACE0 \uB2E4\uC2DC \uC2DC\uC791\uD569\uB2C8\uB2E4.",
+    "Eng": "The application will update and restart after normal shutdown."
+  },
+  {
+    "Id": 1046,
+    "Name": "1046",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uC791\uC5C5\uC744 \uCDE8\uC18C\uD588\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The update operation was cancelled."
+  },
+  {
+    "Id": 1047,
+    "Name": "1047",
+    "Kor": "\uB9B4\uB9AC\uC2A4 \uD398\uC774\uC9C0\uB97C \uC5F4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.",
+    "Eng": "The releases page could not be opened."
+  },
+  {
+    "Id": 1048,
+    "Name": "1048",
+    "Kor": "\uC5C5\uB370\uC774\uD2B8 \uC791\uC5C5\uC744 \uC644\uB8CC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB85C\uADF8\uB97C \uD655\uC778\uD558\uC138\uC694.",
+    "Eng": "The update operation failed. Check the log for details."
   }
 ]

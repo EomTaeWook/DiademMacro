@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:Macro.UI" xmlns:converters="clr-namespace:Macro.Infrastructure.Converter" x:Class="Macro.View.EventListView">
+  <UserControl.Resources>
+    <converters:ImageConverter x:Key="ImageConverter" />
+    <converters:BooleanToValueConverter x:Key="CountEqualsConverter" />
+    <ColumnDefinitions x:Key="EventColumns">
+      <ColumnDefinition Width="0.06*" />
+      <ColumnDefinition Width="0.17*" />
+      <ColumnDefinition Width="0.09*" />
+      <ColumnDefinition Width="0.18*" />
+      <ColumnDefinition Width="0.30*" />
+      <ColumnDefinition Width="0.18*" />
+    </ColumnDefinitions>
+  </UserControl.Resources>
+  <Grid RowDefinitions="Auto,*">
+    <Border Background="{StaticResource SubtleSurfaceBrush}" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="0,0,0,1" Padding="24,10,12,10">
+      <Grid ColumnDefinitions="{StaticResource EventColumns}">
+        <CheckBox Grid.Column="0" IsChecked="{Binding IsAllSelected, Mode=TwoWay}" ToolTip.Tip="{Binding SelectAll, Source={StaticResource LabelLocator}}" />
+        <TextBlock Grid.Column="1" Classes="caption" Text="{Binding Image, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" Margin="6,0" />
+        <TextBlock Grid.Column="2" Classes="caption" Text="{Binding ItemIndex, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" Margin="6,0" />
+        <TextBlock Grid.Column="3" Classes="caption" Text="{Binding EventType, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" Margin="6,0" />
+        <TextBlock Grid.Column="4" Classes="caption" Text="{Binding ProcessName, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" Margin="6,0" />
+        <TextBlock Grid.Column="5" Classes="caption" Text="{Binding Status, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" Margin="6,0" />
+        <GridSplitter Grid.Column="0" Width="4" HorizontalAlignment="Right" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Background="Transparent" />
+        <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Right" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Background="Transparent" />
+        <GridSplitter Grid.Column="2" Width="4" HorizontalAlignment="Right" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Background="Transparent" />
+        <GridSplitter Grid.Column="3" Width="4" HorizontalAlignment="Right" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Background="Transparent" />
+        <GridSplitter Grid.Column="4" Width="4" HorizontalAlignment="Right" ResizeDirection="Columns" ResizeBehavior="CurrentAndNext" Background="Transparent" />
+      </Grid>
+    </Border>
+    <ui:TreeGridView Grid.Row="1" x:Name="treeGridView" ItemsSource="{Binding EventItems}" DragDrop.AllowDrop="True" HorizontalAlignment="Stretch" Background="Transparent" BorderThickness="0" Margin="0,4">
+      <ui:TreeGridView.ItemTemplate>
+        <TreeDataTemplate ItemsSource="{Binding SubEventItems}">
+          <Grid MinHeight="80" Margin="0,2">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="{Binding [0].Width, Source={StaticResource EventColumns}}" />
+              <ColumnDefinition Width="{Binding [1].Width, Source={StaticResource EventColumns}}" />
+              <ColumnDefinition Width="{Binding [2].Width, Source={StaticResource EventColumns}}" />
+              <ColumnDefinition Width="{Binding [3].Width, Source={StaticResource EventColumns}}" />
+              <ColumnDefinition Width="{Binding [4].Width, Source={StaticResource EventColumns}}" />
+              <ColumnDefinition Width="{Binding [5].Width, Source={StaticResource EventColumns}}" />
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalAlignment="Center" />
+            <Border Grid.Column="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="1" CornerRadius="6" Height="64" MaxWidth="96" Margin="6,0" Padding="4" VerticalAlignment="Center">
+              <Image Source="{Binding Image, Converter={StaticResource ImageConverter}}" Stretch="Uniform" />
+            </Border>
+            <TextBlock Grid.Column="2" Classes="caption" Text="{Binding ItemIndex}" VerticalAlignment="Center" Margin="6,0" />
+            <Border Grid.Column="3" Background="{StaticResource AccentSurfaceBrush}" CornerRadius="5" Padding="7,4" Margin="6,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+              <TextBlock Text="{Binding EventType}" Foreground="{StaticResource AccentTextBrush}" FontSize="12" TextTrimming="CharacterEllipsis" />
+            </Border>
+            <TextBlock Grid.Column="4" Text="{Binding ProcessInfo.ProcessName}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="6,0" ToolTip.Tip="{Binding ProcessInfo.ProcessName}" />
+            <TextBlock Grid.Column="5" Classes="caption" Text="{Binding Status}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="6,0" />
+          </Grid>
+        </TreeDataTemplate>
+      </ui:TreeGridView.ItemTemplate>
+    </ui:TreeGridView>
+    <Border Grid.Row="1" IsVisible="{Binding EventItems.Count, Converter={StaticResource CountEqualsConverter}, ConverterParameter=0}" Background="{StaticResource SurfaceBrush}">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" Margin="32">
+        <Border Width="64" Height="64" Background="{StaticResource AccentSurfaceBrush}" CornerRadius="18" HorizontalAlignment="Center">
+          <PathIcon Width="28" Height="28" Foreground="{StaticResource AccentTextBrush}" Data="M3,4 L21,4 L21,20 L3,20 Z M5,17 L10,11 L14,15 L17,12 L20,17 M7,7 L9,7 L9,9 L7,9 Z" />
+        </Border>
+        <TextBlock Classes="section" Text="{Binding EmptyEventList, Source={StaticResource LabelLocator}}" HorizontalAlignment="Center" />
+        <TextBlock Classes="caption" Text="{Binding EmptyEventHint, Source={StaticResource LabelLocator}}" TextWrapping="Wrap" TextAlignment="Center" MaxWidth="400" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

@@ -1,0 +1,103 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Macro.View.OptionDialog" Title="{Binding Option, Source={StaticResource LabelLocator}}" Width="620" Height="740" MinWidth="540" MinHeight="520" WindowStartupLocation="CenterOwner" CanResize="True">
+  <Grid x:Name="gridMain" Margin="24" RowDefinitions="Auto,*,Auto">
+    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,20">
+      <Border Width="44" Height="44" Background="{StaticResource AccentSurfaceBrush}" CornerRadius="12">
+        <PathIcon Width="22" Height="22" Foreground="{StaticResource AccentTextBrush}" Data="M3,5 H7 V3 H9 V9 H7 V7 H3 Z M11,5 H21 V7 H11 Z M3,11 H13 V9 H15 V15 H13 V13 H3 Z M17,11 H21 V13 H17 Z M3,17 H7 V15 H9 V21 H7 V19 H3 Z M11,17 H21 V19 H11 Z" />
+      </Border>
+      <TextBlock Classes="heading" Text="{Binding Option, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+    </StackPanel>
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="16" Margin="0,0,10,0">
+        <Border Classes="card">
+          <StackPanel Spacing="16">
+            <StackPanel Orientation="Horizontal" Spacing="9">
+              <PathIcon Width="17" Height="17" Foreground="{StaticResource AccentTextBrush}" Data="M5,3 L20,12 L13.5,14 L17,20 L14,22 L10.5,16 L5,21 Z" />
+              <TextBlock Classes="section" Text="{Binding InputSettings, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+            </StackPanel>
+            <Grid ColumnDefinitions="165,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+              <Label Content="{Binding EventType, Source={StaticResource LabelLocator}}" Margin="0,0,12,12" />
+              <ComboBox Grid.Column="1" x:Name="comboEventType" ItemsSource="{Binding EventTypes}" SelectedItem="{Binding SelectedEventType, Mode=TwoWay}" Margin="0,0,0,12" />
+              <Label Grid.Row="1" Content="{Binding EventDataSet, Source={StaticResource LabelLocator}}" Margin="0,0,12,12" />
+              <StackPanel Grid.Row="1" Grid.Column="1" x:Name="panelMouseEvent" Spacing="6" IsVisible="False" Margin="0,0,0,12">
+                <Button x:Name="btnMouseEvent" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding MouseCoordinates, Source={StaticResource LabelLocator}}">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Width="16" Height="16" Data="F0 M11,2 H13 V5.1 A7,7 0 0 1 18.9,11 H22 V13 H18.9 A7,7 0 0 1 13,18.9 V22 H11 V18.9 A7,7 0 0 1 5.1,13 H2 V11 H5.1 A7,7 0 0 1 11,5.1 Z M12,7 A5,5 0 1 0 12,17 A5,5 0 1 0 12,7 Z M12,10 A2,2 0 1 1 12,14 A2,2 0 1 1 12,10 Z" />
+                    <TextBlock Text="{Binding MouseCoordinates, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Label x:Name="MousePointDesc" Content="{Binding MousePointDesc, Mode=TwoWay}" FontSize="12" Padding="0" />
+              </StackPanel>
+              <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtKeyboardCmd" Text="{Binding KeyboardCmd, Mode=TwoWay}" PlaceholderText="CTRL+A" IsVisible="False" Margin="0,0,0,12" />
+              <StackPanel Grid.Row="1" Grid.Column="1" x:Name="relativeToImagePanel" Orientation="Horizontal" Spacing="8" IsVisible="False" Margin="0,0,0,12">
+                <Label Content="X" />
+                <NumericUpDown x:Name="numRelativeX" Width="90" Value="{Binding PositionRelativeToImageX, Mode=TwoWay}" />
+                <Label Content="Y" />
+                <NumericUpDown x:Name="numRelativeY" Width="90" Value="{Binding PositionRelativeToImageY, Mode=TwoWay}" />
+              </StackPanel>
+              <Label Grid.Row="2" Content="{Binding Roi, Source={StaticResource LabelLocator}}" Margin="0,0,12,12" />
+              <StackPanel Grid.Row="2" Grid.Column="1" Spacing="6" Margin="0,0,0,12">
+                <Button x:Name="btnSetRoi" IsVisible="True" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding SetROI, Source={StaticResource LabelLocator}}">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Width="16" Height="16" Data="M3,3 H10 V5 H5 V10 H3 Z M14,3 H21 V10 H19 V5 H14 Z M3,14 H5 V19 H10 V21 H3 Z M19,14 H21 V21 H14 V19 H19 Z" />
+                    <TextBlock Text="{Binding SetROI, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Button x:Name="btnRemoveRoi" IsVisible="False" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding RemoveROI, Source={StaticResource LabelLocator}}">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Width="14" Height="14" Data="M7,5 L12,10 L17,5 L19,7 L14,12 L19,17 L17,19 L12,14 L7,19 L5,17 L10,12 L5,7 Z" />
+                    <TextBlock Text="{Binding RemoveROI, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+                  </StackPanel>
+                </Button>
+                <Label x:Name="labelROIDesc" Content="{Binding RoiDesc, Mode=TwoWay}" FontSize="12" Padding="0" />
+              </StackPanel>
+              <Label Grid.Row="3" Content="{Binding HardClick, Source={StaticResource LabelLocator}}" Margin="0,0,12,0" />
+              <CheckBox Grid.Row="3" Grid.Column="1" x:Name="checkHardClick" IsChecked="{Binding HardClick, Mode=TwoWay}" />
+              <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Classes="caption" Text="{Binding PhysicalClickDescription, Source={StaticResource LabelLocator}}" TextWrapping="Wrap" Margin="0,12,0,0" />
+            </Grid>
+          </StackPanel>
+        </Border>
+        <Border Classes="card">
+          <StackPanel Spacing="16">
+            <StackPanel Orientation="Horizontal" Spacing="9">
+              <PathIcon Width="17" Height="17" Foreground="{StaticResource AccentTextBrush}" Data="F0 M12,2 A10,10 0 1 1 12,22 A10,10 0 1 1 12,2 Z M12,4 A8,8 0 1 0 12,20 A8,8 0 1 0 12,4 Z M11,7 H13 V11.5 L17,14 L16,15.7 L11,12.6 Z" />
+              <TextBlock Classes="section" Text="{Binding ExecutionSettings, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+            </StackPanel>
+            <Grid ColumnDefinitions="165,*" RowDefinitions="Auto,Auto,Auto,Auto">
+              <Label Content="{Binding TriggerToNext, Source={StaticResource LabelLocator}}" Margin="0,0,12,12" />
+              <NumericUpDown Grid.Column="1" x:Name="numEventToNext" Value="{Binding EventToNext, Mode=TwoWay}" ShowButtonSpinner="False" Minimum="0" Margin="0,0,0,12" />
+              <Label Grid.Row="1" Content="{Binding AfterDelay, Source={StaticResource LabelLocator}}" Margin="0,0,12,12" />
+              <NumericUpDown Grid.Row="1" Grid.Column="1" x:Name="numAfterDelay" Value="{Binding AfterDelay, Mode=TwoWay}" ShowButtonSpinner="False" Minimum="0" Margin="0,0,0,12" />
+              <Label Grid.Row="2" Content="{Binding ItemSimilarity, Source={StaticResource LabelLocator}}" Margin="0,0,12,12" />
+              <Grid Grid.Row="2" Grid.Column="1" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                <NumericUpDown x:Name="numSimilarity" Value="{Binding Similarity, Mode=TwoWay}" Minimum="0" Maximum="100" />
+                <TextBlock Grid.Column="1" Classes="caption" Text="%" VerticalAlignment="Center" Margin="10,0,0,0" />
+              </Grid>
+              <Label Grid.Row="3" x:Name="labelRepeatItem" Content="{Binding RepeatItems, Source={StaticResource LabelLocator}}" Margin="0,0,12,0" />
+              <StackPanel Grid.Row="3" Grid.Column="1" Spacing="8">
+                <ComboBox x:Name="comboRepeatItem" ItemsSource="{Binding RepeatItemsSource}" DisplayMemberBinding="{Binding Value}" SelectedValueBinding="{Binding Key}" SelectedValue="{Binding SelectedRepeatType, Mode=TwoWay}" />
+                <NumericUpDown x:Name="numRepeatCount" Value="{Binding RepeatCount, Mode=TwoWay}" Minimum="0" />
+              </StackPanel>
+            </Grid>
+          </StackPanel>
+        </Border>
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <CheckBox x:Name="checkSameImageDrag" Content="{Binding SameImageDrag, Source={StaticResource LabelLocator}}" IsChecked="{Binding SameImageDrag, Mode=TwoWay}" />
+            <Grid ColumnDefinitions="165,*">
+              <Label Content="{Binding FindTheSameImageRepeatedly, Source={StaticResource LabelLocator}}" Margin="0,0,12,0" />
+              <NumericUpDown Grid.Column="1" x:Name="numMaxDragCount" Value="{Binding MaxDragCount, Mode=TwoWay}" Minimum="0" IsEnabled="False" />
+            </Grid>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+    <Border Grid.Row="2" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,16,0,0">
+      <Button x:Name="btnSave" Classes="accent" MinWidth="140" HorizontalAlignment="Right" AutomationProperties.Name="{Binding Save, Source={StaticResource LabelLocator}}">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <PathIcon Width="16" Height="16" Data="F0 M5,3 H17 L21,7 V19 A2,2 0 0 1 19,21 H5 A2,2 0 0 1 3,19 V5 A2,2 0 0 1 5,3 Z M7,5 V10 H17 V5 Z M7,14 V19 H17 V14 Z" />
+          <TextBlock Text="{Binding Save, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+        </StackPanel>
+      </Button>
+    </Border>
+  </Grid>
+</Window>

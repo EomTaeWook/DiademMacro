@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Version>3.1.0</Version>
+    <AssemblyName>Macro</AssemblyName>
+    <AssemblyTitle>Macro</AssemblyTitle>
+    <Product>Macro</Product>
+    <Copyright>Copyright ©  2018</Copyright>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <RootNamespace>Macro</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaNameGeneratorIsEnabled>false</AvaloniaNameGeneratorIsEnabled>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <NoWarn>$(NoWarn);SYSLIB0011;AVLN3001</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>embedded</DebugType>
+    <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <AssemblyMetadata Include="MacroPublishedSingleFile" Value="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <ProjectReference Include="..\Macro.Core\Macro.Core.csproj" />
+    <ProjectReference Include="..\DataContainer\DataContainer.csproj" />
+    <ProjectReference Include="..\Utils\Utils.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="config.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
+    <None Update="DignusLog.config" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
+    <Content Include="..\Datas\*.json" Link="Datas\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
+    <Content Include="..\Dll\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="..\Datas\*.json" LogicalName="Macro.Datas.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="DignusLog.config" LogicalName="Macro.DignusLog.config" />
+    <EmbeddedResource Include="..\LICENSE" LogicalName="Macro.LICENSE" />
+    <EmbeddedResource Include="$(NuGetPackageRoot)dignus\1.4.3\LICENSE" LogicalName="Macro.Licenses.Dignus.txt" Condition="Exists('$(NuGetPackageRoot)dignus\1.4.3\LICENSE')" />
+    <EmbeddedResource Include="$(NuGetPackageRoot)dignus.log\3.0.0\LICENSE" LogicalName="Macro.Licenses.Dignus.Log.txt" Condition="Exists('$(NuGetPackageRoot)dignus.log\3.0.0\LICENSE')" />
+  </ItemGroup>
+</Project>

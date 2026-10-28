@@ -1,22 +1,36 @@
-﻿
+
 연결 프로세스의 화면을 분석해서 키보드나 마우스 이벤트 반복
 
 ![picture](/Release/Resource/capture.png)
 ![picture](/Release/Resource/capture_eng.png)
 
 
-다운로드 : https://github.com/EomTaeWook/EmulatorMacro/releases
+다운로드 : https://github.com/EomTaeWook/DiademMacro/releases
 
 
 개발환경
 
-    WPF, C#, .net 4.8.1
+    Avalonia, C#, .NET 10 (Windows)
 
-    UI toolkit : MahApps.metro
+    UI toolkit : Avalonia Fluent
+
+    솔루션 : Macro.slnx (Macro.App, Macro.Core, Shared)
+
+    개발 : .NET 10 SDK / 개발 출력 실행 : .NET 10 Desktop Runtime
+
+    정식 배포 : Windows x64 자체 포함 단일 Macro.exe (별도 런타임 설치 불필요)
+
+구성 및 적용 규칙 : [프로젝트 구성](Design/ApplicationArchitecture.md)
+
+앱 업데이트 : [업데이트와 단일 파일 배포](Design/ApplicationUpdate.md)
+
+설정의 앱 업데이트에서 수동으로 확인하고 업데이트 후 재시작합니다. 게시 프로필은 `Macro.App/Properties/PublishProfiles/WindowsX64.pubxml`입니다. 기존 ZIP 배포는 자동 설치 대상이 아니며 새 단일 실행 파일 릴리스가 필요합니다.
+
+현재 저장소의 화면 이미지는 이전 WPF 버전입니다. Avalonia 전환 후 실행·화면 확인은 수행하지 않았습니다.
     
 OS 버전
 
-    Window 8.0 이상
+    Windows 10 이상
 
 주의 사항
 
@@ -118,7 +132,7 @@ OS 버전
 
     6.SearchResultDisplay : [true],[false] : 이미지 검색 결과 표시 여부
 
-    7.VersionCheck : [true],[false] : 프로그램 실행시 버전 체크 확인
+    7.앱 업데이트 : 설정에서 업데이트 확인 및 업데이트 후 재시작
 
     8.프로세스 위치 이동 : 해당 프로세스를 해당 좌표로 이동시킵니다. 즉 모니터 밖으로 프로세스 위치를 이동시키는 것이 가능합니다.
 
@@ -216,7 +230,7 @@ Refer to the image below:
 
 6. **SearchResultDisplay**: [true], [false] - Show or hide image search results.
 
-7. **VersionCheck**: [true], [false] - Check for updates when launching the program.
+7. **Application Update**: Check for stable updates in Settings, then update and restart.
 
 8. **Process Position Movement**: Move a process to a specified coordinate (can move the process outside the monitor).
 

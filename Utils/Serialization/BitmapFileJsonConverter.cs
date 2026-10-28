@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Utils.Serialization
 {
@@ -11,78 +12,45 @@ namespace Utils.Serialization
     {
         public static string ImageDirectoryPath { get; set; } = string.Empty;
 
-        public override Bitmap ReadJson(JsonReader reader, Type objectType, Bitmap existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override Bitmap Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonToken.Null)
+            if (reader.TokenType == JsonTokenType.Null)
             {
                 return null;
             }
-            if (reader.TokenType != JsonToken.String)
+            if (reader.TokenType != JsonTokenType.String)
             {
-                throw new JsonSerializationException($"BitmapFileJsonConverter: Unexpected token '{reader.TokenType}'. File name string required.");
+                throw new JsonException("Bitmap file name must be a string.");
             }
-            var fileName = (string)reader.Value;
-            if (string.IsNullOrWhiteSpace(fileName))
+            string fileName = reader.GetString();
+            if (string.IsNullOrWhiteSpace(fileName) == true)
             {
                 return null;
             }
-            try
-            {
-                var imagePath = Path.Combine(ImageDirectoryPath, fileName);
-                if (File.Exists(imagePath) == false)
-                {
-                    throw new FileNotFoundException($"Bitmap file not found: {imagePath}");
-                }
-
-                using (var fileStream = File.OpenRead(imagePath))
-                {
-                    using (var sourceBitmap = new Bitmap(fileStream))
-                    {
-                        return new Bitmap(sourceBitmap);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            string imagePath = Path.Combine(ImageDirectoryPath, fileName);
+            using FileStream fileStream = File.OpenRead(imagePath);
+            using Bitmap sourceBitmap = new(fileStream);
+            return new Bitmap(sourceBitmap);
         }
 
-        public override void WriteJson(JsonWriter writer, Bitmap value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, Bitmap value, JsonSerializerOptions options)
         {
-            if (string.IsNullOrWhiteSpace(ImageDirectoryPath))
+            if (string.IsNullOrWhiteSpace(ImageDirectoryPath) == true)
             {
-                throw new InvalidOperationException("BitmapFileJsonConverter.ImageDirectoryPath is not set.");
+                throw new InvalidOperationException("Bitmap image directory is not configured.");
             }
             Directory.CreateDirectory(ImageDirectoryPath);
-            try
+            using MemoryStream memoryStream = new();
+            value.Save(memoryStream, ImageFormat.Png);
+            byte[] pngBytes = memoryStream.ToArray();
+            string fileHash = Convert.ToHexString(SHA256.HashData(pngBytes)).ToLowerInvariant();
+            string fileName = $"img-{fileHash}.png";
+            string filePath = Path.Combine(ImageDirectoryPath, fileName);
+            if (File.Exists(filePath) == false)
             {
-                byte[] pngBytes;
-                using (var memoryStream = new MemoryStream())
-                {
-                    value.Save(memoryStream, ImageFormat.Png);
-                    pngBytes = memoryStream.ToArray();
-                }
-
-                string fileHash;
-                using (var sha256 = SHA256.Create())
-                {
-                    var hashBytes = sha256.ComputeHash(pngBytes);
-                    fileHash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-                }
-
-                var fileName = $"img-{fileHash}.png";
-                var filePath = Path.Combine(ImageDirectoryPath, fileName);
-                if (!File.Exists(filePath))
-                {
-                    File.WriteAllBytes(filePath, pngBytes);
-                }
-                writer.WriteValue(fileName);
+                File.WriteAllBytes(filePath, pngBytes);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            writer.WriteStringValue(fileName);
         }
     }
 }

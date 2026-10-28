@@ -1,0 +1,3 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Macro.View.CloseButtonWindow" WindowDecorations="None" Background="Transparent" TransparencyLevelHint="Transparent" ShowInTaskbar="False" Topmost="True" CanResize="False" Width="44" Height="44">
+  <Button x:Name="btnClose" Classes="icon" Content="×" FontSize="22" Margin="4" Background="{StaticResource SurfaceBrush}" ToolTip.Tip="{Binding Close, Source={StaticResource LabelLocator}}" Click="CloseButton_Click" />
+</Window>

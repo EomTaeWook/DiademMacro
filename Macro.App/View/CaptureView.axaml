@@ -1,0 +1,3 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Macro.View.CaptureView" WindowDecorations="None" CanResize="False" Opacity="0.5" WindowStartupLocation="Manual" TransparencyLevelHint="Transparent" ShowInTaskbar="False">
+  <Canvas x:Name="captureZone" Background="Gainsboro" />
+</Window>

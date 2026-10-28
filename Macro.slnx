@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Shared/">
+    <Project Path="DataContainer/DataContainer.csproj" />
+    <Project Path="Utils/Utils.csproj" />
+  </Folder>
+  <Project Path="Macro.App/Macro.App.csproj" />
+  <Project Path="Macro.Core/Macro.Core.csproj" />
+</Solution>

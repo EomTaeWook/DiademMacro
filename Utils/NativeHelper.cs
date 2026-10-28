@@ -10,6 +10,8 @@ namespace Utils
 {
     public class NativeHelper
     {
+        public const uint RootAncestor = 2;
+
         [DllImport("dwmapi.dll")]
         public static extern int DwmUpdateThumbnailProperties(IntPtr thumbHandleWnd, ref DWMThumbnailProperties props);
         [DllImport("dwmapi.dll")]
@@ -22,8 +24,11 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetWindowRect(IntPtr hWnd, ref IntRect rect);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetAncestor(IntPtr windowHandle, uint flags);
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hWnd);
@@ -95,7 +100,7 @@ namespace Utils
         [DllImport("user32.dll")]
         private static extern int GetCursorPos(int x, int y);
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
         public static extern int SetCursorPos(int x, int y);
 
         [DllImport("user32.dll")]

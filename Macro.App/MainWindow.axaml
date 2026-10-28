@@ -1,0 +1,103 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:view="clr-namespace:Macro.View" x:Class="Macro.MainWindow" Title="{Binding Title, Source={StaticResource LabelLocator}}" Width="1040" Height="780" MinWidth="860" MinHeight="600" WindowStartupLocation="CenterScreen" ClosingBehavior="OwnerWindowOnly">
+  <Grid Margin="24" RowDefinitions="Auto,Auto,Auto,*">
+    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,22">
+      <StackPanel Orientation="Horizontal" Spacing="14">
+        <Border Width="48" Height="48" Background="{StaticResource AccentTextBrush}" CornerRadius="14" VerticalAlignment="Center">
+          <PathIcon Width="24" Height="24" Foreground="White" Data="F0 M5,3 H19 A2,2 0 0 1 21,5 V19 A2,2 0 0 1 19,21 H5 A2,2 0 0 1 3,19 V5 A2,2 0 0 1 5,3 Z M5,5 V19 H19 V5 Z M9,7 L17,12 L9,17 Z" />
+        </Border>
+        <StackPanel Spacing="4" VerticalAlignment="Center">
+          <TextBlock Classes="heading" Text="{Binding Title, Source={StaticResource LabelLocator}}" />
+          <TextBlock Classes="caption" Text="{Binding ExecutionHint, Source={StaticResource LabelLocator}}" />
+        </StackPanel>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Button x:Name="btnGithub" Classes="icon" ToolTip.Tip="GitHub">
+          <PathIcon Width="18" Height="18" Data="M12,2 A10,10 0 0 0 2,12 C2,16.4 4.9,20.2 8.8,21.5 L8.8,18 C6,18.6 5.4,16.7 5.4,16.7 C5,15.6 4.3,15.3 4.3,15.3 C3.4,14.7 4.4,14.7 4.4,14.7 C5.4,14.8 5.9,15.7 5.9,15.7 C6.8,17.2 8.1,16.8 8.8,16.5 C8.9,15.9 9.2,15.4 9.5,15.2 C7.3,15 5,14.1 5,10.2 C5,9.1 5.4,8.2 6,7.5 C5.9,7.3 5.6,6.2 6.1,4.8 C6.1,4.8 6.9,4.6 8.9,5.8 A10,10 0 0 1 15.1,5.8 C17.1,4.6 17.9,4.8 17.9,4.8 C18.4,6.2 18.1,7.3 18,7.5 C18.6,8.2 19,9.1 19,10.2 C19,14.1 16.7,15 14.5,15.2 C14.9,15.5 15.2,16.2 15.2,17.2 L15.2,21.5 C19.1,20.2 22,16.4 22,12 A10,10 0 0 0 12,2 Z" />
+        </Button>
+        <Button x:Name="btnSetting" AutomationProperties.Name="{Binding Setting, Source={StaticResource LabelLocator}}">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Width="16" Height="16" Data="M3,5 H7 V3 H9 V9 H7 V7 H3 Z M11,5 H21 V7 H11 Z M3,11 H13 V9 H15 V15 H13 V13 H3 Z M17,11 H21 V13 H17 Z M3,17 H7 V15 H9 V21 H7 V19 H3 Z M11,17 H21 V19 H11 Z" />
+            <TextBlock Text="{Binding Setting, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+      </StackPanel>
+    </Grid>
+    <Border Grid.Row="1" Classes="card" Margin="0,0,0,20">
+      <Grid ColumnDefinitions="*,Auto,Auto">
+        <StackPanel Spacing="9">
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <PathIcon Width="16" Height="16" Foreground="{StaticResource AccentTextBrush}" Data="F0 M4,3 H20 A2,2 0 0 1 22,5 V16 A2,2 0 0 1 20,18 H13 V20 H17 V22 H7 V20 H11 V18 H4 A2,2 0 0 1 2,16 V5 A2,2 0 0 1 4,3 Z M4,5 V16 H20 V5 Z" />
+            <TextBlock Classes="section" Text="{Binding SelectProcess, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+          </StackPanel>
+          <Grid ColumnDefinitions="*,Auto,Auto">
+            <ComboBox x:Name="comboProcess">
+              <ComboBox.ItemTemplate>
+                <DataTemplate><TextBlock Text="{Binding ProcessName}" TextTrimming="CharacterEllipsis" /></DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Grid.Column="1" x:Name="btnRefresh" Classes="icon" Margin="8,0,0,0" ToolTip.Tip="{Binding Refresh, Source={StaticResource LabelLocator}}">
+              <PathIcon Width="16" Height="16" Data="M17.65,6.35 C16.2,4.9 14.21,4 12,4 C7.58,4 4,7.58 4,12 C4,16.42 7.58,20 12,20 C15.73,20 18.84,17.45 19.73,14 H17.65 C16.83,16.33 14.61,18 12,18 C8.69,18 6,15.31 6,12 C6,8.69 8.69,6 12,6 C13.66,6 15.14,6.69 16.22,7.78 L13,11 H20 V4 Z" />
+            </Button>
+            <CheckBox Grid.Column="2" x:Name="checkFix" Content="{Binding Fix, Source={StaticResource LabelLocator}}" Margin="16,0,0,0" />
+          </Grid>
+        </StackPanel>
+        <Border Grid.Column="1" Width="1" Background="{StaticResource OutlineBrush}" Margin="24,0" />
+        <Grid Grid.Column="2" Width="128" VerticalAlignment="Bottom">
+          <Button x:Name="btnStart" Classes="accent" Height="44" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Start, Source={StaticResource LabelLocator}}">
+            <StackPanel Orientation="Horizontal" Spacing="9">
+              <PathIcon Width="14" Height="14" Data="M7,4 L21,12 L7,20 Z" />
+              <TextBlock Text="{Binding Start, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="btnStop" Classes="danger" Height="44" HorizontalAlignment="Stretch" IsVisible="False" AutomationProperties.Name="{Binding Stop, Source={StaticResource LabelLocator}}">
+            <StackPanel Orientation="Horizontal" Spacing="9">
+              <PathIcon Width="14" Height="14" Data="M6,5 H18 A1,1 0 0 1 19,6 V18 A1,1 0 0 1 18,19 H6 A1,1 0 0 1 5,18 V6 A1,1 0 0 1 6,5 Z" />
+              <TextBlock Text="{Binding Stop, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </Grid>
+    </Border>
+    <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+      <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+        <PathIcon Width="17" Height="17" Foreground="{StaticResource SecondaryTextBrush}" Data="M3,4 H7 V8 H3 Z M10,5 H21 V7 H10 Z M3,10 H7 V14 H3 Z M10,11 H21 V13 H10 Z M3,16 H7 V20 H3 Z M10,17 H21 V19 H10 Z" />
+        <TextBlock Classes="section" Text="{Binding TriggerList, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+        <Border Background="{StaticResource AccentSurfaceBrush}" CornerRadius="10" Padding="8,3">
+          <TextBlock Text="{Binding DataContext.EventItems.Count, ElementName=eventListView}" Foreground="{StaticResource AccentTextBrush}" FontSize="12" FontWeight="SemiBold" />
+        </Border>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+        <Button x:Name="btnAddEventItem" Background="{StaticResource AccentSurfaceBrush}" BorderBrush="{StaticResource AccentSurfaceBrush}" Foreground="{StaticResource AccentTextBrush}" AutomationProperties.Name="{Binding Addition, Source={StaticResource LabelLocator}}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <PathIcon Width="15" Height="15" Data="M11,5 H13 V11 H19 V13 H13 V19 H11 V13 H5 V11 H11 Z" />
+            <TextBlock Text="{Binding Addition, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+        <Button x:Name="btnRemoveEventItem" IsEnabled="False" AutomationProperties.Name="{Binding Removal, Source={StaticResource LabelLocator}}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <PathIcon Width="15" Height="15" Data="F0 M6,7 H18 V19 A2,2 0 0 1 16,21 H8 A2,2 0 0 1 6,19 Z M8,9 V19 H16 V9 Z M9,3 H15 L16,4 H20 V6 H4 V4 H8 Z" />
+            <TextBlock Text="{Binding Removal, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+        <Button x:Name="btnCopyEventItem" IsEnabled="False" AutomationProperties.Name="{Binding Copy, Source={StaticResource LabelLocator}}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <PathIcon Width="15" Height="15" Data="F0 M16,1 H4 A2,2 0 0 0 2,3 V17 H4 V3 H16 Z M8,5 H20 A2,2 0 0 1 22,7 V21 A2,2 0 0 1 20,23 H8 A2,2 0 0 1 6,21 V7 A2,2 0 0 1 8,5 Z M8,7 V21 H20 V7 Z" />
+            <TextBlock Text="{Binding Copy, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+        <Border Width="1" Background="{StaticResource OutlineBrush}" Margin="6,4" />
+        <Button x:Name="btnUpEventItem" Classes="icon" IsEnabled="False" ToolTip.Tip="{Binding MoveUp, Source={StaticResource LabelLocator}}"><PathIcon Width="16" Height="16" Data="M11,21 V7.8 L5.4,13.4 L4,12 L12,4 L20,12 L18.6,13.4 L13,7.8 V21 Z" /></Button>
+        <Button x:Name="btnDownEventItem" Classes="icon" IsEnabled="False" ToolTip.Tip="{Binding MoveDown, Source={StaticResource LabelLocator}}"><PathIcon Width="16" Height="16" Data="M11,3 V16.2 L5.4,10.6 L4,12 L12,20 L20,12 L18.6,10.6 L13,16.2 V3 Z" /></Button>
+        <Button x:Name="btnOptionEventItem" IsEnabled="False" AutomationProperties.Name="{Binding Option, Source={StaticResource LabelLocator}}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <PathIcon Width="15" Height="15" Data="M3,5 H7 V3 H9 V9 H7 V7 H3 Z M11,5 H21 V7 H11 Z M3,11 H13 V9 H15 V15 H13 V13 H3 Z M17,11 H21 V13 H17 Z M3,17 H7 V15 H9 V21 H7 V19 H3 Z M11,17 H21 V19 H11 Z" />
+            <TextBlock Text="{Binding Option, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+      </StackPanel>
+    </Grid>
+    <Border Grid.Row="3" Classes="card" Padding="0" ClipToBounds="True">
+      <view:EventListView x:Name="eventListView" />
+    </Border>
+  </Grid>
+</Window>
