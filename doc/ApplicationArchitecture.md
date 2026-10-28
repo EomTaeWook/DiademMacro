@@ -2,7 +2,7 @@
 
 ## 적용 기준
 
-현재 사용자 지시를 우선하며 `D:\Source\Paper-Toss\Blueprints`를 규칙 원본으로 사용한다. [공통 컨벤션](../../Paper-Toss/Blueprints/ReusableArchitecture/Common/CodingConvention.md), [협업 규칙](../../Paper-Toss/Blueprints/ReusableArchitecture/Common/Collaboration.md), [일반 앱 아키텍처](../../Paper-Toss/Blueprints/ReusableArchitecture/Application/ApplicationArchitecture.md)와 [아키텍처 리뷰 스킬](../../Paper-Toss/Blueprints/.agents/skills/reusable-architecture-review/SKILL.md)을 따른다. Bough에서는 SDK 프로젝트와 App/Core 및 Shared 솔루션 구성을 참고한다. 화면 배치와 기능은 기존 매크로 화면을 기준으로 한다.
+현재 사용자 지시와 [작업 규칙](WorkingRules.md)을 우선하며 `D:\Source\Paper-Toss\Blueprints`를 규칙 원본으로 사용한다. [공통 컨벤션](../../Paper-Toss/Blueprints/ReusableArchitecture/Common/CodingConvention.md), [협업 규칙](../../Paper-Toss/Blueprints/ReusableArchitecture/Common/Collaboration.md), [일반 앱 아키텍처](../../Paper-Toss/Blueprints/ReusableArchitecture/Application/ApplicationArchitecture.md)와 [아키텍처 리뷰 스킬](../../Paper-Toss/Blueprints/.agents/skills/reusable-architecture-review/SKILL.md)을 따른다. Bough에서는 SDK 프로젝트와 App/Core 및 Shared 솔루션 구성을 참고한다. 화면 배치와 기능은 기존 매크로 화면을 기준으로 한다.
 
 기존 ViewModel·Controller 연결을 유지하며 별도 MVP 전환, 저장소와 캐시는 도입하지 않는다. 버튼 작업은 기존 `UIManager`의 UI 스레드 큐에서 접수 순서대로 처리한다. 기존 UI의 서비스 접근·알림 경계를 유지하고 Core에서 App을 참조하던 부분은 생성자 주입과 캡처 창 핸들 전달로 연결한다. 새 코드에는 nullable 비활성화, 블록 네임스페이스와 단일 타입 파일을 적용한다. Avalonia 이름 생성기는 비활성화하고 코드비하인드에서 XAML 로드와 컨트롤 연결을 수행한다. 앱 업데이트와 단일 실행 파일 배포는 [앱 업데이트](ApplicationUpdate.md)를 따른다.
 
@@ -17,7 +17,7 @@
 
 `Macro.slnx`는 App/Core를 최상위에 두고 DataContainer와 Utils를 Shared에 둔다. Core는 Avalonia와 App을 참조하지 않는다. 대상은 .NET 10이며 캡처·입력·이미지와 내장 웹 표시 때문에 Windows 전용이다. 실행 파일의 어셈블리 이름은 `Macro`를 유지한다.
 
-Windows x64 자체 포함 단일 실행 파일은 `WindowsX64.pubxml`과 SDK 게시 흐름으로 구성한다. 필요한 템플릿·로그 기본 설정은 내장하며 사용자 설정과 저장 데이터는 기존 정책을 유지한다. 빌드와 배포는 실행하지 않는다.
+Windows x64 자체 포함 단일 실행 파일은 `WindowsX64.pubxml`과 SDK 게시 흐름으로 구성한다. 필요한 템플릿·로그 기본 설정은 내장하며 사용자 설정과 저장 데이터는 기존 정책을 유지한다. 배포 산출물 생성과 릴리스 게시는 사용자 요청 범위에서 수행한다.
 
 ## 시작과 실행
 

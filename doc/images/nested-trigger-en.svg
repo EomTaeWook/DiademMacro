@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="390" viewBox="0 0 860 390" role="img" aria-labelledby="title description">
+  <title id="title">AND condition with parent and child triggers</title>
+  <desc id="description">Place a Confirm button trigger under an error-dialog image. The child button is clicked only when both images are found in sequence.</desc>
+  <rect width="860" height="390" rx="20" fill="#f4f6fc"/>
+  <g font-family="Segoe UI, sans-serif">
+    <text x="28" y="40" font-size="22" font-weight="700" fill="#172344">Example: click Confirm only in the error dialog</text>
+    <rect x="24" y="62" width="812" height="196" rx="14" fill="#ffffff" stroke="#dce2f2"/>
+    <path d="m46 104 6 6 6-6" fill="none" stroke="#51607c" stroke-width="2"/>
+    <rect x="70" y="94" width="22" height="22" rx="4" fill="#0078d4"/>
+    <path d="m75 105 4 4 8-9" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <rect x="110" y="80" width="122" height="54" rx="7" fill="#f0f3ff" stroke="#dce2f2"/>
+    <text x="171" y="103" text-anchor="middle" font-size="12" fill="#52617e">Error dialog image</text>
+    <text x="171" y="122" text-anchor="middle" font-size="13" font-weight="700" fill="#233458">Connection failed</text>
+    <text x="254" y="103" font-size="17" font-weight="700" fill="#172344">Parent A: detect the error dialog</text>
+    <text x="254" y="125" font-size="14" fill="#52617e">Condition only; the parent does not click.</text>
+    <path d="M80 138v64h30" fill="none" stroke="#bac6e3" stroke-width="2"/>
+    <rect x="128" y="180" width="22" height="22" rx="4" fill="#0078d4"/>
+    <path d="m133 191 4 4 8-9" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <rect x="168" y="166" width="122" height="54" rx="7" fill="#fff4df" stroke="#f1cf8c"/>
+    <rect x="180" y="181" width="98" height="24" rx="4" fill="#e89011"/>
+    <text x="229" y="198" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Confirm</text>
+    <text x="312" y="189" font-size="17" font-weight="700" fill="#172344">Child B: click Confirm</text>
+    <text x="312" y="213" font-size="14" fill="#52617e">Run after both images are found.</text>
+    <rect x="633" y="170" width="178" height="44" rx="10" fill="#edf2ff"/>
+    <text x="722" y="197" text-anchor="middle" font-size="14" font-weight="700" fill="#3657cd">Unity: Physical Click ON</text>
+    <rect x="24" y="278" width="812" height="60" rx="12" fill="#e8efff"/>
+    <text x="430" y="315" text-anchor="middle" font-size="20" font-weight="700" fill="#2847b9">A found AND B found → click B</text>
+    <text x="28" y="368" font-size="14" fill="#52617e">Checks run in sequence in the same target window. Parent repetition: Count / 1.</text>
+  </g>
+</svg>

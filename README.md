@@ -1,5 +1,7 @@
 # Diadem Macro
 
+[한국어](README.md) | [English](README.en.md)
+
 <p align="center">
   <img src="Macro.App/Assets/AppIcon.png" width="112" alt="Diadem Macro icon" />
 </p>
@@ -7,8 +9,10 @@
 Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾고 마우스·키보드 입력을 반복하는 데스크톱 자동화 도구입니다. Avalonia와 .NET 10으로 동작하며 한국어와 영어 UI를 제공합니다.
 
 - 다운로드: [GitHub Releases](https://github.com/EomTaeWook/DiademMacro/releases)
-- 지원 운영체제: Windows 10 이상, x64
+- 지원 운영체제: Windows 10 버전 2004 이상, x64
 - 배포 형식: 자체 포함 단일 `Macro.exe`
+
+GitHub Releases에서 Windows x64용 EXE 하나를 내려받아 쓰기 가능한 폴더에 두고 실행하세요. 설치 프로그램이나 별도 .NET 설치는 필요하지 않습니다. 설정·저장 이미지·로그는 사용 중에 별도 파일로 생성됩니다.
 
 ## 주요 기능
 
@@ -28,8 +32,8 @@ Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾�
 2. **연결된 프로세스**에서 대상 프로그램을 선택합니다. 목록에 없다면 **새로고침**을 누릅니다.
 3. 한 프로세스만 대상으로 삼으려면 **고정**을 선택합니다.
 4. **추가**를 누르고 대상 창에서 찾을 이미지를 캡처합니다.
-5. 옵션에서 이벤트 타입과 실행 조건을 설정한 뒤 **저장**합니다.
-6. 실행할 트리거의 체크 상태를 확인하고 **시작**을 누릅니다.
+5. 옵션에서 이벤트 타입과 실행 조건을 설정합니다. **Unity 프로그램이라면 클릭을 실행할 트리거의 옵션에서 ‘물리 클릭’을 켜세요.**
+6. **저장**을 누르고 실행할 트리거의 체크 상태를 확인한 뒤 **시작**을 누릅니다.
 7. 종료하려면 **중지**를 누릅니다. 진행 중인 캡처·검색·입력 작업이 취소된 뒤 실행이 종료됩니다.
 
 트리거와 캡처 이미지는 기본적으로 `Save/save.dll`과 `Save/img`에 저장됩니다.
@@ -54,7 +58,9 @@ Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾�
 
 ## 물리 클릭과 Unity 창
 
-옵션의 **물리 클릭**은 창 메시지 대신 실제 커서를 화면 좌표로 이동해 클릭합니다. Unity처럼 `PostMessage` 입력을 받지 않는 프로그램에 사용합니다. 클릭 후 커서는 원래 위치로 돌아갑니다.
+Unity 프로그램에서 이미지 검색은 성공하지만 클릭이 되지 않는다면, 해당 트리거를 선택하고 **옵션 → 입력 설정 → 물리 클릭**을 켠 뒤 **저장**하세요. 이미지 클릭과 이미지 상대 좌표 클릭에서 사용할 수 있습니다. 자식 트리거가 클릭을 담당한다면 그 자식의 옵션에서 켭니다.
+
+**물리 클릭**은 실제 커서를 화면 좌표로 이동해 클릭합니다. 클릭 후 커서는 원래 위치로 돌아갑니다.
 
 다음 조건을 만족해야 합니다.
 
@@ -78,11 +84,35 @@ Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾�
 
 ## 반복과 하위 이벤트
 
+항목을 다른 항목 위에 드롭하면 자식 이벤트가 됩니다. 부모 이미지가 유사도 조건을 통과해야 자식을 확인하므로 **부모 조건 AND 자식 조건**으로 사용할 수 있습니다. 자식이 있는 부모는 조건 확인 역할을 하며 부모 자체의 클릭은 실행하지 않습니다.
+
+### 예제: 오류창이 있을 때만 확인 버튼 클릭
+
+![부모 오류창 조건과 자식 확인 버튼을 이용한 AND 조건 예제](doc/images/nested-trigger-ko.svg)
+
+1. 같은 대상 프로그램에서 오류창을 구분할 제목이나 문구를 이미지로 등록합니다. 이 항목이 부모입니다.
+2. **확인** 버튼 이미지를 별도 트리거로 등록하고, 부모 항목 위로 드래그해 자식으로 넣습니다.
+3. 두 항목을 체크하고 부모의 반복을 **횟수 / 1회**로 설정합니다.
+4. 대상이 Unity 프로그램이면 **자식 확인 버튼 트리거**의 옵션에서 **물리 클릭**을 켜고 저장합니다.
+5. 시작하면 부모 이미지를 먼저 찾고, 성공했을 때 화면을 다시 캡처해 자식 이미지를 찾습니다. 자식도 조건을 통과하면 확인 버튼을 클릭합니다.
+
+| 부모 오류창 이미지 | 자식 확인 버튼 이미지 | 동작 |
+| --- | --- | --- |
+| 없음 | 확인하지 않음 | 자식 실행 안 함 |
+| 있음 | 없음 | 클릭 안 함 |
+| 있음 | 있음 | 자식 확인 버튼 클릭 |
+
+부모와 자식은 순서대로 확인하므로 동일한 한 프레임의 동시 판정은 아닙니다. 자식의 검색 범위는 부모 이미지 내부로 자동 제한되지 않습니다. 필요하면 자식에도 ROI를 설정하세요.
+
+세 조건을 모두 통과한 뒤 마지막 동작만 실행하려면 `부모 A → 자식 B → 손자 C`로 중첩합니다. 같은 부모 아래에 B와 C를 나란히 두면 `A AND B`, `A AND C`를 각각 확인하며, 형제 B·C 전체를 하나의 AND 조건으로 묶지는 않습니다.
+
+### 반복 설정
+
 - **횟수**: 지정한 횟수만큼 하위 이벤트를 실행합니다.
 - **하위 이벤트 기준 반복**: 하위 이벤트가 성공하는 동안 반복합니다.
 - **상위 이미지 발견 시 중지**: 상위 이미지를 다시 찾을 때까지 하위 이벤트를 반복합니다.
 
-항목을 다른 항목 위에 드롭하면 하위 이벤트가 됩니다. 하위 항목을 목록 바깥쪽이나 최상위 위치로 드롭하면 다시 최상위 항목으로 이동할 수 있습니다.
+하위 항목을 목록 바깥쪽이나 최상위 위치로 드롭하면 다시 최상위 항목으로 이동할 수 있습니다.
 
 ## 실행 모드
 
@@ -123,7 +153,7 @@ Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾�
 
 설정의 앱 업데이트 영역에서 최신 GitHub 정식 릴리스를 수동으로 확인할 수 있습니다. 더 높은 버전의 Windows x64 단일 실행 파일과 SHA-256 정보가 모두 확인된 경우에만 업데이트 후 재시작을 진행합니다.
 
-ZIP 형태의 이전 릴리스는 자동 업데이트 대상이 아닙니다. 자세한 계약은 [업데이트 설계](Design/ApplicationUpdate.md)를 참고하세요.
+ZIP 형태의 이전 릴리스에서 처음 전환할 때는 새 EXE를 직접 내려받고 기존 설정과 저장 파일을 유지하세요. 이후 단일 EXE 릴리스부터 설정의 업데이트 기능을 사용할 수 있습니다.
 
 ## 문제 해결
 
@@ -148,39 +178,10 @@ ZIP 형태의 이전 릴리스는 자동 업데이트 대상이 아닙니다. �
 
 로그 파일은 실제 로그 이벤트가 발생한 뒤 생성됩니다. 이미지 검색이나 저장 파일 로드를 실행한 후 설정에서 로그 폴더를 다시 여세요.
 
-## 개발 구성
-
-| 프로젝트 | 책임 |
-| --- | --- |
-| `Macro.App` | Avalonia UI, 앱 수명, 설정, 업데이트 |
-| `Macro.Core` | 캡처, 이미지 검색, 입력 실행, 저장 모델 |
-| `DataContainer` | Excel에서 생성된 템플릿과 로더 |
-| `Utils` | Win32 연동과 공용 타입 |
-
-- 솔루션: `Macro.slnx`
-- 대상 프레임워크: `.NET 10` / Windows 10.0.19041 이상
-- 게시 프로필: `Macro.App/Properties/PublishProfiles/WindowsX64.pubxml`
-- 아키텍처: [프로젝트 구성](Design/ApplicationArchitecture.md)
-
-문구와 템플릿의 원본은 `Excel` 폴더입니다. 생성된 JSON과 C# 파일을 직접 수정하지 말고 `ExportTools`의 공식 변환 도구를 사용합니다.
-
 ## License
 
 [MIT License](LICENSE)
 
-## Bug reports
+## 버그 제보
 
 `enter0917@naver.com`
-
----
-
-## English quick start
-
-1. Run the target application and `Macro.exe`.
-2. Select the target under **Connected Process** and press **Refresh** if it is missing.
-3. Press **Add**, capture the image to find, and configure the event.
-4. Save the trigger, select enabled items, and press **Start**.
-5. Use **Physical Click** for applications such as Unity that do not accept posted window messages. The target must be visible, not minimized, and unobstructed at the click point.
-6. Press **Stop** to cancel the current capture/search/input operation and wait for execution to finish.
-
-Logs are written to `logs/LogFile.txt` after the first log event. Stable single-file updates are available from Settings or [GitHub Releases](https://github.com/EomTaeWook/DiademMacro/releases).
