@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Utils.Infrastructure;
 using IntRect = Utils.Infrastructure.IntRect;
 using Rectangle = System.Drawing.Rectangle;
@@ -14,16 +15,22 @@ namespace Macro.Infrastructure
     {
         public static int Search(Bitmap source, Bitmap target, out Point2D location, bool isResultDisplay = false)
         {
+            return Search(source, target, out location, CancellationToken.None, isResultDisplay);
+        }
+
+        public static int Search(Bitmap source, Bitmap target, out Point2D location, CancellationToken cancellationToken, bool isResultDisplay = false)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             location = new Point2D();
-            if (source.Width <= target.Width)
+            if (source.Width < target.Width)
             {
                 return 0;
             }
-            if (source.Height <= target.Height)
+            if (source.Height < target.Height)
             {
                 return 0;
             }
-            double maximum = FindBestMatch(source, target, out location);
+            double maximum = FindBestMatch(source, target, out location, cancellationToken);
             if (isResultDisplay == true)
             {
                 DrawMatch(source, target, location);
@@ -33,19 +40,26 @@ namespace Macro.Infrastructure
 
         public static List<Point2D> MultipleSearch(Bitmap source, Bitmap target, int similarity, int maxSameRepeatCount, bool isResultDisplay = false)
         {
+            return MultipleSearch(source, target, similarity, maxSameRepeatCount, CancellationToken.None, isResultDisplay);
+        }
+
+        public static List<Point2D> MultipleSearch(Bitmap source, Bitmap target, int similarity, int maxSameRepeatCount, CancellationToken cancellationToken, bool isResultDisplay = false)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
             List<Point2D> locations = new();
-            if (source.Width <= target.Width)
+            if (source.Width < target.Width)
             {
                 return locations;
             }
-            if (source.Height <= target.Height)
+            if (source.Height < target.Height)
             {
                 return locations;
             }
             using Bitmap searchImage = new(source);
             while (maxSameRepeatCount-- > 0)
             {
-                double maximum = FindBestMatch(searchImage, target, out Point2D location);
+                cancellationToken.ThrowIfCancellationRequested();
+                double maximum = FindBestMatch(searchImage, target, out Point2D location, cancellationToken);
                 if (similarity >= maximum * 100)
                 {
                     break;
@@ -63,15 +77,20 @@ namespace Macro.Infrastructure
             return locations;
         }
 
-        private static double FindBestMatch(Bitmap source, Bitmap target, out Point2D location)
+        private static double FindBestMatch(Bitmap source, Bitmap target, out Point2D location, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             const int channelCount = 4;
-            float[] sourcePixels = ReadPixels(source);
-            float[] targetPixels = ReadPixels(target);
+            float[] sourcePixels = ReadPixels(source, cancellationToken);
+            float[] targetPixels = ReadPixels(target, cancellationToken);
             int pixelCount = target.Width * target.Height;
             double[] channelMeans = new double[channelCount];
             for (int pixelIndex = 0; pixelIndex < targetPixels.Length; pixelIndex++)
             {
+                if (pixelIndex % 4096 == 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
                 channelMeans[pixelIndex % channelCount] += targetPixels[pixelIndex];
             }
             for (int channelIndex = 0; channelIndex < channelCount; channelIndex++)
@@ -81,6 +100,10 @@ namespace Macro.Infrastructure
             double targetVariance = 0;
             for (int pixelIndex = 0; pixelIndex < targetPixels.Length; pixelIndex++)
             {
+                if (pixelIndex % 4096 == 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
                 double centeredValue = targetPixels[pixelIndex] - channelMeans[pixelIndex % channelCount];
                 targetPixels[pixelIndex] = (float)centeredValue;
                 targetVariance += centeredValue * centeredValue;
@@ -101,6 +124,7 @@ namespace Macro.Infrastructure
             double[] squaredSums = new double[integralLength];
             for (int row = 0; row < source.Height; row++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 double[] rowSums = new double[channelCount];
                 double rowSquaredSum = 0;
                 for (int column = 0; column < source.Width; column++)
@@ -122,8 +146,10 @@ namespace Macro.Infrastructure
             int targetRowLength = target.Width * channelCount;
             for (int top = 0; top <= source.Height - target.Height; top++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 for (int left = 0; left <= source.Width - target.Width; left++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     double sourceVariance = SumRegion(squaredSums, integralWidth, left, top, target.Width, target.Height);
                     for (int channelIndex = 0; channelIndex < channelCount; channelIndex++)
                     {
@@ -136,6 +162,7 @@ namespace Macro.Infrastructure
                         double numerator = 0;
                         for (int row = 0; row < target.Height; row++)
                         {
+                            cancellationToken.ThrowIfCancellationRequested();
                             int sourceOffset = ((top + row) * source.Width + left) * channelCount;
                             int targetOffset = row * targetRowLength;
                             int column = 0;
@@ -169,8 +196,9 @@ namespace Macro.Infrastructure
             return sums[bottomLeft + width] - sums[bottomLeft] - sums[topLeft + width] + sums[topLeft];
         }
 
-        private static float[] ReadPixels(Bitmap bitmap)
+        private static float[] ReadPixels(Bitmap bitmap, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             using Bitmap normalizedBitmap = new(bitmap.Width, bitmap.Height, PixelFormat.Format32bppArgb);
             using (Graphics graphics = Graphics.FromImage(normalizedBitmap))
             {
@@ -186,6 +214,7 @@ namespace Macro.Infrastructure
                 float[] pixels = new float[rowLength * bitmap.Height];
                 for (int row = 0; row < bitmap.Height; row++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     Marshal.Copy(IntPtr.Add(bitmapData.Scan0, row * bitmapData.Stride), rowBytes, 0, rowLength);
                     for (int column = 0; column < rowLength; column++)
                     {
@@ -227,7 +256,7 @@ namespace Macro.Infrastructure
 
         public static int SearchImagePercentage(Bitmap source, Tuple<double, double, double> lower, Tuple<double, double, double> upper)
         {
-            float[] pixels = ReadPixels(source);
+            float[] pixels = ReadPixels(source, CancellationToken.None);
             int matchedPixels = 0;
             for (int pixelIndex = 0; pixelIndex < pixels.Length; pixelIndex += 4)
             {

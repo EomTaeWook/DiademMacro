@@ -20,12 +20,17 @@ namespace Macro.Infrastructure
             {
                 return false;
             }
-            catch (AggregateException ex)
+            catch (AggregateException exception)
             {
-                if (!(ex.InnerException is TaskCanceledException) && !(ex.InnerException is OperationCanceledException))
+                if (exception.InnerException is TaskCanceledException)
                 {
-                    LogHelper.Error(ex.Message);
+                    return false;
                 }
+                if (exception.InnerException is OperationCanceledException)
+                {
+                    return false;
+                }
+                LogHelper.Error(exception);
                 return false;
             }
             return !token.IsCancellationRequested;

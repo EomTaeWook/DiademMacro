@@ -11,7 +11,7 @@ namespace Macro.Infrastructure.Updates
     [Injectable(Dignus.DependencyInjection.LifeScope.Singleton)]
     public class ApplicationUpdateFiles
     {
-        private static readonly string[] _ownedNames = { "download.partial", "verified.exe", "helper.exe", "install.json", "ready", "authorized", "cancel" };
+        private static readonly string[] _ownedNames = { "download.partial", "verified.exe", "helper.exe", "install.json", "ready", "authorized", "cancel", "helper-error.log" };
         private readonly string _updateRoot;
 
         public ApplicationUpdateFiles()
@@ -73,6 +73,29 @@ namespace Macro.Infrastructure.Updates
             {
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.DigestMismatch, null, Array.Empty<object>());
             }
+        }
+
+        internal void WriteHelperFailure(string directory, Exception exception)
+        {
+            ValidateOwnedDirectory(directory);
+            string path = Path.Combine(directory, "helper-error.log");
+            if (File.Exists(path) == true)
+            {
+                ValidatePlainFile(path);
+            }
+            File.AppendAllText(path, exception.ToString() + Environment.NewLine);
+        }
+
+        internal string ReadHelperFailure(string directory)
+        {
+            ValidateOwnedDirectory(directory);
+            string path = Path.Combine(directory, "helper-error.log");
+            if (File.Exists(path) == false)
+            {
+                return string.Empty;
+            }
+            ValidatePlainFile(path);
+            return File.ReadAllText(path);
         }
 
         internal async Task<string> GetHashAsync(string path, CancellationToken cancellationToken)

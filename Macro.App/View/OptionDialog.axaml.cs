@@ -87,6 +87,7 @@ namespace Macro.View
         }
         private void OptionDialog_Closed(object sender, EventArgs eventArgs)
         {
+            UIManager.Instance.ButtonActionStateChanged -= UpdateButtonState;
             NotifyHelper.ROICaptureCompleted -= NotifyHelper_ROICaptureCompleted;
             NotifyHelper.MouseInteractionCaptured -= NotifyHelper_MouseInteractionCaptured;
         }
@@ -145,18 +146,25 @@ namespace Macro.View
         }
         private void InitEvent()
         {
+            UIManager.Instance.ButtonActionStateChanged += UpdateButtonState;
+            UpdateButtonState();
             comboEventType.SelectionChanged += ComboEventType_SelectionChanged;
             comboRepeatItem.SelectionChanged += ComboRepeatItem_SelectionChanged;
             checkSameImageDrag.IsCheckedChanged += CheckSameImageDrag_ValueChanged;
 
-            btnMouseEvent.Click += BtnMouseEvent_Click;
+            btnMouseEvent.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnMouseEvent_Click(sender, eventArgs));
 
-            btnSetRoi.Click += BtnSetRoi_Click;
-            btnRemoveRoi.Click += BtnRemoveRoi_Click;
-            btnSave.Click += BtnSave_Click;
+            btnSetRoi.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnSetRoi_Click(sender, eventArgs));
+            btnRemoveRoi.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnRemoveRoi_Click(sender, eventArgs));
+            btnSave.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnSave_Click(sender, eventArgs));
 
             NotifyHelper.ROICaptureCompleted += NotifyHelper_ROICaptureCompleted;
             NotifyHelper.MouseInteractionCaptured += NotifyHelper_MouseInteractionCaptured;
+        }
+
+        private void UpdateButtonState()
+        {
+            gridMain.IsEnabled = UIManager.Instance.IsProcessingButtonActions == false;
         }
 
         private void NotifyHelper_MouseInteractionCaptured(MouseInteractionCapturedEventArgs obj)
@@ -169,6 +177,14 @@ namespace Macro.View
 
         private void BtnMouseEvent_Click(object sender, RoutedEventArgs e)
         {
+            if (IsVisible == false)
+            {
+                return;
+            }
+            if (ApplicationManager.Instance.HasActiveInputOverlay == true)
+            {
+                return;
+            }
             ApplicationManager.Instance.ShowAndActivateMousePositionViews();
         }
 
@@ -185,6 +201,14 @@ namespace Macro.View
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
+            if (IsVisible == false)
+            {
+                return;
+            }
+            if (ApplicationManager.Instance.HasActiveInputOverlay == true)
+            {
+                return;
+            }
             if (_eventInfoModel == null)
             {
                 return;
@@ -219,11 +243,27 @@ namespace Macro.View
 
         private void BtnRemoveRoi_Click(object sender, RoutedEventArgs e)
         {
+            if (IsVisible == false)
+            {
+                return;
+            }
+            if (ApplicationManager.Instance.HasActiveInputOverlay == true)
+            {
+                return;
+            }
             var viewModel = this.DataContext<OptionDialogViewModel>();
             viewModel.RoiDataInfo = new RoiModel();
         }
         private void BtnSetRoi_Click(object sender, RoutedEventArgs e)
         {
+            if (IsVisible == false)
+            {
+                return;
+            }
+            if (ApplicationManager.Instance.HasActiveInputOverlay == true)
+            {
+                return;
+            }
             ApplicationManager.Instance.ShowSetROIViews();
         }
         private void CheckSameImageDrag_ValueChanged(object sender, RoutedEventArgs e)

@@ -83,19 +83,5 @@ namespace Macro.Extensions
                 IsOn = source.IsOn
             };
         }
-
-        public static bool TryFindTriggerIndex(this IEnumerable<EventTriggerModel> eventTriggerModels, ulong triggerIndex, out int index)
-        {
-            index = -1;
-            foreach (var item in eventTriggerModels)
-            {
-                index++;
-                if (item.ItemIndex == triggerIndex)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

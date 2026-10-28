@@ -24,6 +24,9 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr WindowFromPoint(Point point);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetWindowRect(IntPtr hWnd, ref IntRect rect);
 
@@ -61,7 +64,7 @@ namespace Utils
                 EnumChildWindows(mainWindowHandle, new EnumWindowProcDelegate((hwnd, lParam) =>
                 {
                     var lParamHwnd = GCHandle.FromIntPtr(lParam);
-                    if (lParamHwnd.Target == null && lParamHwnd == null)
+                    if (lParamHwnd.Target == null)
                     {
                         return false;
                     }

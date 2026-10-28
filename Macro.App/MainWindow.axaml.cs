@@ -47,6 +47,7 @@ namespace Macro
         internal Avalonia.Controls.Button btnDownEventItem;
         internal Avalonia.Controls.Button btnOptionEventItem;
         internal Macro.View.EventListView eventListView;
+        internal Macro.View.ImagePreviewView imagePreviewView;
 
         private void InitializeComponent()
         {
@@ -65,6 +66,7 @@ namespace Macro
             btnDownEventItem = this.FindControl<Avalonia.Controls.Button>("btnDownEventItem");
             btnOptionEventItem = this.FindControl<Avalonia.Controls.Button>("btnOptionEventItem");
             eventListView = this.FindControl<Macro.View.EventListView>("eventListView");
+            imagePreviewView = this.FindControl<Macro.View.ImagePreviewView>("imagePreviewView");
         }
 
         private ProcessItem[] _processes;
@@ -79,10 +81,11 @@ namespace Macro
         private AdManager _adManager;
         private CacheDataManager _cacheDataManager;
         private bool _isEventItemMoveButtonPressed;
-        private ImagePreviewWindow _imagePreviewWindow;
+        private bool _eventItemOrderChanged;
         private WebViewWindow _webViewWindow;
         private MacroExecutionController _macroExecutionController;
         private MacroExecutionController _runningExecutionController;
+        private Task _executionCompletionTask = Task.CompletedTask;
         private bool _isRunning;
         private bool _applicationUpdateInProgress;
         private bool _shutdownCompleted;
@@ -167,7 +170,6 @@ namespace Macro
 
         private async void MainWindow_Opened(object sender, EventArgs eventArgs)
         {
-            _imagePreviewWindow = new ImagePreviewWindow();
             _webViewWindow = new WebViewWindow();
             _closeButtonWindow = new CloseButtonWindow(() => _webViewWindow.Hide());
             _config = ServiceResolver.GetService<Config>();
@@ -175,19 +177,14 @@ namespace Macro
             _webApiManager = ServiceResolver.GetService<WebApiManager>();
             _adManager = ServiceResolver.GetService<AdManager>();
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
-            _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage, UpdateStatus);
+            _macroExecutionController.InitializeController(imagePreviewView.DrawImage, UpdateStatus);
             InitEvent();
             Refresh();
             LoadSaveFile(GetSaveFilePath());
             ApplicationManager.Instance.Init();
-            _adManager.InitializeAdUrls();
             _coroutineTimer.Tick += UpdateCoroutines;
             _coroutineClock.Start();
             _coroutineTimer.Start();
-            if (_config.OpenProcessPreview == true)
-            {
-                _imagePreviewWindow.Show(this);
-            }
             try
             {
                 bool isSponsor = await CheckSponsor();
@@ -243,14 +240,18 @@ namespace Macro
                 return;
             }
             _isShutdownHandled = true;
+            _isEventItemMoveButtonPressed = false;
+            IsEnabled = false;
             _ = ShutdownAsync();
         }
 
         private async Task ShutdownAsync()
         {
+            Task buttonActionCompletionTask = UIManager.Instance.StopButtonActionsAsync();
             try
             {
                 await UIManager.Instance.PrepareForShutdownAsync();
+                await buttonActionCompletionTask;
                 MacroExecutionController executionController = _runningExecutionController;
                 if (executionController == null)
                 {
@@ -260,6 +261,7 @@ namespace Macro
                 {
                     await executionController.StopAsync();
                 }
+                await _executionCompletionTask;
                 await ShowAdAsync(false);
             }
             catch (Exception exception)
@@ -280,6 +282,7 @@ namespace Macro
 
         private void MainWindow_Closed(object sender, EventArgs eventArgs)
         {
+            UIManager.Instance.ButtonActionStateChanged -= UpdateQueuedInputState;
             _coroutineTimer.Stop();
             _coroutineHandler.StopAll();
             NotifyHelper.ConfigChanged -= NotifyHelper_ConfigChanged;
@@ -288,29 +291,33 @@ namespace Macro
             ApplicationManager.Instance.Dispose();
             _closeButtonWindow?.Close();
             _webViewWindow?.Close();
-            _imagePreviewWindow?.Close();
+            imagePreviewView.Dispose();
+            DisposeEventItems();
+            DisposeProcessItems(_processes);
+            _processes = null;
             _shutdownCompleted = true;
         }
 
         private void InitEvent()
         {
+            UIManager.Instance.ButtonActionStateChanged += UpdateQueuedInputState;
             NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
             NotifyHelper.ScreenCaptureCompleted += ScreenCaptureCompleted;
             NotifyHelper.EventTriggerSaved += NotifyHelper_EventTriggerSaved;
-            btnSetting.Click += BtnSetting_Click;
-            btnGithub.Click += BtnGithub_Click;
-            btnStop.Click += BtnStop_Click;
-            btnStart.Click += BtnStart_Click;
-            btnRefresh.Click += BtnRefresh_Click;
-            btnAddEventItem.Click += BtnAddEventItem_Click;
-            btnRemoveEventItem.Click += BtnRemoveEventItem_Click;
-            btnCopyEventItem.Click += BtnCopyEventItem_Click;
+            btnSetting.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnSetting_Click(sender, eventArgs));
+            btnGithub.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnGithub_Click(sender, eventArgs));
+            btnStop.Click += (sender, eventArgs) => RequestStop();
+            btnStart.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnStart_Click(sender, eventArgs));
+            btnRefresh.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnRefresh_Click(sender, eventArgs));
+            btnAddEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnAddEventItemAsync(sender, eventArgs));
+            btnRemoveEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnRemoveEventItemAsync(sender, eventArgs));
+            btnCopyEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnCopyEventItemAsync(sender, eventArgs));
             btnDownEventItem.AddHandler(PointerPressedEvent, BtnDownEventItem_PointerPressed, RoutingStrategies.Tunnel);
             btnDownEventItem.AddHandler(PointerReleasedEvent, MoveEventItem_PointerReleased, RoutingStrategies.Tunnel);
             btnUpEventItem.AddHandler(PointerPressedEvent, BtnUpEventItem_PointerPressed, RoutingStrategies.Tunnel);
             btnUpEventItem.AddHandler(PointerReleasedEvent, MoveEventItem_PointerReleased, RoutingStrategies.Tunnel);
-            btnOptionEventItem.Click += BtnOptionEventItem_Click;
-            checkFix.Click += CheckFix_Click;
+            btnOptionEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnOptionEventItem_Click(sender, eventArgs));
+            checkFix.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => CheckFix_Click(sender, eventArgs));
             comboProcess.SelectionChanged += ComboProcess_SelectionChanged;
             eventListView.treeGridView.SelectionChanged += TreeGridView_SelectionChanged;
             KeyDown += MainWindow_KeyDown;
@@ -318,11 +325,15 @@ namespace Macro
 
         private void NotifyHelper_EventTriggerSaved(EventInfoEventArgs eventArgs)
         {
-            Save();
+            UIManager.Instance.EnqueueButtonAction(SaveAsync);
         }
 
-        private async void BtnOptionEventItem_Click(object sender, RoutedEventArgs eventArgs)
+        private void BtnOptionEventItem_Click(object sender, RoutedEventArgs eventArgs)
         {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             TreeGridViewItem selectedItem = ServiceResolver.GetService<SelectionStateController>().SelectTreeGridViewItem;
             if (selectedItem == null)
             {
@@ -330,49 +341,84 @@ namespace Macro
             }
             OptionDialog optionDialog = new();
             optionDialog.BindItem(selectedItem.DataContext<EventInfoModel>());
-            await optionDialog.ShowDialog(this);
+            if (UIManager.Instance.TrackPopup(optionDialog) == false)
+            {
+                return;
+            }
+            _ = optionDialog.ShowDialog(this);
         }
 
         private void MoveEventItem_PointerReleased(object sender, PointerReleasedEventArgs eventArgs)
         {
             _isEventItemMoveButtonPressed = false;
+            if (_eventItemOrderChanged == false)
+            {
+                return;
+            }
+            _eventItemOrderChanged = false;
+            UIManager.Instance.EnqueueButtonAction(SaveAsync);
         }
 
         private void BtnUpEventItem_PointerPressed(object sender, PointerPressedEventArgs eventArgs)
         {
-            MoveSelectedEventItem(-1, btnUpEventItem);
+            _isEventItemMoveButtonPressed = true;
+            UIManager.Instance.EnqueueButtonAction(() => MoveSelectedEventItem(-1, btnUpEventItem));
         }
 
         private void BtnDownEventItem_PointerPressed(object sender, PointerPressedEventArgs eventArgs)
         {
-            MoveSelectedEventItem(1, btnDownEventItem);
+            _isEventItemMoveButtonPressed = true;
+            UIManager.Instance.EnqueueButtonAction(() => MoveSelectedEventItem(1, btnDownEventItem));
         }
 
         private void MoveSelectedEventItem(int direction, Button button)
         {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             TreeGridViewItem selectedItem = ServiceResolver.GetService<SelectionStateController>().SelectTreeGridViewItem;
             if (selectedItem == null)
             {
                 return;
             }
             EventListViewModel viewModel = eventListView.DataContext<EventListViewModel>();
-            int currentIndex = viewModel.EventItems.IndexOf(selectedItem.DataContext<EventInfoModel>());
-            if (currentIndex < 0)
+            if (MoveEventItem(viewModel, selectedItem.DataContext<EventInfoModel>(), direction) == false)
             {
                 return;
+            }
+            if (_isEventItemMoveButtonPressed == false)
+            {
+                _eventItemOrderChanged = false;
+                UIManager.Instance.EnqueueButtonAction(SaveAsync);
+                return;
+            }
+            _coroutineHandler.Start(2, RepeatMoveEventItemCoroutine(button, selectedItem));
+        }
+
+        private bool MoveEventItem(EventListViewModel eventListViewModel, EventInfoModel eventInfoModel, int direction)
+        {
+            if (CanEditEvents() == false)
+            {
+                return false;
+            }
+            int currentIndex = eventListViewModel.EventItems.IndexOf(eventInfoModel);
+            if (currentIndex < 0)
+            {
+                return false;
             }
             int nextIndex = currentIndex + direction;
             if (nextIndex < 0)
             {
-                return;
+                return false;
             }
-            if (nextIndex >= viewModel.EventItems.Count)
+            if (nextIndex >= eventListViewModel.EventItems.Count)
             {
-                return;
+                return false;
             }
-            _isEventItemMoveButtonPressed = true;
-            viewModel.EventItems.Move(currentIndex, nextIndex);
-            _coroutineHandler.Start(2, RepeatMoveEventItemCoroutine(button, selectedItem));
+            eventListViewModel.EventItems.Move(currentIndex, nextIndex);
+            _eventItemOrderChanged = true;
+            return true;
         }
 
         private IEnumerator RepeatMoveEventItemCoroutine(Button button, TreeGridViewItem selectedItem)
@@ -386,21 +432,21 @@ namespace Macro
             EventInfoModel eventInfo = selectedItem.DataContext<EventInfoModel>();
             while (_isEventItemMoveButtonPressed == true)
             {
-                int currentIndex = viewModel.EventItems.IndexOf(eventInfo);
-                if (currentIndex < 0)
+                if (CanEditEvents() == false)
                 {
                     yield break;
                 }
-                int nextIndex = currentIndex + direction;
-                if (nextIndex < 0)
+                UIManager.Instance.EnqueueButtonAction(() =>
                 {
-                    yield break;
-                }
-                if (nextIndex >= viewModel.EventItems.Count)
-                {
-                    yield break;
-                }
-                viewModel.EventItems.Move(currentIndex, nextIndex);
+                    if (_isEventItemMoveButtonPressed == false)
+                    {
+                        return;
+                    }
+                    if (MoveEventItem(viewModel, eventInfo, direction) == false)
+                    {
+                        _isEventItemMoveButtonPressed = false;
+                    }
+                });
                 yield return 0.3F;
             }
         }
@@ -411,14 +457,41 @@ namespace Macro
             selection.SelectTreeGridViewItem = eventListView.treeGridView.GetSelectItemFromObject<TreeGridViewItem>(eventListView.treeGridView.SelectedItem);
             if (selection.SelectTreeGridViewItem != null)
             {
-                _imagePreviewWindow.DrawImage(selection.SelectTreeGridViewItem.DataContext<EventInfoModel>().Image);
+                imagePreviewView.DrawImage(selection.SelectTreeGridViewItem.DataContext<EventInfoModel>().Image);
             }
             RefreshEventItemButton();
         }
 
+        private bool CanEditEvents()
+        {
+            if (_isShutdownHandled == true)
+            {
+                return false;
+            }
+            if (_isRunning == true)
+            {
+                return false;
+            }
+            if (_applicationUpdateInProgress == true)
+            {
+                return false;
+            }
+            if (ApplicationManager.Instance.HasActiveInputOverlay == true)
+            {
+                return false;
+            }
+            return true;
+        }
+
         private void RefreshEventItemButton()
         {
-            if (_applicationUpdateInProgress == true)
+            btnAddEventItem.IsEnabled = false;
+            btnRemoveEventItem.IsEnabled = false;
+            btnCopyEventItem.IsEnabled = false;
+            btnUpEventItem.IsEnabled = false;
+            btnDownEventItem.IsEnabled = false;
+            btnOptionEventItem.IsEnabled = false;
+            if (CanEditEvents() == false)
             {
                 return;
             }
@@ -442,10 +515,22 @@ namespace Macro
             return new ProcessInfo { ProcessName = processItem.Process.ProcessName, Position = rectangle };
         }
 
-        private async void ScreenCaptureCompleted(CaptureCompletedEventArgs eventArgs)
+        private void ScreenCaptureCompleted(CaptureCompletedEventArgs eventArgs)
         {
             ApplicationManager.Instance.CloseCaptureView();
-            Bitmap capture = eventArgs.CaptureImage;
+            if (UIManager.Instance.EnqueueButtonAction(() => ProcessScreenCaptureCompletedAsync(eventArgs)) == false)
+            {
+                eventArgs.CaptureImage?.Dispose();
+            }
+        }
+
+        private async Task ProcessScreenCaptureCompletedAsync(CaptureCompletedEventArgs eventArgs)
+        {
+            using Bitmap capture = eventArgs.CaptureImage;
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             if (capture == null)
             {
                 return;
@@ -459,11 +544,15 @@ namespace Macro
             EventInfoModel eventInfo = new() { Image = new Bitmap(capture, capture.Width, capture.Height), MonitorInfo = eventArgs.MonitorInfo, ProcessInfo = processInfo };
             eventListView.DataContext<EventListViewModel>().EventItems.Add(eventInfo);
             _cacheDataManager.MakeIndexTriggerModel(eventInfo);
-            Save();
+            await SaveAsync();
         }
 
-        private void BtnCopyEventItem_Click(object sender, RoutedEventArgs eventArgs)
+        private async Task BtnCopyEventItemAsync(object sender, RoutedEventArgs eventArgs)
         {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             TreeGridViewItem selectedItem = ServiceResolver.GetService<SelectionStateController>().SelectTreeGridViewItem;
             if (selectedItem == null)
             {
@@ -472,11 +561,15 @@ namespace Macro
             EventInfoModel copyItem = new(selectedItem.DataContext<EventInfoModel>());
             _cacheDataManager.MakeIndexTriggerModel(copyItem);
             eventListView.DataContext<EventListViewModel>().EventItems.Add(copyItem);
-            Save();
+            await SaveAsync();
         }
 
-        private void BtnRemoveEventItem_Click(object sender, RoutedEventArgs eventArgs)
+        private async Task BtnRemoveEventItemAsync(object sender, RoutedEventArgs eventArgs)
         {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             SelectionStateController selection = ServiceResolver.GetService<SelectionStateController>();
             TreeGridViewItem selectedItem = selection.SelectTreeGridViewItem;
             if (selectedItem == null)
@@ -492,15 +585,21 @@ namespace Macro
             {
                 selectedItem.ParentItem.DataContext<EventInfoModel>().SubEventItems.Remove(eventInfo);
             }
+            _cacheDataManager.RemoveIndexEventModel(eventInfo);
             selection.UnselectTreeGridViewItem();
             eventListView.treeGridView.SelectedItem = null;
-            _imagePreviewWindow.ClearImage();
+            imagePreviewView.ClearImage();
+            eventInfo.Dispose();
             RefreshEventItemButton();
-            Save();
+            await SaveAsync();
         }
 
-        private async void BtnAddEventItem_Click(object sender, RoutedEventArgs eventArgs)
+        private async Task BtnAddEventItemAsync(object sender, RoutedEventArgs eventArgs)
         {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             if (comboProcess.SelectedItem == null)
             {
                 await ApplicationManager.ShowMessageDialog(TemplateContainer<LabelTemplate>.Find(1062).GetString(), TemplateContainer<MessageTemplate>.Find(1017).GetString());
@@ -511,16 +610,16 @@ namespace Macro
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs eventArgs)
         {
-            Refresh();
-        }
-
-        private async void BtnStart_Click(object sender, RoutedEventArgs eventArgs)
-        {
-            if (_applicationUpdateInProgress == true)
+            if (CanEditEvents() == false)
             {
                 return;
             }
-            if (_isRunning == true)
+            Refresh();
+        }
+
+        private void BtnStart_Click(object sender, RoutedEventArgs eventArgs)
+        {
+            if (CanEditEvents() == false)
             {
                 return;
             }
@@ -538,7 +637,13 @@ namespace Macro
             executionController.Start(eventInfos, process);
             _runningExecutionController = executionController;
             _isRunning = true;
+            _isEventItemMoveButtonPressed = false;
             SetExecutionControls(true);
+            _executionCompletionTask = ObserveExecutionAsync(executionController);
+        }
+
+        private async Task ObserveExecutionAsync(MacroExecutionController executionController)
+        {
             try
             {
                 await executionController.Completion;
@@ -549,6 +654,14 @@ namespace Macro
             }
             finally
             {
+                try
+                {
+                    await executionController.StopAsync();
+                }
+                catch (Exception exception)
+                {
+                    LogHelper.Error(exception);
+                }
                 if (_runningExecutionController == executionController)
                 {
                     _runningExecutionController = null;
@@ -558,13 +671,19 @@ namespace Macro
             }
         }
 
-        private async void BtnStop_Click(object sender, RoutedEventArgs eventArgs)
+        private void RequestStop()
         {
-            if (_isRunning == false)
+            MacroExecutionController executionController = _runningExecutionController;
+            if (executionController == null)
             {
                 return;
             }
-            MacroExecutionController executionController = _runningExecutionController;
+            executionController.Stop();
+            UIManager.Instance.EnqueueButtonAction(() => StopMacroAsync(executionController));
+        }
+
+        private async Task StopMacroAsync(MacroExecutionController executionController)
+        {
             ApplicationManager.ShowProgressbar();
             btnStop.IsEnabled = false;
             try
@@ -610,8 +729,7 @@ namespace Macro
                 }
                 button.IsEnabled = isRunning == false;
             }
-            comboProcess.IsEnabled = isRunning == false;
-            checkFix.IsEnabled = isRunning == false;
+            UpdateQueuedInputState();
             btnStop.IsEnabled = true;
             btnStop.IsVisible = isRunning;
             btnStart.IsVisible = isRunning == false;
@@ -619,6 +737,26 @@ namespace Macro
             {
                 RefreshEventItemButton();
             }
+        }
+
+        private void UpdateQueuedInputState()
+        {
+            bool canUseInputs = _isRunning == false;
+            if (_isShutdownHandled == true)
+            {
+                canUseInputs = false;
+            }
+            if (_applicationUpdateInProgress == true)
+            {
+                canUseInputs = false;
+            }
+            if (UIManager.Instance.IsProcessingButtonActions == true)
+            {
+                canUseInputs = false;
+            }
+            comboProcess.IsEnabled = canUseInputs;
+            checkFix.IsEnabled = canUseInputs;
+            eventListView.IsEnabled = canUseInputs;
         }
 
         private void UpdateStatus(EventInfoModel eventInfo, string status)
@@ -644,16 +782,28 @@ namespace Macro
 
         private void BtnGithub_Click(object sender, RoutedEventArgs eventArgs)
         {
+            if (_isShutdownHandled == true)
+            {
+                return;
+            }
             Process.Start(new ProcessStartInfo(ConstHelper.HelpUrl) { UseShellExecute = true });
         }
 
         private void BtnSetting_Click(object sender, RoutedEventArgs eventArgs)
         {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
             UIManager.Instance.AddPopup<SettingView>();
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs eventArgs)
         {
+            if (_isShutdownHandled == true)
+            {
+                return;
+            }
             if (_applicationUpdateInProgress == true)
             {
                 return;
@@ -662,9 +812,9 @@ namespace Macro
             {
                 ServiceResolver.GetService<SelectionStateController>().UnselectTreeGridViewItem();
                 eventListView.treeGridView.SelectedItem = null;
-                _imagePreviewWindow.ClearImage();
+                imagePreviewView.ClearImage();
                 RefreshEventItemButton();
-                BtnStop_Click(btnStop, null);
+                RequestStop();
             }
         }
 
@@ -686,13 +836,44 @@ namespace Macro
         {
             Directory.CreateDirectory(GetSaveDirectoryPath());
             JsonHelper.ConfigureImageDirectory(Path.Combine(GetSaveDirectoryPath(), "img"));
-            _processes = Process.GetProcesses().Where(process => process.MainWindowHandle != IntPtr.Zero).Select(process => new ProcessItem(process)).OrderBy(process => process.ProcessName).ToArray();
+            List<ProcessItem> currentProcesses = new List<ProcessItem>();
+            foreach (Process process in Process.GetProcesses())
+            {
+                try
+                {
+                    if (process.MainWindowHandle == IntPtr.Zero)
+                    {
+                        process.Dispose();
+                        continue;
+                    }
+                    currentProcesses.Add(new ProcessItem(process));
+                }
+                catch (Exception exception)
+                {
+                    process.Dispose();
+                    LogHelper.Error(exception);
+                }
+            }
+            ProcessItem[] previousProcesses = _processes;
+            ServiceResolver.GetService<SelectionStateController>().SelectProcessItem = null;
+            comboProcess.SelectedItem = null;
+            _processes = currentProcesses.OrderBy(process => process.ProcessName).ToArray();
             comboProcess.ItemsSource = _processes;
+            DisposeProcessItems(previousProcesses);
         }
 
-        private void Save()
+        private async Task SaveAsync()
         {
-            ServiceResolver.GetService<FileService>().SaveAsJson(GetSaveFilePath(), eventListView.DataContext<EventListViewModel>().EventItems.ToList());
+            bool saved = ServiceResolver.GetService<FileService>().SaveAsJson(GetSaveFilePath(), eventListView.DataContext<EventListViewModel>().EventItems.ToList());
+            if (saved == true)
+            {
+                return;
+            }
+            if (_isShutdownHandled == true)
+            {
+                return;
+            }
+            await ApplicationManager.ShowMessageDialog(TemplateContainer<LabelTemplate>.Find(1062).GetString(), TemplateContainer<MessageTemplate>.Find(1015).GetString());
         }
 
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs eventArgs)
@@ -718,10 +899,41 @@ namespace Macro
             }
             _cacheDataManager.InitDatas(eventInfos);
             EventListViewModel viewModel = eventListView.DataContext<EventListViewModel>();
+            List<EventInfoModel> previousEventInfos = viewModel.EventItems.ToList();
+            SelectionStateController selection = ServiceResolver.GetService<SelectionStateController>();
+            selection.UnselectTreeGridViewItem();
+            eventListView.treeGridView.SelectedItem = null;
+            imagePreviewView.ClearImage();
             viewModel.EventItems.Clear();
             foreach (EventInfoModel eventInfo in eventInfos)
             {
                 viewModel.EventItems.Add(eventInfo);
+            }
+            foreach (EventInfoModel previousEventInfo in previousEventInfos)
+            {
+                previousEventInfo.Dispose();
+            }
+        }
+
+        private void DisposeEventItems()
+        {
+            EventListViewModel viewModel = eventListView.DataContext<EventListViewModel>();
+            foreach (EventInfoModel eventInfoModel in viewModel.EventItems)
+            {
+                eventInfoModel.Dispose();
+            }
+            viewModel.EventItems.Clear();
+        }
+
+        private static void DisposeProcessItems(ProcessItem[] processItems)
+        {
+            if (processItems == null)
+            {
+                return;
+            }
+            foreach (ProcessItem processItem in processItems)
+            {
+                processItem.Dispose();
             }
         }
 
@@ -734,15 +946,7 @@ namespace Macro
                 Refresh();
                 LoadSaveFile(GetSaveFilePath());
                 _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
-                _macroExecutionController.InitializeController(_imagePreviewWindow.DrawImage, UpdateStatus);
-                if (_config.OpenProcessPreview == false)
-                {
-                    _imagePreviewWindow.Hide();
-                }
-                else if (_imagePreviewWindow.IsVisible == false)
-                {
-                    _imagePreviewWindow.Show(this);
-                }
+                _macroExecutionController.InitializeController(imagePreviewView.DrawImage, UpdateStatus);
             }
             finally
             {
@@ -755,17 +959,21 @@ namespace Macro
 #if DEBUG
             return;
 #else
-            if (_webViewWindow.IsVisible == false)
+            string address = await _adManager.GetAdUrlAsync();
+            if (string.IsNullOrEmpty(address) == true)
             {
-                _webViewWindow.Show(this);
+                return;
             }
-            string address = await _adManager.GetRandomAdUrl();
             if (isCloseButtonShow == true)
             {
                 if (_isShutdownHandled == true)
                 {
                     return;
                 }
+            }
+            if (_webViewWindow.IsVisible == false)
+            {
+                _webViewWindow.Show(this);
             }
             await _webViewWindow.LoadUrlAsync(address);
             await Task.Delay(TimeSpan.FromSeconds(3.5));

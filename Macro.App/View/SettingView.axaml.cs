@@ -6,6 +6,7 @@ using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.ComponentModel;
@@ -25,6 +26,7 @@ namespace Macro.View
         internal Avalonia.Controls.ComboBox comboLanguage;
         internal Avalonia.Controls.TextBox txtSavePath;
         private Button _browseSavePathButton;
+        private Button _openLogFolderButton;
         internal Avalonia.Controls.NumericUpDown numPeriod;
         internal Avalonia.Controls.NumericUpDown numDelay;
         internal Avalonia.Controls.NumericUpDown numSimilarity;
@@ -33,7 +35,6 @@ namespace Macro.View
         internal Avalonia.Controls.NumericUpDown numProcessLocationX;
         internal Avalonia.Controls.NumericUpDown numProcessLocationY;
         internal Avalonia.Controls.ComboBox comboMacroMode;
-        internal Avalonia.Controls.ComboBox comboProcessPreviewOpen;
         internal Avalonia.Controls.Button btnSave;
         internal Avalonia.Controls.Button btnClose;
 
@@ -43,6 +44,7 @@ namespace Macro.View
             comboLanguage = this.FindControl<Avalonia.Controls.ComboBox>("comboLanguage");
             txtSavePath = this.FindControl<Avalonia.Controls.TextBox>("txtSavePath");
             _browseSavePathButton = this.FindControl<Button>("browseSavePathButton");
+            _openLogFolderButton = this.FindControl<Button>("openLogFolderButton");
             numPeriod = this.FindControl<Avalonia.Controls.NumericUpDown>("numPeriod");
             numDelay = this.FindControl<Avalonia.Controls.NumericUpDown>("numDelay");
             numSimilarity = this.FindControl<Avalonia.Controls.NumericUpDown>("numSimilarity");
@@ -51,7 +53,6 @@ namespace Macro.View
             numProcessLocationX = this.FindControl<Avalonia.Controls.NumericUpDown>("numProcessLocationX");
             numProcessLocationY = this.FindControl<Avalonia.Controls.NumericUpDown>("numProcessLocationY");
             comboMacroMode = this.FindControl<Avalonia.Controls.ComboBox>("comboMacroMode");
-            comboProcessPreviewOpen = this.FindControl<Avalonia.Controls.ComboBox>("comboProcessPreviewOpen");
             btnSave = this.FindControl<Avalonia.Controls.Button>("btnSave");
             btnClose = this.FindControl<Avalonia.Controls.Button>("btnClose");
             numPeriod.Minimum = ConstHelper.MinPeriod;
@@ -63,7 +64,6 @@ namespace Macro.View
         private AppUpdateViewModel _updates;
         private bool _closeAllowed;
         private Task _prepareCloseTask;
-        public Config Config { get; private set; }
 
         public SettingView()
         {
@@ -94,6 +94,8 @@ namespace Macro.View
 
         private async Task PrepareCloseCoreAsync()
         {
+            IsEnabled = false;
+            UIManager.Instance.ButtonActionStateChanged -= UpdateEditState;
             if (_updates != null)
             {
                 await _updates.CloseAsync();
@@ -104,10 +106,24 @@ namespace Macro.View
 
         private void UpdateStateChanged(object sender, PropertyChangedEventArgs eventArgs)
         {
+            UpdateEditState();
+        }
+
+        private void UpdateEditState()
+        {
             bool canEdit = _updates.IsInstalling == false;
+            if (UIManager.Instance.IsProcessingButtonActions == true)
+            {
+                canEdit = false;
+            }
+            if (_prepareCloseTask != null)
+            {
+                canEdit = false;
+            }
             comboLanguage.IsEnabled = canEdit;
             txtSavePath.IsEnabled = canEdit;
             _browseSavePathButton.IsEnabled = canEdit;
+            _openLogFolderButton.IsEnabled = canEdit;
             numPeriod.IsEnabled = canEdit;
             numDelay.IsEnabled = canEdit;
             numSimilarity.IsEnabled = canEdit;
@@ -116,7 +132,6 @@ namespace Macro.View
             numProcessLocationX.IsEnabled = canEdit;
             numProcessLocationY.IsEnabled = canEdit;
             comboMacroMode.IsEnabled = canEdit;
-            comboProcessPreviewOpen.IsEnabled = canEdit;
             btnSave.IsEnabled = canEdit;
         }
         private void Init()
@@ -131,6 +146,8 @@ namespace Macro.View
             _updates = ServiceResolver.GetService<AppUpdateViewModel>();
             this.FindControl<AppUpdateView>("appUpdateView").DataContext = _updates;
             _updates.PropertyChanged += UpdateStateChanged;
+            UIManager.Instance.ButtonActionStateChanged += UpdateEditState;
+            UpdateEditState();
         }
         private void SettingView_Loaded(object sender, EventArgs e)
         {
@@ -141,39 +158,68 @@ namespace Macro.View
         {
             btnSave.Click += Button_Click;
             btnClose.Click += Button_Click;
+            _openLogFolderButton.Click += Button_Click;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs eventArgs)
         {
-            var btn = sender as Button;
-            if (btn.Equals(btnSave))
+            if (sender == btnSave)
             {
-                var model = (DataContext as SettingViewModel).Config;
-                if (TryModelValidate(model, out MessageTemplate template))
-                {
-                    Save(model);
-                }
-                else
-                {
-                    await ApplicationManager.ShowMessageDialog("Error", template.GetString());
-                }
-                UIManager.Instance.ClosePopup(this);
+                UIManager.Instance.EnqueueButtonAction(SaveConfigAsync);
             }
-            else if (btn.Equals(btnClose))
+            else if (sender == btnClose)
             {
-                UIManager.Instance.ClosePopup(this);
+                _ = PrepareForShutdownAsync();
+                UIManager.Instance.EnqueueButtonAction(Close);
+            }
+            else if (sender == _openLogFolderButton)
+            {
+                UIManager.Instance.EnqueueButtonAction(OpenLogFolder);
             }
         }
-        private void Save(Config model)
-        {
-            var path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
-            var fileService = ServiceResolver.GetService<FileService>();
-            var saved = fileService.SaveJson(path, model);
 
-            if (saved == true)
+        private static void OpenLogFolder()
+        {
+            string logDirectoryPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "logs"));
+            Directory.CreateDirectory(logDirectoryPath);
+            Process.Start(new ProcessStartInfo(logDirectoryPath) { UseShellExecute = true });
+        }
+
+        private async Task SaveConfigAsync()
+        {
+            if (_prepareCloseTask != null)
             {
-                NotifyHelper.InvokeNotify(NotifyEventType.ConfigChanged, new ConfigEventArgs() { Config = model });
+                return;
             }
+            if (_updates.IsInstalling == true)
+            {
+                return;
+            }
+            Config configuration = this.DataContext<SettingViewModel>().Config;
+            if (TryModelValidate(configuration, out MessageTemplate messageTemplate) == false)
+            {
+                await ApplicationManager.ShowMessageDialog(TemplateContainer<LabelTemplate>.Find(1062).GetString(), messageTemplate.GetString());
+                return;
+            }
+            if (Save(configuration) == false)
+            {
+                await ApplicationManager.ShowMessageDialog(TemplateContainer<LabelTemplate>.Find(1062).GetString(), TemplateContainer<MessageTemplate>.Find(1015).GetString());
+                return;
+            }
+            UIManager.Instance.ClosePopup(this);
+        }
+
+        private bool Save(Config model)
+        {
+            string path = Path.Combine(Environment.CurrentDirectory, ConstHelper.DefaultConfigFile);
+            FileService fileService = ServiceResolver.GetService<FileService>();
+            if (fileService.SaveJson(path, model) == false)
+            {
+                return false;
+            }
+            Config appliedConfiguration = this.DataContext<SettingViewModel>().ApplyChanges();
+            NotifyHelper.InvokeNotify(NotifyEventType.ConfigChanged, new ConfigEventArgs { Config = appliedConfiguration });
+            return true;
         }
         private bool TryModelValidate(Config model, out MessageTemplate messageTemplate)
         {

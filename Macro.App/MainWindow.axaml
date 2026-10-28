@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:view="clr-namespace:Macro.View" x:Class="Macro.MainWindow" Title="{Binding Title, Source={StaticResource LabelLocator}}" Width="1040" Height="780" MinWidth="860" MinHeight="600" WindowStartupLocation="CenterScreen" ClosingBehavior="OwnerWindowOnly">
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:view="clr-namespace:Macro.View" x:Class="Macro.MainWindow" Title="{Binding Title, Source={StaticResource LabelLocator}}" Icon="/Assets/AppIcon.ico" Width="1040" Height="780" MinWidth="860" MinHeight="600" WindowStartupLocation="CenterScreen" ClosingBehavior="OwnerWindowOnly">
   <Grid Margin="24" RowDefinitions="Auto,Auto,Auto,*">
     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,22">
       <StackPanel Orientation="Horizontal" Spacing="14">
@@ -97,7 +97,10 @@
       </StackPanel>
     </Grid>
     <Border Grid.Row="3" Classes="card" Padding="0" ClipToBounds="True">
-      <view:EventListView x:Name="eventListView" />
+      <Grid ColumnDefinitions="*,Auto">
+        <view:EventListView x:Name="eventListView" />
+        <view:ImagePreviewView Grid.Column="1" x:Name="imagePreviewView" Width="300" />
+      </Grid>
     </Border>
   </Grid>
 </Window>

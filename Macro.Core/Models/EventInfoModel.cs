@@ -10,7 +10,7 @@ using Utils.Serialization;
 
 namespace Macro.Models
 {
-    public class EventInfoModel : INotifyPropertyChanged
+    public class EventInfoModel : INotifyPropertyChanged, IDisposable
     {
         [JsonConstructor]
         public EventInfoModel()
@@ -18,22 +18,35 @@ namespace Macro.Models
         }
         public EventInfoModel(EventInfoModel other)
         {
-            Image = new Bitmap(other.Image);
+            if (other.Image != null)
+            {
+                Image = new Bitmap(other.Image);
+            }
             EventType = other.EventType;
             MouseEventInfo = other.MouseEventInfo.Clone();
-            MonitorInfo = other.MonitorInfo.Clone();
+            if (other.MonitorInfo != null)
+            {
+                MonitorInfo = other.MonitorInfo.Clone();
+            }
 
             KeyboardCmd = other.KeyboardCmd;
             ProcessInfo = other.ProcessInfo.Clone();
-            SubEventItems = new ObservableCollection<EventInfoModel>(other.SubEventItems);
+            SubEventItems = new ObservableCollection<EventInfoModel>();
+            foreach (EventInfoModel child in other.SubEventItems)
+            {
+                SubEventItems.Add(new EventInfoModel(child));
+            }
             AfterDelay = other.AfterDelay;
             RepeatInfo = other.RepeatInfo.Clone();
+            ItemIndex = other.ItemIndex;
             EventToNext = other.EventToNext;
             SameImageDrag = other.SameImageDrag;
+            MaxDragCount = other.MaxDragCount;
             HardClick = other.HardClick;
             RoiDataInfo = other.RoiDataInfo.Clone();
             IsChecked = other.IsChecked;
             Similarity = other.Similarity;
+            PositionRelativeToImage = other.PositionRelativeToImage;
         }
         private Bitmap _image;
         [JsonConverter(typeof(BitmapFileJsonConverter))]
@@ -268,5 +281,17 @@ namespace Macro.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public void Dispose()
+        {
+            if (_subEventItems != null)
+            {
+                foreach (EventInfoModel child in _subEventItems)
+                {
+                    child.Dispose();
+                }
+            }
+            _image?.Dispose();
+            _image = null;
+        }
     }
 }

@@ -4,7 +4,6 @@ using Dignus.DependencyInjection.Attributes;
 using Macro.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Utils;
@@ -16,18 +15,48 @@ namespace Macro.Infrastructure.Manager
     {
         public bool SaveJson<T>(string path, T model)
         {
+            return SaveSerializedJson(path, model);
+        }
+
+        private bool SaveSerializedJson<T>(string path, T model)
+        {
+            string temporaryPath = null;
             try
             {
-                var json = JsonHelper.SerializeObject(model, true);
-                File.WriteAllText(path, json);
+                string json = JsonHelper.SerializeObject(model, true);
+                string fullPath = Path.GetFullPath(path);
+                string directoryPath = Path.GetDirectoryName(fullPath);
+                Directory.CreateDirectory(directoryPath);
+                temporaryPath = Path.Combine(directoryPath, $".{Path.GetFileName(fullPath)}.{Guid.NewGuid():N}.tmp");
+                File.WriteAllText(temporaryPath, json);
+                if (File.Exists(fullPath) == true)
+                {
+                    File.Replace(temporaryPath, fullPath, null);
+                }
+                else
+                {
+                    File.Move(temporaryPath, fullPath);
+                }
             }
             catch (Exception exception)
             {
                 LogHelper.Error(exception);
-
                 return false;
             }
-
+            finally
+            {
+                if (temporaryPath != null)
+                {
+                    try
+                    {
+                        File.Delete(temporaryPath);
+                    }
+                    catch (Exception exception)
+                    {
+                        LogHelper.Error(exception);
+                    }
+                }
+            }
             return true;
         }
 
@@ -105,33 +134,9 @@ namespace Macro.Infrastructure.Manager
             }
             return null;
         }
-        [Obsolete("2.7.1 버전까지만 허용")]
-        public void Save(string path, ObservableCollection<EventTriggerModel> list)
+        public bool SaveAsJson(string path, List<EventInfoModel> list)
         {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            using (var fs = new FileStream(path, FileMode.OpenOrCreate))
-            {
-                foreach (var item in list)
-                {
-                    var bytes = ObjectSerializer.SerializeObject(item);
-                    fs.WriteAsync(bytes, 0, bytes.Count()).GetAwaiter().GetResult();
-                }
-                fs.Close();
-            }
-        }
-
-        public void SaveAsJson(string path, List<EventInfoModel> list)
-        {
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            var json = JsonHelper.SerializeObject(list, true);
-            File.WriteAllText(path, json);
+            return SaveSerializedJson(path, list);
         }
     }
 }

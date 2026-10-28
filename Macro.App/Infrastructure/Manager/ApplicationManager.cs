@@ -66,6 +66,10 @@ namespace Macro.Infrastructure.Manager
             panel.Children.Add(new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap });
             panel.Children.Add(buttons);
             dialog.Content = panel;
+            if (UIManager.Instance.TrackPopup(dialog) == false)
+            {
+                return false;
+            }
             return await dialog.ShowDialog<bool>(Instance._mainWindow);
         }
 
@@ -99,11 +103,6 @@ namespace Macro.Infrastructure.Manager
         {
             _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
             _drawWindow.Opacity = 0;
-#if DEBUG
-            _drawWindow.Opacity = 1;
-            _drawWindow.Background = Brushes.White;
-            _drawWindow.Position = new PixelPoint(0, 0);
-#endif
             _drawWindow.Show();
             _drawWindowHandle = _drawWindow.TryGetPlatformHandle().Handle;
             _screenCaptureManager.SetDrawWindowHandle(_drawWindowHandle);

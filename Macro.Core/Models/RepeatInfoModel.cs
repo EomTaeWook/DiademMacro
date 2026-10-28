@@ -18,9 +18,8 @@ namespace Macro.Models
                 if (_repeatType != RepeatType.Count)
                 {
                     Count = 1;
-                    OnPropertyChanged("Count");
                 }
-                OnPropertyChanged("RepeatType");
+                OnPropertyChanged(nameof(RepeatType));
             }
         }
         public ushort Count
@@ -29,7 +28,7 @@ namespace Macro.Models
             set
             {
                 _count = value;
-                OnPropertyChanged("Count");
+                OnPropertyChanged(nameof(Count));
             }
         }
         [field: NonSerialized]

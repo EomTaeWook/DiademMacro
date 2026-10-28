@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using DataContainer.Generated;
 using Dignus.DependencyInjection;
 using Dignus.DependencyInjection.Extensions;
 using Dignus.Log;
@@ -14,7 +13,6 @@ using Macro.Infrastructure.Models.Updates;
 using Macro.Infrastructure.Updates;
 using Macro.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -24,10 +22,11 @@ using Utils;
 
 namespace Macro
 {
-    public class App : Application, ITemplateDeserializer
+    public class App : Application
     {
         private HttpClient _updateHttpClient;
         private ApplicationUpdateRestartPresenter _updateRestart;
+        private Task _updateCleanupTask = Task.CompletedTask;
         private bool _publishedSingleFile;
 
         public Window MainWindow
@@ -49,7 +48,6 @@ namespace Macro
                 eventArgs.Handled = true;
             };
             AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) => LogHelper.Fatal(eventArgs.ExceptionObject as Exception);
-            AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) => LogHelper.Error(eventArgs.Exception.Message);
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -58,17 +56,11 @@ namespace Macro
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 DependenciesResolved(desktop);
-                TemplateLoader.Load(ReadTemplate, this);
-                TemplateLoader.MakeRefTemplate();
                 desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
                 desktop.MainWindow = new MainWindow();
+                _updateCleanupTask = Program.StartUpdateCleanupAsync(desktop.Args);
             }
             base.OnFrameworkInitializationCompleted();
-        }
-
-        public IEnumerable<T> Deserialize<T>(string json) where T : TemplateBase, new()
-        {
-            return JsonHelper.DeserializeObject<List<T>>(json);
         }
 
         private static bool IsPublishedSingleFileMetadata(AssemblyMetadataAttribute attribute)
@@ -78,19 +70,6 @@ namespace Macro
                 return false;
             }
             return attribute.Value == "true";
-        }
-
-        private string ReadTemplate(string fileName)
-        {
-            if (_publishedSingleFile == false)
-            {
-                string path = Path.Combine("Datas", fileName);
-                if (File.Exists(path) == true)
-                {
-                    return File.ReadAllText(path);
-                }
-            }
-            return PackagedResources.ReadText("Macro.Datas." + fileName);
         }
 
         private Dignus.Log.Model.LogConfiguration LoadLogConfiguration()
@@ -141,6 +120,7 @@ namespace Macro
         {
             try
             {
+                await _updateCleanupTask.ConfigureAwait(false);
                 if (_updateRestart != null)
                 {
                     await _updateRestart.CompleteShutdownAsync().ConfigureAwait(false);

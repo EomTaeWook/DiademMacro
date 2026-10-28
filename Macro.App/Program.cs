@@ -2,6 +2,7 @@ using Avalonia;
 using Macro.Infrastructure.Updates;
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Macro
 {
@@ -22,7 +23,6 @@ namespace Macro
                     return;
                 }
             }
-            StartUpdateCleanup(arguments);
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(arguments);
             if (Application.Current is App application)
             {
@@ -30,29 +30,35 @@ namespace Macro
             }
         }
 
-        private static void StartUpdateCleanup(string[] arguments)
+        internal static Task StartUpdateCleanupAsync(string[] arguments)
         {
+            if (arguments == null)
+            {
+                return Task.CompletedTask;
+            }
             if (arguments.Length < 3)
             {
-                return;
+                return Task.CompletedTask;
             }
             if (arguments[0] != "--macro-update-cleanup")
             {
-                return;
+                return Task.CompletedTask;
             }
             if (int.TryParse(arguments[2], NumberStyles.None, CultureInfo.InvariantCulture, out int helperProcessId) == false)
             {
-                return;
+                return Task.CompletedTask;
             }
             if (helperProcessId <= 0)
             {
-                return;
+                return Task.CompletedTask;
             }
-            _ = ApplicationUpdateHelper.CleanupAfterHelperAsync(arguments[1], helperProcessId);
+            return ApplicationUpdateHelper.CleanupAfterHelperAsync(arguments[1], helperProcessId);
         }
 
         public static AppBuilder BuildAvaloniaApp()
         {
+            TemplateDataLoader templateDataLoader = new TemplateDataLoader();
+            templateDataLoader.Load();
             return AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace();
         }
     }

@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Macro.View.ImagePreviewView">
+  <Grid RowDefinitions="Auto,*" Background="{StaticResource SubtleSurfaceBrush}">
+    <Border BorderBrush="{StaticResource OutlineBrush}" BorderThickness="1,0,0,1" Padding="16,12">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <PathIcon Width="16" Height="16" Foreground="{StaticResource AccentTextBrush}" Data="M3,4 L21,4 L21,20 L3,20 Z M5,17 L10,11 L14,15 L17,12 L20,17 M7,7 L9,7 L9,9 L7,9 Z" />
+        <TextBlock Classes="section" Text="{Binding CompareImage, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+      </StackPanel>
+    </Border>
+    <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="1,0,0,0" Padding="12">
+      <Border Background="White" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="1" CornerRadius="10" ClipToBounds="True">
+        <Image x:Name="previewImage" Stretch="Uniform" />
+      </Border>
+    </Border>
+  </Grid>
+</UserControl>

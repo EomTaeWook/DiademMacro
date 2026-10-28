@@ -1,245 +1,186 @@
+# Diadem Macro
 
-연결 프로세스의 화면을 분석해서 키보드나 마우스 이벤트 반복
+<p align="center">
+  <img src="Macro.App/Assets/AppIcon.png" width="112" alt="Diadem Macro icon" />
+</p>
 
-![picture](/Release/Resource/capture.png)
-![picture](/Release/Resource/capture_eng.png)
+Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾고 마우스·키보드 입력을 반복하는 데스크톱 자동화 도구입니다. Avalonia와 .NET 10으로 동작하며 한국어와 영어 UI를 제공합니다.
 
+- 다운로드: [GitHub Releases](https://github.com/EomTaeWook/DiademMacro/releases)
+- 지원 운영체제: Windows 10 이상, x64
+- 배포 형식: 자체 포함 단일 `Macro.exe`
 
-다운로드 : https://github.com/EomTaeWook/DiademMacro/releases
+## 주요 기능
 
+- 실행 중인 프로세스의 화면 캡처와 이미지 검색
+- 이미지 클릭, 고정 좌표 마우스 입력, 키보드 입력, 이미지 상대 좌표 클릭
+- 실제 커서를 움직이는 물리 클릭
+- 관심 영역(ROI), 항목별 유사도, 반복, 후 작업 딜레이, 다음 이벤트 이동
+- 여러 프로세스 검색 또는 특정 프로세스 고정
+- 배치 모드와 순회 모드
+- 트리거 복사·이동·드래그 앤 드롭 및 실행 상태 표시
+- 실행 화면의 검색 결과 미리보기
+- 설정에서 로그 폴더 열기와 GitHub 정식 릴리스 업데이트
 
-개발환경
+## 빠른 시작
 
-    Avalonia, C#, .NET 10 (Windows)
+1. 자동화할 프로그램과 `Macro.exe`를 실행합니다.
+2. **연결된 프로세스**에서 대상 프로그램을 선택합니다. 목록에 없다면 **새로고침**을 누릅니다.
+3. 한 프로세스만 대상으로 삼으려면 **고정**을 선택합니다.
+4. **추가**를 누르고 대상 창에서 찾을 이미지를 캡처합니다.
+5. 옵션에서 이벤트 타입과 실행 조건을 설정한 뒤 **저장**합니다.
+6. 실행할 트리거의 체크 상태를 확인하고 **시작**을 누릅니다.
+7. 종료하려면 **중지**를 누릅니다. 진행 중인 캡처·검색·입력 작업이 취소된 뒤 실행이 종료됩니다.
 
-    UI toolkit : Avalonia Fluent
+트리거와 캡처 이미지는 기본적으로 `Save/save.dll`과 `Save/img`에 저장됩니다.
 
-    솔루션 : Macro.slnx (Macro.App, Macro.Core, Shared)
+## 이벤트 타입
 
-    개발 : .NET 10 SDK / 개발 출력 실행 : .NET 10 Desktop Runtime
+### Image
 
-    정식 배포 : Windows x64 자체 포함 단일 Macro.exe (별도 런타임 설치 불필요)
+등록한 이미지를 찾고 이미지 내부의 위치를 클릭합니다. 일반 클릭은 좌표 패턴을 줄이기 위해 일치 영역 안에서 위치를 선택합니다.
 
-구성 및 적용 규칙 : [프로젝트 구성](Design/ApplicationArchitecture.md)
+### Mouse
 
-앱 업데이트 : [업데이트와 단일 파일 배포](Design/ApplicationUpdate.md)
+대상 창에서 좌클릭, 우클릭 또는 드래그 좌표를 직접 기록해 실행합니다.
 
-설정의 앱 업데이트에서 수동으로 확인하고 업데이트 후 재시작합니다. 게시 프로필은 `Macro.App/Properties/PublishProfiles/WindowsX64.pubxml`입니다. 기존 ZIP 배포는 자동 설치 대상이 아니며 새 단일 실행 파일 릴리스가 필요합니다.
+### Keyboard
 
-현재 저장소의 화면 이미지는 이전 WPF 버전입니다. Avalonia 전환 후 실행·화면 확인은 수행하지 않았습니다.
-    
-OS 버전
+`CTRL+A`와 같은 키 또는 조합키를 대상 창에 전달합니다.
 
-    Windows 10 이상
+### RelativeToImage
 
-주의 사항
+일치한 이미지의 중심을 기준으로 X·Y 상대 좌표를 더한 위치를 클릭합니다.
 
-	1.Macro 실행시 앱플레이어 이미지에 여백이 발생하는 경우
+## 물리 클릭과 Unity 창
 
-		- Datas\ApplicationData.json => IsDynamic [true][false]를 변경하시면 됩니다.
+옵션의 **물리 클릭**은 창 메시지 대신 실제 커서를 화면 좌표로 이동해 클릭합니다. Unity처럼 `PostMessage` 입력을 받지 않는 프로그램에 사용합니다. 클릭 후 커서는 원래 위치로 돌아갑니다.
 
-	2.주 모니터 확대 비율이 더 높아야합니다.
+다음 조건을 만족해야 합니다.
 
-		-주 모니터 DPI 100% 보조 모니터 150%인 경우에 대해선 기능을 처리 하지 않았습니다. 주 모니터 150%, 보조 모니터 100% 이런 식이 되어야 합니다.
+- 대상 창이 최소화되지 않고 화면에 보여야 합니다.
+- 계산된 클릭 지점이 다른 창에 가려져 있으면 안 됩니다.
+- 대상 프로그램이 관리자 권한으로 실행 중이라면 Macro도 같은 권한 수준으로 실행해야 합니다.
+- 실행 중에는 실제 마우스를 움직이거나 클릭하지 않는 것이 좋습니다.
+- **같은 이미지 드래그**와 물리 클릭은 함께 사용할 수 없습니다.
 
-    3.실행시 체크 박스가 활성화 된 트리거들만 작동됩니다.
+최소화되지 않은 창은 Windows Graphics Capture를 우선 사용하므로 Unity의 GPU 렌더링 화면도 캡처할 수 있습니다. 최소화된 GPU 렌더링 창은 빈 화면이 반환될 수 있으며 정상 동작을 보장하지 않습니다.
 
-    4.해당 이미지를 클릭을 하지 않는 경우 관리자 권한으로 실행해보세요.(제보 감사합니다)
+## 이미지 검색 설정
 
-사용 방법
-    
-    1.트리거 저장
+- **관심 영역(ROI)**: 검색 범위를 필요한 영역으로 제한합니다. 큰 창이나 작은 비교 이미지를 검색할 때 속도 개선에 가장 효과적입니다.
+- **항목별 유사도**: `0`이면 공통 설정값을 사용하고, `1~100`이면 해당 트리거에만 적용합니다.
+- **검색 결과 표시**: 일치 영역을 미리보기에 표시합니다.
+- **후 작업 딜레이**: 현재 이벤트 실행 후 다음 이벤트까지 기다리는 시간입니다.
+- **바로 이동**: 성공 후 지정한 이벤트 번호로 이동합니다. `0`이면 목록 순서를 따릅니다.
 
-        1.1 화면 캡쳐 버튼를 통하여 찾고 싶은 이미지 캡쳐
-    
-        1.2 Image, Mouse, Keyboard, RelativeToImage 이벤트 선택
-    
-            1.2.1 Image : 찾은 이미지를 클릭합니다.
-                
-                - 찾은 이미지 내에서 랜덤 클릭합니다.(좌표 패턴화 되는 것을 방지합니다.)
+이미지 검색이 느리면 먼저 ROI를 지정하고 비교 이미지를 대상 요소에 가깝게 잘라 사용하세요.
 
-                - 고정된 좌표를 클릭하는 마우스 이벤트보다 우선시 해주세요.
+## 반복과 하위 이벤트
 
-            1.2.2 Mouse : 좌표 지정(좌클릭, 우클릭, 드래그) 해주시면 됩니다.
-        
-            1.2.3 Keyboard : Ctrl + c + v 이런식으로 조합키를 넣어주면 됩니다.
+- **횟수**: 지정한 횟수만큼 하위 이벤트를 실행합니다.
+- **하위 이벤트 기준 반복**: 하위 이벤트가 성공하는 동안 반복합니다.
+- **상위 이미지 발견 시 중지**: 상위 이미지를 다시 찾을 때까지 하위 이벤트를 반복합니다.
 
-            1.2.4 RelativeToImage : 찾은 이미지로부터 +- 한 거리를 클릭합니다.(아이디어 Ko9ma7 제공)
-            
-            1.2.5 물리 클릭 : 마우스가 직접 이동하여 해당 위치를 클릭합니다.(아이디어 Ko9ma7 제공)
-        
-        1.3 실행시 이미지를 캡쳐할 실행 프로세스를 선택하시면 됩니다.
+항목을 다른 항목 위에 드롭하면 하위 이벤트가 됩니다. 하위 항목을 목록 바깥쪽이나 최상위 위치로 드롭하면 다시 최상위 항목으로 이동할 수 있습니다.
 
-        1.4 후 작업 딜레이
+## 실행 모드
 
-            - 현재 작업이 완료 이후 어느 정도 대기를 한 후 다음 작업을 하고 싶은 경우에 사용하시면 됩니다.(아이디어 Ko9ma7 제공)
+| 모드 | 동작 |
+| --- | --- |
+| 배치 모드 | 프로세스 화면을 한 번 캡처한 뒤 활성 트리거 목록을 순회합니다. 기본값입니다. |
+| 순회 모드 | 트리거마다 프로세스 화면을 다시 캡처하고 검색합니다. 화면 변화가 잦을 때 사용합니다. |
 
-            - ex> 버튼 클릭 => 팝업 뜨기까지 대기 => 확인 버튼 클릭 (연계하는 경우)
+## 설정
 
-        1.5 아이템 반복
-        
-            - 한번 : 한번만 발생합니다.
+| 설정 | 설명 |
+| --- | --- |
+| 언어 | `Kor` 또는 `Eng` |
+| 저장 경로 | `save.dll`과 `img` 폴더를 저장할 위치 |
+| 매크로 모드 | 배치 모드 또는 순회 모드 |
+| 실행 주기 | 전체 프로세스·트리거 순회 후 대기 시간(ms) |
+| 항목 딜레이 | 이미지 검색 실패 후 다음 항목까지 대기 시간(ms) |
+| 드래그 딜레이 | 드래그 중 좌표 사이의 대기 시간(ms) |
+| 공통 유사도 | 항목별 유사도가 `0`일 때 사용하는 임계값 |
+| 검색 결과 표시 | 일치 영역을 미리보기에 표시 |
+| 프로세스 위치 | 대상 창을 지정한 화면 좌표로 이동 |
+| 로그 폴더 열기 | 현재 로그 폴더를 파일 탐색기로 열기 |
 
-            - 횟수 : 횟수만큼 반복 실행합니다.
+## 저장 파일과 로그
 
-            - 검색 결과가 없을 때까지 : 하위 아이템 하나라도 실행이 된다면 반복해서 실행됩니다.(하나라도 실행이 안되면 다음 Item으로 넘어갑니다.)
+저장 파일 이름은 호환성을 위해 `save.dll`을 유지하지만 현재 내용은 JSON입니다. 캡처 이미지는 같은 저장 경로의 `img` 폴더에 저장됩니다. 이전 바이너리 저장 파일은 읽을 때 현재 모델로 변환합니다.
 
-            - 검색 이미지를 찾을 때까지 : 상위 이미지를 찾을때까지 하위 이벤트를 반복 실행합니다.(상위 아이템을 발견시 다음 Item으로 넘어갑니다.)
+로그는 첫 로그 이벤트가 발생한 뒤 `logs/LogFile.txt`에 생성됩니다. 설정의 **로그 폴더 열기**로 해당 위치를 바로 열 수 있습니다.
 
-        1.6.바로가기(아이디어 Ko9ma7 제공)
+버그를 제보할 때 다음 정보를 함께 보내면 원인 확인에 도움이 됩니다.
 
-            - 입력된 이벤트로 바로 이동합니다.
+- 재현 순서
+- 대상 프로그램과 이벤트 타입
+- 물리 클릭 사용 여부
+- `logs/LogFile.txt`
 
-        1.7 저장
+## 업데이트
 
-    2.드래그 앤 드랍으로 트리 노드 순서도 변경
+설정의 앱 업데이트 영역에서 최신 GitHub 정식 릴리스를 수동으로 확인할 수 있습니다. 더 높은 버전의 Windows x64 단일 실행 파일과 SHA-256 정보가 모두 확인된 경우에만 업데이트 후 재시작을 진행합니다.
 
-        2.1 상위 아이템 밑으로 드래그 앤 드랍시 자식 노드로 추가
+ZIP 형태의 이전 릴리스는 자동 업데이트 대상이 아닙니다. 자세한 계약은 [업데이트 설계](Design/ApplicationUpdate.md)를 참고하세요.
 
-        2.2 자식 아이템을 상위 아이템 포커싱 밖으로 드래그 앤 드랍시 최상위 노드로 추가
+## 문제 해결
 
-            - 우측 스크롤 쪽 또는 제일 하단 또는 트리 컬럼 쪽
+### 프로세스가 목록에 없음
 
-    3.여러 게임의 세이브 파일을 저장하고 싶은 경우 setting에서 세이브 경로를 다르게 하여 저장하세요.
+대상 프로그램을 먼저 실행한 뒤 **새로고침**을 누르세요.
 
-    4.연결 프로세스 리스트 
-        
-        - 프로세스가 목록에 없는 경우 또는 종료되거나 새로운 프로세스를 실행 시켰을시엔 새로고침 버튼을 눌러주세요.
+### 이미지를 찾지 못함
 
-        - 연결 프로세스를 고정하게 되면 save된 프로세스 이름으로 전체를 검색하는 것이 아닌 고정된 프로세스에서만 검색하게 됩니다.(녹스 여러개 대응)    
+- 대상 화면 배율과 캡처 당시 배율이 같은지 확인합니다.
+- 유사도를 조금 낮춰 확인합니다.
+- ROI가 실제 검색 위치를 포함하는지 확인합니다.
+- 대상 요소만 포함하도록 비교 이미지를 다시 캡처합니다.
 
-    
+### 물리 클릭이 실행되지 않음
 
-※ 이미지 조합을 통한 이벤트 발생 방법
+- 대상 창이 최소화됐거나 다른 창에 가려졌는지 확인합니다.
+- 대상 프로그램과 Macro의 관리자 권한 수준을 맞춥니다.
+- **같은 이미지 드래그**가 선택되어 있지 않은지 확인합니다.
 
-![picture](/Release/Resource/imageCombination.png)
+### 로그 파일이 없음
 
-설정(Config.json 혹은 프로그램 내 Setting)
+로그 파일은 실제 로그 이벤트가 발생한 뒤 생성됩니다. 이미지 검색이나 저장 파일 로드를 실행한 후 설정에서 로그 폴더를 다시 여세요.
 
-    1.Language 언어 : [Eng],[Kor]
-    
-    2.SavePath : 설정 리스트 save 경로
-    
-    3.ProcessPeriod : 전체 작업 완료 이후 딜레이
+## 개발 구성
 
-        - 기본 값 : 1ms(0.001초)
+| 프로젝트 | 책임 |
+| --- | --- |
+| `Macro.App` | Avalonia UI, 앱 수명, 설정, 업데이트 |
+| `Macro.Core` | 캡처, 이미지 검색, 입력 실행, 저장 모델 |
+| `DataContainer` | Excel에서 생성된 템플릿과 로더 |
+| `Utils` | Win32 연동과 공용 타입 |
 
-    4.ItemDelay : 트리거 아이템 작업 완료 다음 작업까지 딜레이(공통)
+- 솔루션: `Macro.slnx`
+- 대상 프레임워크: `.NET 10` / Windows 10.0.19041 이상
+- 게시 프로필: `Macro.App/Properties/PublishProfiles/WindowsX64.pubxml`
+- 아키텍처: [프로젝트 구성](Design/ApplicationArchitecture.md)
 
-        - 기본 값 : 0ms(0초)
-    
-    5.Similarity : 이미지 프로세싱 유사도
+문구와 템플릿의 원본은 `Excel` 폴더입니다. 생성된 JSON과 C# 파일을 직접 수정하지 말고 `ExportTools`의 공식 변환 도구를 사용합니다.
 
-    6.SearchResultDisplay : [true],[false] : 이미지 검색 결과 표시 여부
+## License
 
-    7.앱 업데이트 : 설정에서 업데이트 확인 및 업데이트 후 재시작
+[MIT License](LICENSE)
 
-    8.프로세스 위치 이동 : 해당 프로세스를 해당 좌표로 이동시킵니다. 즉 모니터 밖으로 프로세스 위치를 이동시키는 것이 가능합니다.
+## Bug reports
 
-    9.매크로 모드 : 
-    
-        - 배치 모드(기본) : 프로세스 화면을 캡처 하고 저장한 아이템 리스트 순회하면서 이미지 찾음 -> 이벤트 발생
-
-        - 순회 모드 : 아이템 리스트를 순회하면서 프로세스 화면을 캡처하고 비교 이미지 찾음 -> 이벤트 발생
-
-
-버그 레포팅
-
-    enter0917@naver.com
-
-
-
-**Instructions**
-
-### 1. Save Trigger
-
-#### 1.1 Capture the desired image using the **Capture Screen** button.
-
-#### 1.2 Select the type of event: **Image**, **Mouse**, **Keyboard**, **RelativeToImage**, or **PhysicalClick**.
-
-- **1.2.1 Image**: Clicks on the detected image.
-    - Performs random clicks within the detected image to avoid patterned coordinates.
-    - Prioritize this over mouse events with fixed coordinates.
-
-- **1.2.2 Mouse**: Specify coordinates and perform actions such as left click, right click, or drag.
-
-- **1.2.3 Keyboard**: Add combination keys, e.g., `Ctrl + C + V`.
-
-- **1.2.4 RelativeToImage**: Click at a relative distance (+/- offset) from the detected image. *(Idea by Ko9ma7)*
-
-- **1.2.5 PhysicalClick**: The mouse physically moves to the specified position and clicks. *(Idea by Ko9ma7)*
-
-#### 1.3 Select the process to execute where images will be captured.
-
-#### 1.4 Post-action delay
-- Use this to delay the next action after completing the current one. *(Idea by Ko9ma7)*
-- Example: Click a button -> Wait for a popup to appear -> Click the confirmation button.
-
-#### 1.5 Item repetition
-- **Once**: Executes only once.
-- **Count**: Executes for a specified number of repetitions.
-- **Until no search results**: Repeats as long as at least one sub-item executes. Moves to the next item if none execute.
-- **Until search image found**: Repeats sub-events until the parent image is found. Proceeds to the next item once found.
-
-#### 1.6 Shortcut *(Idea by Ko9ma7)*:
-- Jump directly to a specified event.
-
-#### 1.7 Save your configuration.
+`enter0917@naver.com`
 
 ---
 
-### 2. Rearrange Tree Nodes via Drag-and-Drop
+## English quick start
 
-#### 2.1 Drag and drop under a parent item to add as a child node.
+1. Run the target application and `Macro.exe`.
+2. Select the target under **Connected Process** and press **Refresh** if it is missing.
+3. Press **Add**, capture the image to find, and configure the event.
+4. Save the trigger, select enabled items, and press **Start**.
+5. Use **Physical Click** for applications such as Unity that do not accept posted window messages. The target must be visible, not minimized, and unobstructed at the click point.
+6. Press **Stop** to cancel the current capture/search/input operation and wait for execution to finish.
 
-#### 2.2 Drag a child item outside the parent focus to make it a top-level node.
-- Drop to the right scroll area, bottom, or tree column.
-
----
-
-### 3. Save Multiple Game Files
-If you want to save files for different games, set a unique save path in the **settings**.
-
----
-
-### 4. Linked Process List
-- If the process is not listed, terminated, or newly executed, press the **Refresh** button.
-- If you pin a process, searches will only occur within the pinned process instead of across all saved processes. *(Supports multiple Nox instances)*
-
----
-
-### Image Combination Events
-Refer to the image below:
-![picture](/Release/Resource/imageCombination.png)
-
----
-
-### **Configuration (Config.json or Program Settings)**
-
-1. **Language**: [Eng], [Kor]
-
-2. **SavePath**: Path to save the configuration list.
-
-3. **ProcessPeriod**: Delay after all tasks are completed.
-   - Default: 1ms (0.001 seconds)
-
-4. **ItemDelay**: Delay between the completion of a trigger item and the next task (global setting).
-   - Default: 0ms (0 seconds)
-
-5. **Similarity**: Image processing similarity threshold.
-
-6. **SearchResultDisplay**: [true], [false] - Show or hide image search results.
-
-7. **Application Update**: Check for stable updates in Settings, then update and restart.
-
-8. **Process Position Movement**: Move a process to a specified coordinate (can move the process outside the monitor).
-
-9. **Macro Mode**:
-   - **Sequential Mode**: Iterates through the item list while capturing the process screen and searching for matching images -> triggers an event.
-   - **Batch Mode** (default): Captures the process screen and iterates through the saved item list to find matching images -> triggers an event.
-
----
-
-### **Bug Reporting**
-Email: enter0917@naver.com
-
+Logs are written to `logs/LogFile.txt` after the first log event. Stable single-file updates are available from Settings or [GitHub Releases](https://github.com/EomTaeWook/DiademMacro/releases).

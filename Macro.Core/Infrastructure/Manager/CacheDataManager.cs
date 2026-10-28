@@ -8,7 +8,7 @@ namespace Macro.Infrastructure.Manager
     public class CacheDataManager
     {
         private ulong _currentIndex;
-        public object _lockObj = new object();
+        private readonly object _indexLock = new object();
         private readonly Dictionary<ulong, EventInfoModel> _indexEventInfoToMap;
         private readonly Dictionary<object, object> _cacheDataToMap = new Dictionary<object, object>();
         public CacheDataManager()
@@ -18,21 +18,17 @@ namespace Macro.Infrastructure.Manager
 
         public void InitDatas(List<EventInfoModel> eventInfoModels)
         {
+            _currentIndex = 0;
             _indexEventInfoToMap.Clear();
-            foreach (var item in eventInfoModels)
+            foreach (EventInfoModel eventInfoModel in eventInfoModels)
             {
-                _indexEventInfoToMap.Add(item.ItemIndex, item);
-
-                if (item.ItemIndex > _currentIndex)
-                {
-                    _currentIndex = item.ItemIndex;
-                }
+                InsertIndexEventModel(eventInfoModel);
             }
         }
 
         public ulong IncreaseIndex()
         {
-            lock (_lockObj)
+            lock (_indexLock)
             {
                 _currentIndex++;
             }
@@ -48,11 +44,36 @@ namespace Macro.Infrastructure.Manager
 
         public void MakeIndexTriggerModel(EventInfoModel model)
         {
-            model.ItemIndex = IncreaseIndex();
+            Dictionary<ulong, ulong> previousIndexToNewIndex = new Dictionary<ulong, ulong>();
+            AssignNewIndexes(model, previousIndexToNewIndex);
+            RemapNextIndexes(model, previousIndexToNewIndex);
+            InsertIndexEventModel(model);
+        }
 
-            foreach (var child in model.SubEventItems)
+        private void AssignNewIndexes(EventInfoModel model, Dictionary<ulong, ulong> previousIndexToNewIndex)
+        {
+            ulong previousIndex = model.ItemIndex;
+            ulong newIndex = IncreaseIndex();
+            if (previousIndex > 0)
             {
-                MakeIndexTriggerModel(child);
+                previousIndexToNewIndex.TryAdd(previousIndex, newIndex);
+            }
+            model.ItemIndex = newIndex;
+            foreach (EventInfoModel child in model.SubEventItems)
+            {
+                AssignNewIndexes(child, previousIndexToNewIndex);
+            }
+        }
+
+        private void RemapNextIndexes(EventInfoModel model, Dictionary<ulong, ulong> previousIndexToNewIndex)
+        {
+            if (previousIndexToNewIndex.TryGetValue(model.EventToNext, out ulong newNextIndex) == true)
+            {
+                model.EventToNext = newNextIndex;
+            }
+            foreach (EventInfoModel child in model.SubEventItems)
+            {
+                RemapNextIndexes(child, previousIndexToNewIndex);
             }
         }
 
@@ -62,19 +83,20 @@ namespace Macro.Infrastructure.Manager
             {
                 _indexEventInfoToMap.Add(model.ItemIndex, model);
             }
-            foreach (var child in model.SubEventItems)
+            if (model.ItemIndex > _currentIndex)
+            {
+                _currentIndex = model.ItemIndex;
+            }
+            foreach (EventInfoModel child in model.SubEventItems)
             {
                 InsertIndexEventModel(child);
             }
         }
 
-        private void RemoveIndexEventModel(EventInfoModel model)
+        public void RemoveIndexEventModel(EventInfoModel model)
         {
-            if (_indexEventInfoToMap.ContainsKey(model.ItemIndex))
-            {
-                _indexEventInfoToMap.Remove(model.ItemIndex);
-            }
-            foreach (var child in model.SubEventItems)
+            _indexEventInfoToMap.Remove(model.ItemIndex);
+            foreach (EventInfoModel child in model.SubEventItems)
             {
                 RemoveIndexEventModel(child);
             }

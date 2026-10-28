@@ -49,6 +49,10 @@ namespace Macro.View
 
         private void MoveEventTriggerTreeItem(TreeGridViewItem targetItem, TreeGridViewItem sourceItem)
         {
+            if (treeGridView.IsEffectivelyEnabled == false)
+            {
+                return;
+            }
             EventInfoModel eventInfo = sourceItem.DataContext<EventInfoModel>();
             TreeGridViewItem sourceParent = sourceItem.ParentItem;
             EventInfoModel targetEventInfo = null;
@@ -79,6 +83,11 @@ namespace Macro.View
         private void TreeGridView_DragOver(object sender, DragEventArgs eventArgs)
         {
             eventArgs.DragEffects = DragDropEffects.None;
+            if (treeGridView.IsEffectivelyEnabled == false)
+            {
+                eventArgs.Handled = true;
+                return;
+            }
             if (_isDragging == true)
             {
                 eventArgs.DragEffects = DragDropEffects.Move;
@@ -88,6 +97,10 @@ namespace Macro.View
 
         private void TreeGridView_Drop(object sender, DragEventArgs eventArgs)
         {
+            if (treeGridView.IsEffectivelyEnabled == false)
+            {
+                return;
+            }
             if (_isDragging == false)
             {
                 return;
@@ -113,6 +126,10 @@ namespace Macro.View
 
         private async void TreeGridView_PointerMoved(object sender, PointerEventArgs eventArgs)
         {
+            if (treeGridView.IsEffectivelyEnabled == false)
+            {
+                return;
+            }
             if (_dragSourceTreeGridViewItem == null)
             {
                 return;
@@ -144,6 +161,10 @@ namespace Macro.View
 
         private void TreeGridView_PointerPressed(object sender, PointerPressedEventArgs eventArgs)
         {
+            if (treeGridView.IsEffectivelyEnabled == false)
+            {
+                return;
+            }
             if (_isDragging == true)
             {
                 return;

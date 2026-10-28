@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
@@ -9,6 +9,7 @@
     <AssemblyName>Macro</AssemblyName>
     <AssemblyTitle>Macro</AssemblyTitle>
     <Product>Macro</Product>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <Copyright>Copyright ©  2018</Copyright>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <RootNamespace>Macro</RootNamespace>
@@ -33,9 +34,15 @@
     <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Include="Assets\AppIcon.ico" />
+    <AvaloniaResource Include="Assets\AppIcon.png" />
     <None Update="config.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
     <None Update="DignusLog.config" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
-    <Content Include="..\Datas\*.json" Link="Datas\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
+    <Content Include="..\Datas\*.json" Link="Datas\%(Filename)%(Extension)">
+      <CopyToOutputDirectory Condition="'$(Configuration)' != 'Release'">PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory Condition="'$(Configuration)' == 'Release'">Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory Condition="'$(Configuration)' == 'Release'">Never</CopyToPublishDirectory>
+    </Content>
     <Content Include="..\Dll\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <EmbeddedResource Include="..\Datas\*.json" LogicalName="Macro.Datas.%(Filename)%(Extension)" />
     <EmbeddedResource Include="DignusLog.config" LogicalName="Macro.DignusLog.config" />

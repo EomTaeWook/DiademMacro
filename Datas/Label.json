@@ -390,12 +390,6 @@
     "Eng": "Roi"
   },
   {
-    "Id": 1065,
-    "Name": "1065",
-    "Kor": "\uC774\uBBF8\uC9C0 \uBDF0\uC5B4 \uBCF4\uAE30",
-    "Eng": "Show Image Viewer"
-  },
-  {
     "Id": 1066,
     "Name": "1066",
     "Kor": "\uD56D\uBAA9\uBCC4 \uC720\uC0AC\uB3C4",
@@ -520,5 +514,11 @@
     "Name": "1086",
     "Kor": "\uC2E4\uD589\uD560 \uD504\uB85C\uC138\uC2A4\uC640 \uC774\uBCA4\uD2B8\uB97C \uC120\uD0DD\uD558\uC138\uC694.",
     "Eng": "Choose a process and the events to run."
+  },
+  {
+    "Id": 1087,
+    "Name": "1087",
+    "Kor": "\uB85C\uADF8 \uD3F4\uB354 \uC5F4\uAE30",
+    "Eng": "Open log folder"
   }
 ]

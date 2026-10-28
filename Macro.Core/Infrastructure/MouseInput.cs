@@ -66,7 +66,7 @@ namespace Macro.Infrastructure
         public IMouseInput RightButtonClick()
         {
             var builder = new InputBuilder();
-            builder.AddMouseButtonUp(MouseButton.RightButton);
+            builder.AddMouseButtonClick(MouseButton.RightButton);
             NativeHelper.SendInput((uint)builder.Count(), builder.ToArray(), Marshal.SizeOf(typeof(Input)));
             return this;
         }

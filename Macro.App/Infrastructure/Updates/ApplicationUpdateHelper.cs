@@ -1,4 +1,5 @@
 using Macro.Infrastructure.Models.Updates;
+using Dignus.Log;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
@@ -125,8 +126,9 @@ namespace Macro.Infrastructure.Updates
                 backup = null;
                 return 0;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                RecordFailure(directory, exception);
                 failureCode = ApplicationUpdateMessageCode.ReplaceFailed;
                 if (replaced == true)
                 {
@@ -136,8 +138,9 @@ namespace Macro.Infrastructure.Updates
                         File.Replace(backup, manifest.InstallPath, null);
                         backup = null;
                     }
-                    catch (Exception)
+                    catch (Exception rollbackException)
                     {
+                        RecordFailure(directory, rollbackException);
                         // Retain the original backup if the OS prevents restoration.
                         failureCode = ApplicationUpdateMessageCode.RollbackFailed;
                     }
@@ -152,8 +155,9 @@ namespace Macro.Infrastructure.Updates
                             await _files.VerifyHashAsync(manifest.InstallPath, manifest.InstalledSha256, CancellationToken.None).ConfigureAwait(false);
                             StartInstalled(manifest, directory, failureCode);
                         }
-                        catch (Exception)
+                        catch (Exception restartException)
                         {
+                            RecordFailure(directory, restartException);
                             // No arbitrary alternate executable, elevation, or reboot scheduling.
                         }
                     }
@@ -168,6 +172,35 @@ namespace Macro.Infrastructure.Updates
                 }
                 // The running helper cannot delete itself on Windows. The relaunched app removes
                 // this fixed request directory after the helper PID exits; no shared temp sweep.
+            }
+        }
+
+        private void RecordFailure(string directory, Exception exception)
+        {
+            try
+            {
+                Console.Error.WriteLine(exception);
+            }
+            catch (IOException)
+            {
+            }
+            if (directory == null)
+            {
+                return;
+            }
+            try
+            {
+                _files.WriteHelperFailure(directory, exception);
+            }
+            catch (Exception diagnosticException)
+            {
+                try
+                {
+                    Console.Error.WriteLine(diagnosticException);
+                }
+                catch (IOException)
+                {
+                }
             }
         }
 
@@ -191,6 +224,11 @@ namespace Macro.Infrastructure.Updates
                     catch (ArgumentException)
                     {
                         // The helper has already exited.
+                    }
+                    string helperFailure = _files.ReadHelperFailure(directory);
+                    if (string.IsNullOrEmpty(helperFailure) == false)
+                    {
+                        LogHelper.Error(helperFailure);
                     }
                     _files.DeleteOwnedDirectory(directory);
                 }

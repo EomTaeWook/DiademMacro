@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Macro.Infrastructure.Manager;
 using System;
 
 namespace Macro.View
@@ -55,6 +56,15 @@ namespace Macro.View
 
         private void CloseButton_Click(object sender, RoutedEventArgs eventArgs)
         {
+            UIManager.Instance.EnqueueButtonAction(CloseAd);
+        }
+
+        private void CloseAd()
+        {
+            if (IsVisible == false)
+            {
+                return;
+            }
             Hide();
             _onCloseCallback?.Invoke();
         }

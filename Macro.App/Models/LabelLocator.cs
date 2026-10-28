@@ -1,11 +1,19 @@
 ﻿using DataContainer.Generated;
 using Macro.Extensions;
 using Macro.Infrastructure;
+using System.ComponentModel;
 
 namespace Macro.Models
 {
-    public class LabelLocator
+    public class LabelLocator : INotifyPropertyChanged
     {
+        public LabelLocator()
+        {
+            NotifyHelper.ConfigChanged += NotifyHelper_ConfigChanged;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Title
         {
             get => $"{GetString(1017)} {VersionNote.CurrentVersion.Major}.{VersionNote.CurrentVersion.Minor}.{VersionNote.CurrentVersion.Build}";
@@ -82,6 +90,10 @@ namespace Macro.Models
         {
             get => GetString(1016);
         }
+        public string OpenLogFolder
+        {
+            get => GetString(1087);
+        }
         public string Language
         {
             get => GetString(1018);
@@ -116,11 +128,11 @@ namespace Macro.Models
         }
         public string SettingProcessLocation
         {
-            get => GetString(1052);
+            get => GetString(1051);
         }
         public string MoveProcessLocation
         {
-            get => GetString(1053);
+            get => GetString(1052);
         }
         public string Roi
         {
@@ -128,7 +140,7 @@ namespace Macro.Models
         }
         public string RestoreMoveProcessLocation
         {
-            get => GetString(1054);
+            get => GetString(1053);
         }
         public string VersionCheck
         {
@@ -144,7 +156,7 @@ namespace Macro.Models
         }
         public string Cancel
         {
-            get => GetString(1027);
+            get => GetString(1032);
         }
         public string AddSameContent
         {
@@ -165,10 +177,6 @@ namespace Macro.Models
         public string Close
         {
             get => GetString(1012);
-        }
-        public string ShowProcessViewer
-        {
-            get => GetString(1065);
         }
         public string X
         {
@@ -333,6 +341,11 @@ namespace Macro.Models
             var template = TemplateContainer<LabelTemplate>.Find(templateId);
 
             return template.GetString();
+        }
+
+        private void NotifyHelper_ConfigChanged(ConfigEventArgs eventArgs)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
         }
     }
 }

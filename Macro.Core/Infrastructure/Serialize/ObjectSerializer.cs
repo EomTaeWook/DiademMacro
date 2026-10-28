@@ -8,64 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Macro.Infrastructure.Serialize
 {
-    [Obsolete("2.7.1 버전까지만 허용")]
     public class ObjectSerializer
     {
-        public static byte[] SerializeObject<T>(T model)
-        {
-            var targetTypeProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            var maxPropertyOrder = 0;
-            var propertyOrderQueue = new ArrayQueue<(int Order, PropertyInfo PropertyInfo)>();
-            foreach (var prop in targetTypeProperties)
-            {
-                var orderAttribute = prop.GetCustomAttribute<OrderAttribute>();
-                if (orderAttribute == null)
-                {
-                    continue;
-                }
-                if (maxPropertyOrder < orderAttribute.Order)
-                {
-                    maxPropertyOrder = orderAttribute.Order;
-                }
-                propertyOrderQueue.Add((orderAttribute.Order, prop));
-            }
-
-            var propertiesByOrder = new ArrayQueue<PropertyInfo>(maxPropertyOrder);
-
-            foreach (var item in propertyOrderQueue)
-            {
-                propertiesByOrder[item.Order - 1] = item.PropertyInfo;
-            }
-
-            using (var memoryStream = new MemoryStream())
-            {
-                var bf = new BinaryFormatter();
-                bf.Serialize(memoryStream, "\uFF1C");
-                foreach (var prop in propertiesByOrder)
-                {
-                    if (prop == null)
-                    {
-                        bf.Serialize(memoryStream, string.Empty);
-                        continue;
-                    }
-
-                    object propertyValue = prop.GetValue(model);
-                    var nullableType = Nullable.GetUnderlyingType(prop.PropertyType);
-                    if (nullableType == null)
-                    {
-                        propertyValue = propertyValue ?? Activator.CreateInstance(prop.PropertyType);
-                    }
-                    else
-                    {
-                        propertyValue = propertyValue ?? Activator.CreateInstance(nullableType);
-                    }
-                    bf.Serialize(memoryStream, propertyValue);
-                }
-                bf.Serialize(memoryStream, "\uFF1E");
-                return memoryStream.ToArray();
-            }
-        }
         public static List<T> DeserializeObject<T>(byte[] serializedBytes)
         {
             var deserializedObjects = new List<T>();

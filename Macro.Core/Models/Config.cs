@@ -11,6 +11,27 @@ namespace Macro.Models
         {
         }
 
+        public Config(Config source)
+        {
+            CopyFrom(source);
+        }
+
+        public void CopyFrom(Config source)
+        {
+            Language = source.Language;
+            SavePath = source.SavePath;
+            ProcessPeriod = source.ProcessPeriod;
+            ItemDelay = source.ItemDelay;
+            Similarity = source.Similarity;
+            SearchImageResultDisplay = source.SearchImageResultDisplay;
+            VersionCheck = source.VersionCheck;
+            DragDelay = source.DragDelay;
+            ProcessLocationX = source.ProcessLocationX;
+            ProcessLocationY = source.ProcessLocationY;
+            AccessKey = source.AccessKey;
+            MacroMode = source.MacroMode;
+        }
+
         private LanguageType _language = LanguageType.Kor;
         public LanguageType Language
         {
@@ -42,13 +63,13 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(ProcessPeriod));
             }
         }
-        private int _ItemDelay = ConstHelper.MinItemDelay;
+        private int _itemDelay = ConstHelper.MinItemDelay;
         public int ItemDelay
         {
-            get => _ItemDelay;
+            get => _itemDelay;
             set
             {
-                _ItemDelay = value;
+                _itemDelay = value;
                 OnPropertyChanged(nameof(ItemDelay));
             }
         }
@@ -135,17 +156,6 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(MacroMode));
             }
         }
-        private bool _openProcessPreview = true;
-        public bool OpenProcessPreview
-        {
-            get => _openProcessPreview;
-            set
-            {
-                _openProcessPreview = value;
-                OnPropertyChanged(nameof(OpenProcessPreview));
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

@@ -8,12 +8,14 @@ namespace Macro.Models.ViewModel
     [Injectable(Dignus.DependencyInjection.LifeScope.Transient)]
     public class SettingViewModel : INotifyPropertyChanged
     {
+        private readonly Config _sourceConfig;
         private Config _config;
-        private ICommand _savePathButtonCmd;
+        private ICommand _savePathButtonCommand;
 
         public SettingViewModel(Config config)
         {
-            _config = config;
+            _sourceConfig = config;
+            _config = new Config(config);
         }
         public Config Config
         {
@@ -25,9 +27,15 @@ namespace Macro.Models.ViewModel
             }
         }
 
-        public ICommand SavePathButtonCmd
+        public ICommand SavePathButtonCommand
         {
-            get => _savePathButtonCmd ?? (_savePathButtonCmd = new FolderBrowserDialogCommand());
+            get => _savePathButtonCommand ?? (_savePathButtonCommand = new FolderBrowserDialogCommand());
+        }
+
+        public Config ApplyChanges()
+        {
+            _sourceConfig.CopyFrom(_config);
+            return _sourceConfig;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

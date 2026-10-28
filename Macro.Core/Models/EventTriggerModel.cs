@@ -11,8 +11,6 @@ namespace Macro.Models
     [Serializable]
     public class EventTriggerModel : INotifyPropertyChanged
     {
-        public static EventTriggerModel DummyParentEventModel;
-
         private EventType _eventType = EventType.Image;
         private MouseEventInfo _mouseEventInfo;
         private string _keyboardCmd = "";
@@ -32,24 +30,6 @@ namespace Macro.Models
 
         public EventTriggerModel()
         {
-        }
-        public EventTriggerModel(EventTriggerModel other)
-        {
-            Image = other.Image;
-            EventType = other.EventType;
-            MouseEventInfo = other.MouseEventInfo;
-            MonitorInfo = other.MonitorInfo;
-            KeyboardCmd = other.KeyboardCmd;
-            ProcessInfo = other.ProcessInfo;
-            SubEventItems = other.SubEventItems;
-            AfterDelay = other.AfterDelay;
-            RepeatInfo = other.RepeatInfo;
-            EventToNext = other.EventToNext;
-            SameImageDrag = other.SameImageDrag;
-            HardClick = other.HardClick;
-            RoiDataInfo = other.RoiDataInfo;
-            IsChecked = other.IsChecked;
-            Similarity = other.Similarity;
         }
 
         [Order(1)]

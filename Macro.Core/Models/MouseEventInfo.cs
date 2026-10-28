@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace Macro.Models
 {
-    [Obsolete]
     [Serializable]
     public class MouseEventInfo
     {

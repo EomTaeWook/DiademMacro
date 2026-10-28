@@ -35,36 +35,57 @@ namespace Macro.Infrastructure.Controller
         {
             for (int i = 0; i < processes.Count; ++i)
             {
+                if (cancellationToken.IsCancellationRequested == true)
+                {
+                    return;
+                }
                 var process = processes[i];
 
                 ProcessEventInfos(process, eventInfoModels, cancellationToken);
 
-                TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken);
+                if (TaskHelper.TokenCheckDelay(_config.ProcessPeriod, cancellationToken) == false)
+                {
+                    return;
+                }
             }
         }
         private void ProcessSubEventTriggers(Process process, EventInfoModel model, CancellationToken cancellationToken)
         {
-            for (int repeatIndex = 0; repeatIndex < model.RepeatInfo.Count; ++repeatIndex)
+            int repeatLimit = model.RepeatInfo.Count;
+            if (model.RepeatInfo.RepeatType != RepeatType.Count)
+            {
+                repeatLimit = int.MaxValue;
+            }
+            for (int repeatIndex = 0; repeatIndex < repeatLimit; ++repeatIndex)
             {
                 if (TaskHelper.TokenCheckDelay(model.AfterDelay, cancellationToken) == false)
                 {
                     break;
                 }
 
-                if (_screenCaptureManager.CaptureProcessWindow(process, out Bitmap capturedImage) == false)
+                if (_screenCaptureManager.CaptureProcessWindow(process, cancellationToken, out Bitmap capturedImage) == false)
                 {
                     break;
                 }
 
                 using (capturedImage)
                 {
+                    bool childEventHandled = false;
+                    bool shouldStopRepeating = false;
                     for (int childIndex = 0; childIndex < model.SubEventItems.Count; ++childIndex)
                     {
-                        EventResult childResult = HandleEvent(capturedImage, process, model.SubEventItems[childIndex], cancellationToken);
+                        EventInfoModel childEventInfo = model.SubEventItems[childIndex];
+                        if (childEventInfo.IsChecked == false)
+                        {
+                            continue;
+                        }
+                        childEventHandled = true;
+                        EventResult childResult = HandleEvent(capturedImage, process, childEventInfo, cancellationToken);
                         if (model.RepeatInfo.RepeatType == RepeatType.RepeatOnChildEvent)
                         {
                             if (childResult.IsSuccess == false)
                             {
+                                shouldStopRepeating = true;
                                 break;
                             }
                         }
@@ -73,17 +94,32 @@ namespace Macro.Infrastructure.Controller
                             break;
                         }
                     }
+                    if (model.RepeatInfo.RepeatType == RepeatType.RepeatOnChildEvent)
+                    {
+                        if (childEventHandled == false)
+                        {
+                            break;
+                        }
+                        if (shouldStopRepeating == true)
+                        {
+                            break;
+                        }
+                    }
                 }
 
+                if (cancellationToken.IsCancellationRequested == true)
+                {
+                    break;
+                }
                 if (model.RepeatInfo.RepeatType == RepeatType.StopOnParentImage)
                 {
-                    if (_screenCaptureManager.CaptureProcessWindow(process, out Bitmap parentImage) == false)
+                    if (_screenCaptureManager.CaptureProcessWindow(process, cancellationToken, out Bitmap parentImage) == false)
                     {
                         break;
                     }
                     using (parentImage)
                     {
-                        if (CalculateSimilarityAndLocation(model.Image, parentImage, model).Item1 >= GetSimilarityThreshold(model))
+                        if (CalculateSimilarityAndLocation(model.Image, parentImage, model, cancellationToken).Item1 >= GetSimilarityThreshold(model))
                         {
                             break;
                         }
@@ -97,6 +133,10 @@ namespace Macro.Infrastructure.Controller
             EventInfoModel eventInfoModel,
             CancellationToken cancellationToken)
         {
+            if (cancellationToken.IsCancellationRequested == true)
+            {
+                return new EventResult(false, null);
+            }
             ReportStatus(eventInfoModel, "Searching");
             var windowHandle = IntPtr.Zero;
             var template = TemplateContainer<ApplicationTemplate>.Find(process.ProcessName);
@@ -114,7 +154,7 @@ namespace Macro.Infrastructure.Controller
 
             using Bitmap copyBitmap = (Bitmap)capturedImage.Clone();
 
-            var matchResult = CalculateSimilarityAndLocation(eventInfoModel.Image, copyBitmap, eventInfoModel);
+            var matchResult = CalculateSimilarityAndLocation(eventInfoModel.Image, copyBitmap, eventInfoModel, cancellationToken);
 
             var similarity = matchResult.Item1;
             Point2D matchedLocation = matchResult.Item2;
@@ -138,7 +178,11 @@ namespace Macro.Infrastructure.Controller
             {
                 for (int i = 0; i < eventInfoModel.MaxDragCount; ++i)
                 {
-                    var locations = OpenCVHelper.MultipleSearch(capturedImage, eventInfoModel.Image, GetSimilarityThreshold(eventInfoModel), 2, _config.SearchImageResultDisplay);
+                    if (cancellationToken.IsCancellationRequested == true)
+                    {
+                        return new EventResult(false, null);
+                    }
+                    var locations = OpenCVHelper.MultipleSearch(capturedImage, eventInfoModel.Image, GetSimilarityThreshold(eventInfoModel), 2, cancellationToken, _config.SearchImageResultDisplay);
 
                     if (locations.Count > 1)
                     {
@@ -149,12 +193,12 @@ namespace Macro.Infrastructure.Controller
                         startPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Height / 2);
 
                         var endPoint = new Point2D(locations[1].X + eventInfoModel.Image.Width / 2,
-                            locations[1].Y + eventInfoModel.Image.Width / 2);
+                            locations[1].Y + eventInfoModel.Image.Height / 2);
 
                         endPoint.X += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Width / 2);
                         endPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Height / 2);
 
-                        _eventProcessorHandler.ProcessSameImageMouseDragEvent(windowHandle, startPoint, endPoint, eventInfoModel, _config.DragDelay);
+                        _eventProcessorHandler.ProcessSameImageMouseDragEvent(windowHandle, startPoint, endPoint, eventInfoModel, _config.DragDelay, cancellationToken);
                     }
                     else
                     {
@@ -164,21 +208,21 @@ namespace Macro.Infrastructure.Controller
             }
             else
             {
+                if (cancellationToken.IsCancellationRequested == true)
+                {
+                    return new EventResult(false, null);
+                }
                 if (eventInfoModel.EventType == EventType.Mouse)
                 {
-                    _eventProcessorHandler.ProcessMouseEvent(windowHandle,
-                        eventInfoModel,
-                        matchedLocation,
-                        template,
-                        _config.DragDelay);
+                    _eventProcessorHandler.ProcessMouseEvent(windowHandle, eventInfoModel, matchedLocation, template, _config.DragDelay, cancellationToken);
                 }
                 else if (eventInfoModel.EventType == EventType.Image)
                 {
-                    _eventProcessorHandler.ProcessImageEvent(windowHandle, eventInfoModel, matchedLocation, template, capturedImage.Size);
+                    _eventProcessorHandler.ProcessImageEvent(windowHandle, eventInfoModel, matchedLocation, template, capturedImage.Size, cancellationToken);
                 }
                 else if (eventInfoModel.EventType == EventType.RelativeToImage)
                 {
-                    _eventProcessorHandler.ProcessRelativeToImageEvent(windowHandle, eventInfoModel, matchedLocation, template, capturedImage.Size);
+                    _eventProcessorHandler.ProcessRelativeToImageEvent(windowHandle, eventInfoModel, matchedLocation, template, capturedImage.Size, cancellationToken);
                 }
                 else if (eventInfoModel.EventType == EventType.Keyboard)
                 {
@@ -208,7 +252,11 @@ namespace Macro.Infrastructure.Controller
 
         private void ProcessEventInfos(Process process, ArrayQueue<EventInfoModel> eventInfoModels, CancellationToken cancellationToken)
         {
-            if (_screenCaptureManager.CaptureProcessWindow(process, out Bitmap capturedImage) == false)
+            if (cancellationToken.IsCancellationRequested == true)
+            {
+                return;
+            }
+            if (_screenCaptureManager.CaptureProcessWindow(process, cancellationToken, out Bitmap capturedImage) == false)
             {
                 return;
             }
@@ -218,8 +266,16 @@ namespace Macro.Infrastructure.Controller
                 Draw(capturedImage);
                 for (int eventIndex = 0; eventIndex < eventInfoModels.Count; ++eventIndex)
                 {
+                    if (cancellationToken.IsCancellationRequested == true)
+                    {
+                        return;
+                    }
                     EventInfoModel model = eventInfoModels[eventIndex];
                     EventResult result = HandleEvent(capturedImage, process, model, cancellationToken);
+                    if (cancellationToken.IsCancellationRequested == true)
+                    {
+                        return;
+                    }
                     EventInfoModel nextEventInfo = result.NextEventInfoModel;
                     if (nextEventInfo != null)
                     {

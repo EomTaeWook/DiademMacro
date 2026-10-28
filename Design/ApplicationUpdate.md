@@ -36,7 +36,9 @@ Bough와 Eidolon의 다운로드·검증·보조 프로세스·승인·교체 �
 
 ## 소유권과 생성 데이터
 
-App의 `Infrastructure/Updates`가 조회·다운로드·파일·설치·보조 진입점을 소유하고 `Infrastructure/Models/Updates`가 버전과 해당 요청 데이터를 보관한다. `ApplicationUpdateRestartPresenter`가 MainWindow와 설치 인계를 연결한다. Core는 제품 버전과 업데이트 구현을 참조하지 않는다. 별도 작업 큐·저장소·업데이트 설정 파일을 만들지 않는다.
+App의 `Infrastructure/Updates`가 조회·다운로드·파일·설치·보조 진입점을 소유하고 `Infrastructure/Models/Updates`가 버전과 해당 요청 데이터를 보관한다. `ApplicationUpdateRestartPresenter`가 MainWindow와 설치 인계를 연결한다. Core는 제품 버전과 업데이트 구현을 참조하지 않는다. 업데이트 버튼은 앱 공통 `UIManager` 큐를 사용하며 별도 업데이트 작업 큐·저장소·설정 파일을 만들지 않는다. 취소와 창 닫기는 실행 중 요청에 즉시 취소를 전달한다.
+
+보조 프로세스는 원본 예외와 스택을 해당 요청 폴더의 `helper-error.log`에 기록한다. 준비 중 종료되면 설치 담당이 이 내용을 내부 예외에 연결한다. 교체·복원·재시작 중 실패한 기록은 재실행된 앱이 로그 준비 후 읽어 앱 진단에 남긴 뒤 요청 폴더와 함께 정리한다. 앱은 이 정리 Task도 종료 시 기다린다. 보조 진입점에서 Avalonia·사용자 설정·앱 로그를 초기화하지 않는 경계는 유지한다.
 
 `AppUpdateViewModel`은 설정 영역의 요청·진행·취소를 소유하고 `AppUpdateView`가 입력을 연결한다. 문구 원본은 `Excel/Label.xlsx`, `Excel/Message.xlsx`이며 공식 `ExportTools/ExcelToJson`으로 JSON을 생성한다. 기존 템플릿 필드 정의는 유지한다. 기존 VersionCheck 설정 값은 파일 읽기·쓰기 호환을 위해 남기며 자동 조회를 실행하지 않는다.
 

@@ -2,7 +2,7 @@
 
 namespace Macro.Models
 {
-    public class ProcessItem
+    public class ProcessItem : System.IDisposable
     {
         public string ProcessName { get => _processName; }
 
@@ -13,6 +13,11 @@ namespace Macro.Models
         {
             Process = process;
             _processName = $"{Process.ProcessName}:{Process.Id}";
+        }
+
+        public void Dispose()
+        {
+            Process.Dispose();
         }
     }
 }

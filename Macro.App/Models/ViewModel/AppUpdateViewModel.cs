@@ -403,6 +403,10 @@ namespace Macro.Models.ViewModel
 
         public void OpenReleasePage()
         {
+            if (_closed == true)
+            {
+                return;
+            }
             try
             {
                 Process.Start(new ProcessStartInfo("https://github.com/EomTaeWook/DiademMacro/releases") { UseShellExecute = true });

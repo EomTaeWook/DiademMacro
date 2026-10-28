@@ -8,6 +8,5 @@
   "SearchImageResultDisplay": true,
   "VersionCheck": true,
   "MacroMode": "BatchMode",
-  "AccessKey": "",
-  "OpenProcessPreview": true
+  "AccessKey": ""
 }

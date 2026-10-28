@@ -111,7 +111,7 @@ namespace Macro.Infrastructure.Updates
                 {
                     if (plan.Helper.HasExited == true)
                     {
-                        throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
+                        throw CreateHelperFailure(plan);
                     }
                     await Task.Delay(100, timeout.Token).ConfigureAwait(false);
                 }
@@ -145,8 +145,18 @@ namespace Macro.Infrastructure.Updates
             }
             if (plan.Helper.HasExited == true)
             {
-                throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
+                throw CreateHelperFailure(plan);
             }
+        }
+
+        private ApplicationUpdateException CreateHelperFailure(ApplicationUpdateInstallPlan plan)
+        {
+            string helperFailure = _files.ReadHelperFailure(plan.Directory);
+            if (string.IsNullOrEmpty(helperFailure) == true)
+            {
+                return new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
+            }
+            return new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, new InvalidOperationException(helperFailure), Array.Empty<object>());
         }
 
         public Task AuthorizeAfterShutdownAsync(ApplicationUpdateInstallPlan plan)

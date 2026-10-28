@@ -2,8 +2,10 @@ using Dignus.Collections;
 using Dignus.DependencyInjection.Attributes;
 using Macro.Models;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -87,7 +89,7 @@ namespace Macro.Infrastructure.Controller
         private void ProcessEventLoop(ArrayQueue<EventInfoModel> eventInfos, Process fixedProcess, CancellationToken cancellationToken)
         {
             ArrayQueue<Process> activeProcesses = new();
-            UniqueSet<Process> ownedProcesses = null;
+            List<Process> ownedProcesses = null;
             try
             {
                 if (fixedProcess != null)
@@ -97,18 +99,30 @@ namespace Macro.Infrastructure.Controller
                 else
                 {
                     ownedProcesses = new();
-                    foreach (EventInfoModel eventInfo in eventInfos)
+                    IEnumerable<string> processNames = eventInfos.Select(eventInfo => eventInfo.ProcessInfo.ProcessName).Where(processName => string.IsNullOrEmpty(processName) == false).Distinct(StringComparer.OrdinalIgnoreCase);
+                    foreach (string processName in processNames)
                     {
-                        ownedProcesses.AddRange(Process.GetProcessesByName(eventInfo.ProcessInfo.ProcessName));
+                        foreach (Process process in Process.GetProcessesByName(processName))
+                        {
+                            ownedProcesses.Add(process);
+                            activeProcesses.Add(process);
+                        }
                     }
-                    foreach (Process process in ownedProcesses)
-                    {
-                        activeProcesses.Add(process);
-                    }
+                }
+                if (activeProcesses.Count == 0)
+                {
+                    return;
                 }
                 while (cancellationToken.IsCancellationRequested == false)
                 {
                     _macroModeController.Execute(activeProcesses, eventInfos, cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                if (cancellationToken.IsCancellationRequested == false)
+                {
+                    throw;
                 }
             }
             finally

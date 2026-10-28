@@ -4,7 +4,7 @@
 
 현재 사용자 지시를 우선하며 `D:\Source\Paper-Toss\Blueprints`를 규칙 원본으로 사용한다. [공통 컨벤션](../../Paper-Toss/Blueprints/ReusableArchitecture/Common/CodingConvention.md), [협업 규칙](../../Paper-Toss/Blueprints/ReusableArchitecture/Common/Collaboration.md), [일반 앱 아키텍처](../../Paper-Toss/Blueprints/ReusableArchitecture/Application/ApplicationArchitecture.md)와 [아키텍처 리뷰 스킬](../../Paper-Toss/Blueprints/.agents/skills/reusable-architecture-review/SKILL.md)을 따른다. Bough에서는 SDK 프로젝트와 App/Core 및 Shared 솔루션 구성을 참고한다. 화면 배치와 기능은 기존 매크로 화면을 기준으로 한다.
 
-기존 ViewModel·Controller 연결을 유지하며 별도 MVP 전환, 새 작업 큐, 저장소와 캐시는 도입하지 않는다. 기존 UI의 서비스 접근·알림 경계를 유지하고 Core에서 App을 참조하던 부분은 생성자 주입과 캡처 창 핸들 전달로 연결한다. 새 코드에는 nullable 비활성화, 블록 네임스페이스와 단일 타입 파일을 적용한다. Avalonia 이름 생성기는 비활성화하고 코드비하인드에서 XAML 로드와 컨트롤 연결을 수행한다. 앱 업데이트와 단일 실행 파일 배포는 [앱 업데이트](ApplicationUpdate.md)를 따른다.
+기존 ViewModel·Controller 연결을 유지하며 별도 MVP 전환, 저장소와 캐시는 도입하지 않는다. 버튼 작업은 기존 `UIManager`의 UI 스레드 큐에서 접수 순서대로 처리한다. 기존 UI의 서비스 접근·알림 경계를 유지하고 Core에서 App을 참조하던 부분은 생성자 주입과 캡처 창 핸들 전달로 연결한다. 새 코드에는 nullable 비활성화, 블록 네임스페이스와 단일 타입 파일을 적용한다. Avalonia 이름 생성기는 비활성화하고 코드비하인드에서 XAML 로드와 컨트롤 연결을 수행한다. 앱 업데이트와 단일 실행 파일 배포는 [앱 업데이트](ApplicationUpdate.md)를 따른다.
 
 ## 솔루션과 책임
 
@@ -21,7 +21,7 @@ Windows x64 자체 포함 단일 실행 파일은 `WindowsX64.pubxml`과 SDK 게
 
 ## 시작과 실행
 
-`Program`은 전용 업데이트 보조 인수를 먼저 처리하며 일반 실행에서 Avalonia 수명을 시작한다. `App.Initialize`가 로그와 XAML을 준비하고 프레임워크 초기화 완료 경계에서 기존 설정·템플릿과 App/Core DI를 연결한다. `MainWindow`가 화면과 UI 코루틴 타이머를 연결한다. 기존 언어 라벨은 App의 `LabelLocator`와 템플릿 확장 메서드가 표시한다. 정상 UI 종료 후의 업데이트 승인은 Program에서 처리한다.
+`Program`은 전용 업데이트 보조 인수를 먼저 처리하며 일반 실행에서 `TemplateDataLoader`로 생성 템플릿을 준비한 뒤 Avalonia 수명을 시작한다. `TemplateDeserializer`는 내장 JSON을 생성 템플릿으로 역직렬화한다. Debug는 실행 파일 옆 `Datas` JSON을 우선하고 Release는 App assembly의 `Macro.Datas.*` 내장 리소스만 사용하며 외부 JSON을 출력·게시하지 않는다. `App.Initialize`가 로그와 XAML을 준비하고 프레임워크 초기화 완료 경계에서 기존 설정과 App/Core DI를 연결한다. `MainWindow`가 화면과 UI 코루틴 타이머를 연결한다. 기존 언어 라벨은 App의 `LabelLocator`와 템플릿 확장 메서드가 표시한다. 정상 UI 종료 후의 업데이트 승인은 Program에서 처리한다.
 
 App·Core assembly는 각각 한 번 자동 등록한다. `FileService`, 키보드·마우스 입력 구현과 기존 수동 등록 ViewModel은 attribute로 Transient 수명을 선언한다. 입력 구현은 기존 인터페이스로 등록한다. 일반 앱의 수동 등록은 설정 인스턴스·데스크톱 수명·업데이트 HTTP 클라이언트·배포 환경처럼 bootstrap에서 준비한 값에 한정한다. 공개 타입·namespace와 enum 값은 유지하며, 이벤트 인수·프로토콜·enum·변환기는 타입별 파일에 배치한다. `FileService`와 `CoroutineRunner`의 파일은 기존 namespace에 맞는 디렉터리에 둔다.
 
@@ -29,13 +29,17 @@ App·Core assembly는 각각 한 번 자동 등록한다. `FileService`, 키보�
 
 `MacroExecutionController.Completion`은 실제 실행 Task를 노출하며 메인 창은 완료·실패를 await한 뒤 실행 표시를 갱신한다. `StopAsync`는 취소를 요청하고 해당 Task가 종료된 뒤 취소 토큰 소스를 정리한다. 실행기가 조회한 Process 인스턴스는 실행기에서 해제하며 선택 화면에서 받은 고정 Process는 빌려 사용한다. 순회·배치 캡처와 배치 복제 이미지의 소유 범위는 처리 메서드이며, ROI 검색에서 원본 이미지가 반환되면 그 원본은 해제하지 않는다. 미리보기 callback은 전달받은 Bitmap을 호출 중에 Avalonia 이미지로 복사하고 UI Dispatcher에는 복사본을 전달한다. 앱 종료는 기존 `CoroutineRunner`의 실행 Task도 기다린 뒤 창을 닫고 기존 위치에서 코루틴을 해제한다.
 
+메인·설정·옵션·업데이트의 버튼 작업과 폴더 선택은 `UIManager.EnqueueButtonAction`으로 연결한다. 큐는 UI 실행 문맥에서 한 작업의 Task 완료를 기다린 뒤 다음 작업을 처리한다. 대기 중 선택·입력이 바뀌지 않도록 큐 상태에 따라 메인의 프로세스·목록, 설정 입력과 옵션 입력을 잠근다. 큐 상태 구독은 창을 닫을 때 해제한다. 매크로 시작은 실행을 시작하고 큐를 반환하며 별도 완료 관찰 Task가 실행·정리 완료를 기다린다. 창 열기는 표시까지 큐에서 처리하고 기존 창 수명을 유지한다. 중지·업데이트 취소·창 닫기와 알림 대화상자의 확인은 진행 중인 작업을 끝낼 수 있는 신호로 즉시 전달한다. 위·아래 이동의 반복 작업도 같은 큐를 사용하며 포인터 해제는 반복을 즉시 중단한다.
+
+매크로 실행 중에는 이벤트 목록과 편집 버튼을 잠그며 편집·드롭 처리 경로도 같은 실행 상태를 반영한다. 두 실행 모드는 프로세스·이벤트·바로가기 순회에서 취소를 확인한다. 설정 검증이나 파일 저장에 실패하면 오류를 표시하고 설정 창을 유지한다. 종료를 시작하면 새 버튼 작업을 받지 않고 대기 중인 클릭을 버리며, 열린 팝업과 실행 중인 비동기 작업을 취소·종료한 뒤 큐·매크로·코루틴의 실제 완료를 기다린다.
+
 후원·광고 HTTP 조회는 `WebApiManager.Request`에서 Task를 반환하고 `AdManager`와 메인 창까지 await로 연결한다. 조회 실패의 기존 default/null 응답과 후원 미확인·빈 광고 URL 분기는 유지한다. 실제 HTTP 응답과 창 수신 동작은 확인하지 않았다.
 
-이미지·이미지 상대좌표 이벤트에서 기존 `HardClick`을 선택하면 `InputEventExecutor`가 캡처 이미지 크기와 대상 루트 창의 위치로 화면 좌표를 계산한다. 대상 창이 최소화됐거나 활성화되지 않으면 클릭을 진행하지 않는다. 커서는 화면 픽셀 좌표로 이동하고 기존 `MouseInput`의 `SendInput`으로 누름·해제를 전달한 뒤 원래 커서 위치로 돌린다. 같은 이미지 드래그에서는 물리 클릭을 함께 선택하지 않는다. Unity 대상의 실제 입력 수신 여부는 확인하지 않았다.
+이미지·이미지 상대좌표 이벤트에서 기존 `HardClick`을 선택하면 `InputEventExecutor`가 캡처 이미지 크기와 대상 루트 창의 위치로 화면 좌표를 계산한다. 대상 창이 최소화됐거나 계산된 클릭 지점이 다른 창에 가려졌으면 클릭을 진행하지 않는다. 커서는 화면 픽셀 좌표로 이동하고 기존 `MouseInput`의 `SendInput`으로 누름·해제를 전달한 뒤 원래 커서 위치로 돌린다. 같은 이미지 드래그에서는 물리 클릭을 함께 선택하지 않는다. 표시 중인 Unity 창의 물리 클릭은 사용자 실행에서 확인했다.
 
-화면 스타일은 `App.axaml`과 기존 트리 스타일에서 정의한다. 메인 창은 프로세스·실행 제어와 이벤트 편집 도구를 구분하며 목록에는 실제 항목 수와 빈 목록 안내를 표시한다. 옵션·설정 창은 관련 입력을 묶고 스크롤 영역 밖에 저장 버튼을 배치한다. 기존 컨트롤 이름·바인딩·이벤트 연결과 ViewModel 책임을 유지하며 추가 문구는 `Excel/Label.xlsx`에서 생성한다.
+화면 스타일은 `App.axaml`과 기존 트리 스타일에서 정의한다. 메인 창은 프로세스·실행 제어와 이벤트 편집 도구를 구분하며 목록에는 실제 항목 수와 빈 목록 안내를 표시한다. 내장 이미지 미리보기는 항상 표시하고 별도 표시 설정은 두지 않는다. 설정의 일반 영역에 있는 로그 폴더 버튼은 현재 작업 디렉터리의 `logs` 폴더를 생성한 뒤 탐색기로 연다. 옵션·설정 창은 관련 입력을 묶고 스크롤 영역 밖에 저장 버튼을 배치한다. 기존 컨트롤 이름·바인딩·이벤트 연결과 ViewModel 책임을 유지하며 추가 문구는 `Excel/Label.xlsx`에서 생성한다.
 
-최소화 창의 DWM 캡처에 필요한 숨김 창은 App의 `ApplicationManager`가 소유한다. 창을 표시한 뒤 `ScreenCaptureManager.SetDrawWindowHandle`에 네이티브 핸들을 전달하고 종료 때 해제한다. Core는 창 객체에 접근하지 않는다. 옵션 창과 메인 창의 알림 구독은 창 종료에 연결한다.
+최소화되지 않은 창은 Core의 `ScreenCaptureManager`가 Windows Graphics Capture의 `CreateForWindow(HWND)`로 우선 캡처한다. 캡처 프레임은 BGRA `SoftwareBitmap`을 `System.Drawing.Bitmap`으로 복사하며, WGC가 지원되지 않거나 프레임 획득에 실패하면 기존 `PrintWindow` 경로를 사용한다. 최소화 창은 WGC 대상에서 제외하고 기존 DWM 썸네일 경로를 유지한다. DWM 캡처에 필요한 숨김 창은 App의 `ApplicationManager`가 소유하며, 창을 표시한 뒤 `ScreenCaptureManager.SetDrawWindowHandle`에 네이티브 핸들을 전달하고 종료 때 해제한다. Core는 창 객체에 접근하지 않는다. 옵션 창과 메인 창의 알림 구독은 창 종료에 연결한다.
 
 메인 창은 다음 실행에 사용할 컨트롤러와 현재 실행 중인 컨트롤러를 구분한다. 설정 저장으로 다음 실행용 참조가 교체되어도 중지·종료는 실행 중인 인스턴스를 기다린다. 실행 표시의 해제는 해당 인스턴스의 완료를 기다리는 시작 경로에서 담당하고, 중지 버튼은 취소 요청과 진행 표시를 담당한다.
 
@@ -51,4 +55,4 @@ OpenCV 대신 기존 `OpenCVHelper` API 안에서 .NET Bitmap, 적분 합과 SIM
 
 ## 현재 작업 범위
 
-전환 소스를 작성했으며 빌드·테스트·앱 실행·화면 확인과 변경 후 정적 검증은 수행하지 않는다. 구형 바이너리 파일 읽기, 이미지 검색 성능, 모니터 DPI와 웹 페이지 동작은 미확인이다. 커밋·푸시·릴리스 배포는 별도 사용자 요청 범위다.
+현재 최종 변경분의 빌드·테스트·앱 실행과 변경 후 정적 검증은 수행하지 않았다. 표시 중인 Unity GPU 창 캡처와 물리 클릭은 사용자 실행에서 확인했으며, 구형 바이너리 파일 읽기, 이미지 검색 성능, 최소화 DWM 캡처, 모니터 DPI와 웹 페이지 동작은 미확인이다. 릴리스 배포는 별도 사용자 요청 범위다.
