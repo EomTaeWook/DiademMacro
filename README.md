@@ -185,7 +185,7 @@ ZIP 형태의 이전 릴리스에서 처음 전환할 때는 새 EXE를 직접 �
 MCP가 포함된 EXE를 다음처럼 실행합니다.
 
 ```powershell
-.\Macro-3.3.0-win-x64.exe --mcp
+.\Macro-3.3.1-win-x64.exe --mcp
 ```
 
 같은 PC의 MCP 지원 AI 앱에서 연결 방식을 **Streamable HTTP**, 주소를 `http://127.0.0.1:8192/mcp`로 설정하세요. stdio 방식은 제공하지 않습니다. 다른 앱과 포트가 겹치면 `--mcp --mcp-port=8193`으로 실행하고 연결 주소도 바꿉니다.

@@ -170,7 +170,7 @@ Local MCP connections are available starting with `3.3.0`.
 Launch an EXE that includes MCP support:
 
 ```powershell
-.\Macro-3.3.0-win-x64.exe --mcp
+.\Macro-3.3.1-win-x64.exe --mcp
 ```
 
 In an MCP-capable AI application on the same PC, select **Streamable HTTP** and connect to `http://127.0.0.1:8192/mcp`. Stdio transport is not provided. If the port is in use, launch with `--mcp --mcp-port=8193` and update the connection URL.
