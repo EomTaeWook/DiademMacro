@@ -41,16 +41,6 @@
       <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
     </application>
   </compatibility>
-  <!-- 애플리케이션에서 DPI를 인식하며 높은 DPI에서는 Windows가 자동으로 크기를 조정하지
-       않습니다. WPF(Windows Presentation Foundation) 애플리케이션은 자동으로 DPI를 인식하며 
-       옵트인할 필요가 없습니다. 이 설정으로 옵트인하며 .NET Framework 4.6을 대상으로 하는 
-       Windows Forms 애플리케이션은 app.config에서 'EnableWindowsFormsHighDpiAutoResizing' 설정도 'true'로 지정합니다. -->
-  <application xmlns="urn:schemas-microsoft-com:asm.v3">
-    <windowsSettings>
-      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/pm</dpiAware>
-      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2, PerMonitor, System</dpiAwareness>
-    </windowsSettings>
-  </application>
   <!-- Windows 공용 컨트롤 및 대화 상자의 테마 사용(Windows XP 이상) -->
   <!--
   <dependency>

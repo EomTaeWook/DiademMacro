@@ -23,6 +23,8 @@ Windows x64 자체 포함 단일 실행 파일은 `WindowsX64.pubxml`과 SDK 게
 
 ## 시작과 실행
 
+일반 실행의 DPI 모드는 `Program.Main`에서 창 생성 전에 `System.Windows.Forms.Application.SetHighDpiMode(PerMonitorV2)`로 설정한다. 내장 WebBrowser 호스트와 Avalonia가 기존 모니터별 DPI 모드를 사용하도록 하며, `app.manifest`의 중복 DPI 선언은 제거해 Windows Forms 경고 `WFO0003`의 원인을 없앤다. 업데이트 보조 진입점은 이 설정 전에 반환한다. 변경 후 빌드·실행과 다중 모니터 배율 전환은 확인하지 않았다.
+
 `Program`은 전용 업데이트 보조 인수를 먼저 처리하며 일반 실행에서 `TemplateDataLoader`로 생성 템플릿을 준비한 뒤 Avalonia 수명을 시작한다. `TemplateDeserializer`는 내장 JSON을 생성 템플릿으로 역직렬화한다. Debug는 실행 파일 옆 `Datas` JSON을 우선하고 Release는 App assembly의 `Macro.Datas.*` 내장 리소스만 사용하며 외부 JSON을 출력·게시하지 않는다. `App.Initialize`가 로그와 XAML을 준비하고 프레임워크 초기화 완료 경계에서 기존 설정과 App/Core DI를 연결한다. `MainWindow`가 화면과 UI 코루틴 타이머를 연결한다. 기존 언어 라벨은 App의 `LabelLocator`와 템플릿 확장 메서드가 표시한다. 정상 UI 종료 후의 업데이트 승인은 Program에서 처리한다.
 
 App·Core assembly는 각각 한 번 자동 등록한다. `FileService`, 키보드·마우스 입력 구현과 기존 수동 등록 ViewModel은 attribute로 Transient 수명을 선언한다. 입력 구현은 기존 인터페이스로 등록한다. 일반 앱의 수동 등록은 설정 인스턴스·데스크톱 수명·업데이트 HTTP 클라이언트·배포 환경처럼 bootstrap에서 준비한 값에 한정한다. 실제 호출·저장·바인딩에 사용되는 타입·namespace와 enum 값은 유지하며, 이벤트 인수·프로토콜·enum·변환기는 타입별 파일에 배치한다. `FileService`와 `CoroutineRunner`의 파일은 기존 namespace에 맞는 디렉터리에 둔다.

@@ -23,6 +23,7 @@ namespace Macro
                     return;
                 }
             }
+            System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.PerMonitorV2);
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(arguments);
             if (Application.Current is App application)
             {
