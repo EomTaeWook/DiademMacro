@@ -56,7 +56,7 @@ namespace Macro.Infrastructure.Controller
             _drawImageCallback?.Invoke(bitmap);
         }
 
-        protected Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel, CancellationToken cancellationToken)
+        public Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel, CancellationToken cancellationToken)
         {
             var similarity = 0;
             Point2D matchedLocation = new Point2D(0, 0);

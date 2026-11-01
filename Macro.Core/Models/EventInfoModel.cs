@@ -53,7 +53,11 @@ namespace Macro.Models
         public Bitmap Image
         {
             get => _image;
-            set => _image = value;
+            set
+            {
+                _image = value;
+                OnPropertyChanged(nameof(Image));
+            }
         }
         private EventType _eventType = EventType.Image;
         public EventType EventType

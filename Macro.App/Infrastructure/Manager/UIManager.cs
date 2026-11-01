@@ -21,6 +21,14 @@ namespace Macro.Infrastructure.Manager
 
         public event Action ButtonActionStateChanged;
 
+        public bool HasActivePopup
+        {
+            get
+            {
+                return _activePopup.Any(window => window.IsVisible == true);
+            }
+        }
+
         public bool IsProcessingButtonActions
         {
             get

@@ -5,7 +5,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
-    <Version>3.2.0</Version>
+    <Version>3.3.0</Version>
     <AssemblyName>Macro</AssemblyName>
     <AssemblyTitle>Macro</AssemblyTitle>
     <Product>Macro</Product>
@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Macro.Core\Macro.Core.csproj" />
     <ProjectReference Include="..\DataContainer\DataContainer.csproj" />
     <ProjectReference Include="..\Utils\Utils.csproj" />
+    <ProjectReference Include="..\Mcp.Core\MCP.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\AppIcon.ico" />
@@ -47,6 +48,7 @@
     <EmbeddedResource Include="..\Datas\*.json" LogicalName="Macro.Datas.%(Filename)%(Extension)" />
     <EmbeddedResource Include="DignusLog.config" LogicalName="Macro.DignusLog.config" />
     <EmbeddedResource Include="..\LICENSE" LogicalName="Macro.LICENSE" />
+    <EmbeddedResource Include="..\Mcp.Core\LICENSE" LogicalName="Macro.Licenses.MCP.Core.txt" />
     <EmbeddedResource Include="$(NuGetPackageRoot)dignus\1.4.3\LICENSE" LogicalName="Macro.Licenses.Dignus.txt" Condition="Exists('$(NuGetPackageRoot)dignus\1.4.3\LICENSE')" />
     <EmbeddedResource Include="$(NuGetPackageRoot)dignus.log\3.0.0\LICENSE" LogicalName="Macro.Licenses.Dignus.Log.txt" Condition="Exists('$(NuGetPackageRoot)dignus.log\3.0.0\LICENSE')" />
   </ItemGroup>

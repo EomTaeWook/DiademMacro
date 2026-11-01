@@ -31,7 +31,4 @@ namespace Utils.Infrastructure
             return new Point(point.X, point.Y);
         }
     }
-
-
-    [StructLayout(LayoutKind.Sequential)]
 }

@@ -163,6 +163,28 @@ Start the target application and press **Refresh**.
 
 Logs appear after an actual log event. Run an image search or load a save file, then open the log folder again.
 
+## Configure events with AI — MCP
+
+Local MCP connections are available starting with `3.3.0`.
+
+Launch an EXE that includes MCP support:
+
+```powershell
+.\Macro-3.3.0-win-x64.exe --mcp
+```
+
+In an MCP-capable AI application on the same PC, select **Streamable HTTP** and connect to `http://127.0.0.1:8192/mcp`. Stdio transport is not provided. If the port is in use, launch with `--mcp --mcp-port=8193` and update the connection URL.
+
+Example request:
+
+> Inspect the target window and create parent/child events that click Confirm only when the error dialog is present. This is a Unity application, so enable Physical Click on the child and wait one second after clicking. Save the configuration without running it.
+
+The tools can inspect events and images, capture windows, create/update/delete/reorder/nest events, configure ROI/similarity/repetition, and save. A search-only tool returns similarity and location without input. MCP exposes no click, keyboard-input, or macro-start tools. Use **Start** in the app to run the configuration.
+
+Editing is unavailable during macro execution, open options/settings dialogs, capture selection, or updates. MCP edits use the same visible list and save files. An error with `applied: true, saved: false` means the in-memory edit succeeded but saving failed: retry saving instead of creating the event again.
+
+For authentication, set the `DIADEM_MCP_TOKEN` environment variable before launch and configure the same Bearer token in the AI application. Closing Macro also stops MCP. Check the log folder from Settings if the server cannot start.
+
 ## License
 
 [MIT License](LICENSE)

@@ -1,0 +1,4 @@
+[submodule "Mcp.Core"]
+	path = Mcp.Core
+	url = https://github.com/EomTaeWook/Mcp.Core.git
+	branch = main

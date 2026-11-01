@@ -8,6 +8,8 @@
 
 ## 솔루션과 책임
 
+로컬 MCP 이벤트 구성은 [MCP 설계](Mcp.md)를 따른다. App이 `Mcp.Core` 서브모듈의 전송을 사용하며 `EventEditingService`의 단일 이벤트 목록·저장 경계를 UI와 공유한다. 실행·입력 도구는 공개하지 않는다. SDK 게시 시 MCP.Core의 MIT 라이선스도 내장한다.
+
 | 프로젝트 | 책임 | 참조 |
 | --- | --- | --- |
 | `Macro.App` | Avalonia 시작, 화면·창 수명, 지역화, 후원·웹 표시, 정식 릴리스 조회·다운로드·설치·재시작 | Core, DataContainer, Utils |

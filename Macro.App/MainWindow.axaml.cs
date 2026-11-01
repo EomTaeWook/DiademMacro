@@ -11,8 +11,9 @@ using Macro.Infrastructure;
 using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Updates;
+using Macro.Infrastructure.Services;
+using Macro.Infrastructure.Mcp;
 using Macro.Models;
-using Macro.Models.Converters;
 using Macro.Models.Protocols;
 using Macro.Models.ViewModel;
 using Macro.UI;
@@ -79,7 +80,8 @@ namespace Macro
         private bool _shutdownApproved;
         private WebApiManager _webApiManager;
         private AdManager _adManager;
-        private CacheDataManager _cacheDataManager;
+        private EventEditingService _eventEditingService;
+        private MacroMcpService _mcpService;
         private bool _isEventItemMoveButtonPressed;
         private bool _eventItemOrderChanged;
         private WebViewWindow _webViewWindow;
@@ -173,7 +175,8 @@ namespace Macro
             _webViewWindow = new WebViewWindow();
             _closeButtonWindow = new CloseButtonWindow(() => _webViewWindow.Hide());
             _config = ServiceResolver.GetService<Config>();
-            _cacheDataManager = ServiceResolver.GetService<CacheDataManager>();
+            _eventEditingService = ServiceResolver.GetService<EventEditingService>();
+            _mcpService = ServiceResolver.GetService<MacroMcpService>();
             _webApiManager = ServiceResolver.GetService<WebApiManager>();
             _adManager = ServiceResolver.GetService<AdManager>();
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
@@ -185,6 +188,14 @@ namespace Macro
             _coroutineTimer.Tick += UpdateCoroutines;
             _coroutineClock.Start();
             _coroutineTimer.Start();
+            try
+            {
+                await _mcpService.StartAsync();
+            }
+            catch (Exception exception)
+            {
+                LogHelper.Error(exception);
+            }
             try
             {
                 bool isSponsor = await CheckSponsor();
@@ -247,9 +258,15 @@ namespace Macro
 
         private async Task ShutdownAsync()
         {
+            Task mcpStopTask = Task.CompletedTask;
+            if (_mcpService != null)
+            {
+                mcpStopTask = _mcpService.StopAsync();
+            }
             Task buttonActionCompletionTask = UIManager.Instance.StopButtonActionsAsync();
             try
             {
+                await mcpStopTask;
                 await UIManager.Instance.PrepareForShutdownAsync();
                 await buttonActionCompletionTask;
                 MacroExecutionController executionController = _runningExecutionController;
@@ -483,6 +500,43 @@ namespace Macro
             return true;
         }
 
+        internal void EnsureMcpAvailable(bool requireIdle)
+        {
+            Dispatcher.UIThread.VerifyAccess();
+            if (_isShutdownHandled == true)
+            {
+                throw new InvalidOperationException("The application is closing.");
+            }
+            if (requireIdle == false)
+            {
+                return;
+            }
+            if (CanEditEvents() == false)
+            {
+                throw new InvalidOperationException("Event editing requires an idle application with no capture or update in progress.");
+            }
+            if (UIManager.Instance.HasActivePopup == true)
+            {
+                throw new InvalidOperationException("Close the current dialog before editing events through MCP.");
+            }
+        }
+
+        internal bool IsMacroRunning
+        {
+            get
+            {
+                return _isRunning;
+            }
+        }
+
+        internal void RefreshAfterEventChange()
+        {
+            ServiceResolver.GetService<SelectionStateController>().UnselectTreeGridViewItem();
+            eventListView.treeGridView.SelectedItem = null;
+            imagePreviewView.ClearImage();
+            RefreshEventItemButton();
+        }
+
         private void RefreshEventItemButton()
         {
             btnAddEventItem.IsEnabled = false;
@@ -542,8 +596,7 @@ namespace Macro
                 return;
             }
             EventInfoModel eventInfo = new() { Image = new Bitmap(capture, capture.Width, capture.Height), MonitorInfo = eventArgs.MonitorInfo, ProcessInfo = processInfo };
-            eventListView.DataContext<EventListViewModel>().EventItems.Add(eventInfo);
-            _cacheDataManager.MakeIndexTriggerModel(eventInfo);
+            _eventEditingService.Add(eventInfo);
             await SaveAsync();
         }
 
@@ -559,8 +612,7 @@ namespace Macro
                 return;
             }
             EventInfoModel copyItem = new(selectedItem.DataContext<EventInfoModel>());
-            _cacheDataManager.MakeIndexTriggerModel(copyItem);
-            eventListView.DataContext<EventListViewModel>().EventItems.Add(copyItem);
+            _eventEditingService.Add(copyItem);
             await SaveAsync();
         }
 
@@ -577,19 +629,10 @@ namespace Macro
                 return;
             }
             EventInfoModel eventInfo = selectedItem.DataContext<EventInfoModel>();
-            if (selectedItem.ParentItem == null)
-            {
-                eventListView.DataContext<EventListViewModel>().EventItems.Remove(eventInfo);
-            }
-            else
-            {
-                selectedItem.ParentItem.DataContext<EventInfoModel>().SubEventItems.Remove(eventInfo);
-            }
-            _cacheDataManager.RemoveIndexEventModel(eventInfo);
+            _eventEditingService.Remove(eventInfo);
             selection.UnselectTreeGridViewItem();
             eventListView.treeGridView.SelectedItem = null;
             imagePreviewView.ClearImage();
-            eventInfo.Dispose();
             RefreshEventItemButton();
             await SaveAsync();
         }
@@ -864,7 +907,7 @@ namespace Macro
 
         private async Task SaveAsync()
         {
-            bool saved = ServiceResolver.GetService<FileService>().SaveAsJson(GetSaveFilePath(), eventListView.DataContext<EventListViewModel>().EventItems.ToList());
+            bool saved = _eventEditingService.Save();
             if (saved == true)
             {
                 return;
@@ -883,36 +926,11 @@ namespace Macro
 
         public void LoadSaveFile(string path)
         {
-            FileService fileService = ServiceResolver.GetService<FileService>();
-            List<EventInfoModel> eventInfos;
-            if (fileService.LooksLikeJson(path) == true)
-            {
-                eventInfos = fileService.LoadSaveAsJson(path);
-                if (eventInfos == null)
-                {
-                    eventInfos = new List<EventInfoModel>();
-                }
-            }
-            else
-            {
-                eventInfos = EventModelConverter.ToEventInfoList(fileService.Load<EventTriggerModel>(path));
-            }
-            _cacheDataManager.InitDatas(eventInfos);
-            EventListViewModel viewModel = eventListView.DataContext<EventListViewModel>();
-            List<EventInfoModel> previousEventInfos = viewModel.EventItems.ToList();
             SelectionStateController selection = ServiceResolver.GetService<SelectionStateController>();
             selection.UnselectTreeGridViewItem();
             eventListView.treeGridView.SelectedItem = null;
             imagePreviewView.ClearImage();
-            viewModel.EventItems.Clear();
-            foreach (EventInfoModel eventInfo in eventInfos)
-            {
-                viewModel.EventItems.Add(eventInfo);
-            }
-            foreach (EventInfoModel previousEventInfo in previousEventInfos)
-            {
-                previousEventInfo.Dispose();
-            }
+            _eventEditingService.Load(path);
         }
 
         private void DisposeEventItems()

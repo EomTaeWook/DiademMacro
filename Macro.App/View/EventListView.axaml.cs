@@ -3,6 +3,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Manager;
+using Macro.Infrastructure.Services;
 using Macro.Models;
 using Macro.Models.ViewModel;
 using Macro.UI;
@@ -21,13 +23,16 @@ namespace Macro.View
         }
 
         private static readonly DataFormat<TreeGridViewItem> _dragFormat = DataFormat.CreateInProcessFormat<TreeGridViewItem>(typeof(TreeGridViewItem).FullName);
-        private readonly EventListViewModel _viewModel = new();
+        private readonly EventListViewModel _viewModel;
+        private readonly EventEditingService _eventEditingService;
         private bool _isDragging;
         private TreeGridViewItem _dragSourceTreeGridViewItem;
         private PointerPressedEventArgs _dragStartEventArgs;
         public EventListView()
         {
             InitializeComponent();
+            _eventEditingService = ServiceResolver.GetService<EventEditingService>();
+            _viewModel = new EventListViewModel(_eventEditingService.EventItems);
             DataContext = _viewModel;
             treeGridView.AddHandler(PointerPressedEvent, TreeGridView_PointerPressed, RoutingStrategies.Tunnel);
             treeGridView.PointerMoved += TreeGridView_PointerMoved;
@@ -42,27 +47,19 @@ namespace Macro.View
                 return;
             }
             EventInfoModel eventInfo = sourceItem.DataContext<EventInfoModel>();
-            TreeGridViewItem sourceParent = sourceItem.ParentItem;
             EventInfoModel targetEventInfo = null;
             if (targetItem != null)
             {
                 targetEventInfo = targetItem.DataContext<EventInfoModel>();
             }
-            if (sourceParent == null)
+            ulong parentId = 0;
+            if (targetEventInfo != null)
             {
-                _viewModel.EventItems.Remove(eventInfo);
+                parentId = targetEventInfo.ItemIndex;
             }
-            else
+            _eventEditingService.Move(eventInfo, parentId);
+            if (targetItem != null)
             {
-                sourceParent.DataContext<EventInfoModel>().SubEventItems.Remove(eventInfo);
-            }
-            if (targetItem == null)
-            {
-                _viewModel.EventItems.Add(eventInfo);
-            }
-            else
-            {
-                targetEventInfo.SubEventItems.Add(eventInfo);
                 targetItem.IsExpanded = true;
             }
             NotifyHelper.InvokeNotify(NotifyEventType.EventTriggerSaved, new EventInfoEventArgs { Index = eventInfo.ItemIndex, EventInfoModel = eventInfo });

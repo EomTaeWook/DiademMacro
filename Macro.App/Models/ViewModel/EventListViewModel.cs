@@ -5,8 +5,10 @@ namespace Macro.Models.ViewModel
 {
     public class EventListViewModel : INotifyPropertyChanged
     {
-
-
+        public EventListViewModel(ObservableCollection<EventInfoModel> eventItems)
+        {
+            _eventItems = eventItems;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _isAllSelected = true;
         public bool IsAllSelected
@@ -22,7 +24,7 @@ namespace Macro.Models.ViewModel
                 }
             }
         }
-        private ObservableCollection<EventInfoModel> _eventItems = new ObservableCollection<EventInfoModel>();
+        private ObservableCollection<EventInfoModel> _eventItems;
         public ObservableCollection<EventInfoModel> EventItems
         {
             get => _eventItems;
