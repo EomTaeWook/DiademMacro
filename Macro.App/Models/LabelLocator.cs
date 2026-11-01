@@ -30,21 +30,9 @@ namespace Macro.Models
         {
             get => GetString(1009);
         }
-        public string MouseWheel
-        {
-            get => GetString(1010);
-        }
-        public string WheelData
-        {
-            get => GetString(1011);
-        }
         public string TriggerList
         {
             get => GetString(1008);
-        }
-        public string Config
-        {
-            get => GetString(1004);
         }
         public string SetROI
         {
@@ -53,14 +41,6 @@ namespace Macro.Models
         public string Save
         {
             get => GetString(1003);
-        }
-        public string SaveConfig
-        {
-            get => GetString(1005);
-        }
-        public string ImageCapture
-        {
-            get => GetString(1002);
         }
         public string CompareImage
         {
@@ -73,10 +53,6 @@ namespace Macro.Models
         public string Refresh
         {
             get => GetString(1054);
-        }
-        public string Delete
-        {
-            get => GetString(1013);
         }
         public string Start
         {
@@ -130,21 +106,9 @@ namespace Macro.Models
         {
             get => GetString(1051);
         }
-        public string MoveProcessLocation
-        {
-            get => GetString(1052);
-        }
         public string Roi
         {
             get => GetString(1064);
-        }
-        public string RestoreMoveProcessLocation
-        {
-            get => GetString(1053);
-        }
-        public string VersionCheck
-        {
-            get => GetString(1025);
         }
         public string Fix
         {
@@ -153,14 +117,6 @@ namespace Macro.Models
         public string RepeatItems
         {
             get => GetString(1027);
-        }
-        public string Cancel
-        {
-            get => GetString(1032);
-        }
-        public string AddSameContent
-        {
-            get => GetString(1038);
         }
         public string TriggerToNext
         {
@@ -178,20 +134,6 @@ namespace Macro.Models
         {
             get => GetString(1012);
         }
-        public string X
-        {
-            get => "X";
-        }
-        public string Y
-        {
-            get => "Y";
-        }
-
-        public string ImageSearchRequired
-        {
-            get => GetString(1043);
-        }
-
         public string SameImageDrag
         {
             get => GetString(1045);
@@ -215,10 +157,6 @@ namespace Macro.Models
         public string MacroMode
         {
             get => GetString(1057);
-        }
-        public string KeyBoardDelay
-        {
-            get => GetString(1058);
         }
         public string Addition
         {

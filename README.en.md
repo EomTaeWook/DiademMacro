@@ -3,7 +3,7 @@
 [한국어](README.md) | [English](README.en.md)
 
 <p align="center">
-  <img src="Macro.App/Assets/AppIcon.png" width="112" alt="Diadem Macro icon" />
+  <img src="doc/images/macro-event-preview.png" width="960" alt="Diadem Macro showing a registered image event and a preview of the target window" />
 </p>
 
 Diadem Macro is a Windows desktop automation tool that finds registered images in application windows and repeats mouse and keyboard actions. It supports Korean and English.

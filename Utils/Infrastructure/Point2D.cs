@@ -34,14 +34,4 @@ namespace Utils.Infrastructure
 
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct InterPointDouble
-    {
-        public double X;
-        public double Y;
-
-        public static implicit operator Point(InterPointDouble point)
-        {
-            return new Point((int)point.X, (int)point.Y);
-        }
-    }
 }

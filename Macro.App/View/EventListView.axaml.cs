@@ -25,26 +25,14 @@ namespace Macro.View
         private bool _isDragging;
         private TreeGridViewItem _dragSourceTreeGridViewItem;
         private PointerPressedEventArgs _dragStartEventArgs;
-        private readonly ColumnDefinitions _columns;
-
-        public ColumnDefinitions Columns
-        {
-            get
-            {
-                return _columns;
-            }
-        }
-
         public EventListView()
         {
             InitializeComponent();
-            _columns = (ColumnDefinitions)Resources["EventColumns"];
             DataContext = _viewModel;
             treeGridView.AddHandler(PointerPressedEvent, TreeGridView_PointerPressed, RoutingStrategies.Tunnel);
             treeGridView.PointerMoved += TreeGridView_PointerMoved;
             treeGridView.AddHandler(DragDrop.DropEvent, TreeGridView_Drop);
             treeGridView.AddHandler(DragDrop.DragOverEvent, TreeGridView_DragOver);
-            SizeChanged += EventListView_SizeChanged;
         }
 
         private void MoveEventTriggerTreeItem(TreeGridViewItem targetItem, TreeGridViewItem sourceItem)
@@ -177,10 +165,5 @@ namespace Macro.View
             _dragSourceTreeGridViewItem = treeGridView.TryFindFromPoint<TreeGridViewItem>(eventArgs.GetPosition(treeGridView));
         }
 
-        private void EventListView_SizeChanged(object sender, SizeChangedEventArgs eventArgs)
-        {
-            _viewModel.Height = Bounds.Height;
-            _viewModel.Width = Bounds.Width;
-        }
     }
 }

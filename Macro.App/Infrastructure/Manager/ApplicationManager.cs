@@ -20,7 +20,6 @@ namespace Macro.Infrastructure.Manager
         private readonly ChildWindow _drawWindow = new();
         private readonly ArrayQueue<CaptureView> _captureViews = new();
         private readonly ArrayQueue<MousePositionView> _mouseInteractionViews = new();
-        private IntPtr _drawWindowHandle;
         private ScreenCaptureManager _screenCaptureManager;
 
         public bool HasActiveInputOverlay
@@ -89,23 +88,12 @@ namespace Macro.Infrastructure.Manager
             Instance._progress.Hide();
         }
 
-        public Window GetDrawWindow()
-        {
-            return _drawWindow;
-        }
-
-        public IntPtr GetDrawWindowHandle()
-        {
-            return _drawWindowHandle;
-        }
-
         public void Init()
         {
             _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
             _drawWindow.Opacity = 0;
             _drawWindow.Show();
-            _drawWindowHandle = _drawWindow.TryGetPlatformHandle().Handle;
-            _screenCaptureManager.SetDrawWindowHandle(_drawWindowHandle);
+            _screenCaptureManager.SetDrawWindowHandle(_drawWindow.TryGetPlatformHandle().Handle);
             ResetMonitorViews();
         }
 

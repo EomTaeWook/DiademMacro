@@ -23,7 +23,7 @@ Windows x64 자체 포함 단일 실행 파일은 `WindowsX64.pubxml`과 SDK 게
 
 `Program`은 전용 업데이트 보조 인수를 먼저 처리하며 일반 실행에서 `TemplateDataLoader`로 생성 템플릿을 준비한 뒤 Avalonia 수명을 시작한다. `TemplateDeserializer`는 내장 JSON을 생성 템플릿으로 역직렬화한다. Debug는 실행 파일 옆 `Datas` JSON을 우선하고 Release는 App assembly의 `Macro.Datas.*` 내장 리소스만 사용하며 외부 JSON을 출력·게시하지 않는다. `App.Initialize`가 로그와 XAML을 준비하고 프레임워크 초기화 완료 경계에서 기존 설정과 App/Core DI를 연결한다. `MainWindow`가 화면과 UI 코루틴 타이머를 연결한다. 기존 언어 라벨은 App의 `LabelLocator`와 템플릿 확장 메서드가 표시한다. 정상 UI 종료 후의 업데이트 승인은 Program에서 처리한다.
 
-App·Core assembly는 각각 한 번 자동 등록한다. `FileService`, 키보드·마우스 입력 구현과 기존 수동 등록 ViewModel은 attribute로 Transient 수명을 선언한다. 입력 구현은 기존 인터페이스로 등록한다. 일반 앱의 수동 등록은 설정 인스턴스·데스크톱 수명·업데이트 HTTP 클라이언트·배포 환경처럼 bootstrap에서 준비한 값에 한정한다. 공개 타입·namespace와 enum 값은 유지하며, 이벤트 인수·프로토콜·enum·변환기는 타입별 파일에 배치한다. `FileService`와 `CoroutineRunner`의 파일은 기존 namespace에 맞는 디렉터리에 둔다.
+App·Core assembly는 각각 한 번 자동 등록한다. `FileService`, 키보드·마우스 입력 구현과 기존 수동 등록 ViewModel은 attribute로 Transient 수명을 선언한다. 입력 구현은 기존 인터페이스로 등록한다. 일반 앱의 수동 등록은 설정 인스턴스·데스크톱 수명·업데이트 HTTP 클라이언트·배포 환경처럼 bootstrap에서 준비한 값에 한정한다. 실제 호출·저장·바인딩에 사용되는 타입·namespace와 enum 값은 유지하며, 이벤트 인수·프로토콜·enum·변환기는 타입별 파일에 배치한다. `FileService`와 `CoroutineRunner`의 파일은 기존 namespace에 맞는 디렉터리에 둔다.
 
 실행 입력은 `MainWindow`에서 `MacroExecutionController.Start`로 전달한다. 실행기는 생성자에서 받은 순회·배치 컨트롤러 중 설정에 맞는 것을 사용한다. 캡처와 입력은 기존 실행 순서와 취소 토큰을 유지한다. 상태와 미리보기는 Avalonia UI Dispatcher로 전달하며, 중지와 창 종료는 실행 Task의 종료를 기다린다.
 
@@ -54,5 +54,19 @@ OpenCV 대신 기존 `OpenCVHelper` API 안에서 .NET Bitmap, 적분 합과 SIM
 문구·템플릿 원본은 `Excel`이며 `ExportTools`의 공식 생성 도구를 사용한다. 업데이트 문구는 Label·Message 원본에 추가하고 JSON을 생성한다. 필드 정의와 생성 C# 템플릿은 유지한다.
 
 ## 현재 작업 범위
+
+### 미사용 코드 정리 경계
+
+배포 진입점은 `WindowsX64.pubxml`을 사용하는 SDK 게시다. NSIS 설치 스크립트와 구형 `Release/Resource` 화면 이미지는 제공하지 않는다. 사용자 안내 이미지는 `doc/images`에 둔다.
+
+앱의 버전 조회·비교는 `ApplicationUpdateService`와 `ApplicationReleaseVersion`이 담당한다. `VersionNote.CurrentVersion`과 `Utils.Models.Version`은 제목과 User-Agent의 현재 버전 표시에만 사용한다. 구형 서버 버전 응답 DTO와 숫자 합산 버전 비교는 제공하지 않는다. 광고는 현재 `OnePickAdUrl` 요청을 사용하며 후원 조회와 실제 광고 표시 경로를 유지한다.
+
+이벤트 목록의 너비는 XAML의 `EventColumns` 리소스가 소유한다. 사용하지 않는 크기 관찰자·너비 변환기·ViewModel의 크기 복사 경로는 두지 않는다. 화면 문구는 실제 바인딩에 필요한 `LabelLocator` 속성으로 제공하며 Excel·생성 템플릿 데이터는 이번 정리에서 변경하지 않는다.
+
+`CacheDataManager`는 현재 사용되는 이벤트 번호와 바로 이동 대상 조회를 유지하며 호출자가 없는 범용 object 캐시는 두지 않는다. 숨김 DWM 창과 핸들 전달, 입력 인터페이스, `GetSystemDPI`·모니터별 DPI 조회, 화면 캡처·입력에 사용되는 Win32 선언을 유지한다.
+
+구형 저장 파일을 읽는 `EventTriggerModel`, `MouseEventInfo`, `PointModel`, `ObjectSerializer`, `TypeRedirectBinder`와 `Dll/Dignus.Utils.dll`은 정리 대상이 아니다. `Config.VersionCheck`도 설정 읽기·쓰기 호환을 위해 유지한다. 이 경계는 일반 참조 검색 결과만으로 제거하지 않는다.
+
+### 검증 상태
 
 현재 최종 변경분의 빌드·테스트·앱 실행과 변경 후 정적 검증은 수행하지 않았다. 표시 중인 Unity GPU 창 캡처와 물리 클릭은 사용자 실행에서 확인했으며, 구형 바이너리 파일 읽기, 이미지 검색 성능, 최소화 DWM 캡처, 모니터 DPI와 웹 페이지 동작은 미확인이다. 릴리스 배포는 별도 사용자 요청 범위다.

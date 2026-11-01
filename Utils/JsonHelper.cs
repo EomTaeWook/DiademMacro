@@ -9,7 +9,6 @@ namespace Utils
 {
     public class JsonHelper
     {
-        public static string ImageDirectoryPath { get; set; }
         private static readonly JsonSerializerOptions _compactOptions = CreateOptions(false);
         private static readonly JsonSerializerOptions _indentedOptions = CreateOptions(true);
 

@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using Utils.Infrastructure;
-using Utils.Models;
 
 namespace Utils
 {
@@ -35,8 +34,6 @@ namespace Utils
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hWnd);
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetFocus(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         public static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr rect, MonitorEnumDelegate callback, int data);
@@ -46,10 +43,6 @@ namespace Utils
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
         [DllImport("user32.dll")]
         private static extern int GetWindowTextLength(IntPtr hWnd);
-
-        [DllImport("User32.dll")]
-        public static extern IntPtr GetParent(IntPtr hWnd);
-
 
         [DllImport("user32.dll")]
         private static extern bool EnumChildWindows(IntPtr hwnd, EnumWindowProcDelegate callback, IntPtr lParam);
@@ -90,18 +83,8 @@ namespace Utils
         }
 
 
-        public static void MouseEvent(MouseFlag mouseFlag, int x, int y)
-        {
-            mouse_event((int)mouseFlag, x, y, 0, IntPtr.Zero);
-        }
-        [DllImport("user32.dll")]
-        static extern void mouse_event(int flag, int dx, int dy, int buttons, IntPtr extra);
-
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int flags);
-
-        [DllImport("user32.dll")]
-        private static extern int GetCursorPos(int x, int y);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SetCursorPos(int x, int y);
@@ -143,15 +126,6 @@ namespace Utils
         [DllImport("user32.dll")]
         public static extern uint SendInput(uint inputCount, Input[] inputs, int structSize);
 
-        [DllImport("shcore.dll")]
-        public static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
-
-        [DllImport("user32.dll")]
-        public static extern bool SetProcessDpiAwarenessContext(PROCESS_DPI_AWARENESS value);
-
-        [DllImport("shcore.dll")]
-        public static extern uint GetProcessDpiAwareness(IntPtr handle, out PROCESS_DPI_AWARENESS awareness);
-
         [DllImport("Shcore.dll")]
         private static extern IntPtr GetDpiForMonitor(IntPtr hMonitor, DpiFlags dpiType, out uint dpiX, out uint dpiY);
         public static Point GetMonitorDPI(IntPtr hMonitor)
@@ -166,21 +140,5 @@ namespace Utils
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool EnumDisplayDevices(string lpDevice, uint iDevNum, ref DisplayDevice lpDisplayDevice, uint dwFlags);
 
-        public static bool IsAnyMonitorPoweredOn()
-        {
-            DisplayDevice displayDevice = new DisplayDevice();
-            displayDevice.cb = Marshal.SizeOf(displayDevice);
-            uint monitorIndex = 0;
-            while (EnumDisplayDevices(null, monitorIndex, ref displayDevice, 0))
-            {
-                if ((displayDevice.StateFlags & 0x00000001) != 0)
-                {
-                    return true;
-                }
-                monitorIndex++;
-            }
-            return false;
-
-        }
     }
 }

@@ -8,26 +8,6 @@ namespace Macro.Models.ViewModel
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private double _width;
-        public double Width
-        {
-            get => _width;
-            set
-            {
-                _width = value;
-                OnPropertyChanged("Width");
-            }
-        }
-        private double _height;
-        public double Height
-        {
-            get => _height;
-            set
-            {
-                _height = value;
-                OnPropertyChanged("Height");
-            }
-        }
         private bool _isAllSelected = true;
         public bool IsAllSelected
         {

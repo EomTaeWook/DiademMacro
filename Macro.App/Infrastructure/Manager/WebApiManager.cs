@@ -30,10 +30,5 @@ namespace Macro.Infrastructure.Manager
                 return default(TResponse);
             }
         }
-
-        public Task<TResponse> Request<TRequest, TResponse>(TRequest request) where TRequest : IAPIRequest where TResponse : IAPIResponse
-        {
-            return Request<TResponse>(request);
-        }
     }
 }

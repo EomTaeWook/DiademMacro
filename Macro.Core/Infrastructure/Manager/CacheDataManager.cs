@@ -10,7 +10,6 @@ namespace Macro.Infrastructure.Manager
         private ulong _currentIndex;
         private readonly object _indexLock = new object();
         private readonly Dictionary<ulong, EventInfoModel> _indexEventInfoToMap;
-        private readonly Dictionary<object, object> _cacheDataToMap = new Dictionary<object, object>();
         public CacheDataManager()
         {
             _indexEventInfoToMap = new Dictionary<ulong, EventInfoModel>();
@@ -100,33 +99,6 @@ namespace Macro.Infrastructure.Manager
             {
                 RemoveIndexEventModel(child);
             }
-        }
-        public void AddData(object key, object value)
-        {
-            if (_cacheDataToMap.ContainsKey(key) == false)
-            {
-                _cacheDataToMap.Add(key, value);
-                return;
-            }
-            _cacheDataToMap[key] = value;
-        }
-        public object GetData(object key)
-        {
-            _cacheDataToMap.TryGetValue(key, out object value);
-
-            return value;
-        }
-        public T GetData<T>(object key)
-        {
-            if (_cacheDataToMap.TryGetValue(key, out object value) == false)
-            {
-                return default;
-            }
-            return (T)value;
-        }
-        public void DeleteData(object key)
-        {
-            _cacheDataToMap.Remove(key);
         }
     }
 }

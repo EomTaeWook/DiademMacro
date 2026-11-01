@@ -3,7 +3,7 @@
 [한국어](README.md) | [English](README.en.md)
 
 <p align="center">
-  <img src="Macro.App/Assets/AppIcon.png" width="112" alt="Diadem Macro icon" />
+  <img src="doc/images/macro-event-preview.png" width="960" alt="등록된 이미지 이벤트와 대상 화면 미리보기가 표시된 Diadem Macro" />
 </p>
 
 Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾고 마우스·키보드 입력을 반복하는 데스크톱 자동화 도구입니다. Avalonia와 .NET 10으로 동작하며 한국어와 영어 UI를 제공합니다.
