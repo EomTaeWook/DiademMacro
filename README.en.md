@@ -165,15 +165,15 @@ Logs appear after an actual log event. Run an image search or load a save file, 
 
 ## Configure events with AI — MCP
 
-Local MCP connections are available starting with `3.3.0`.
+Starting with `3.3.1`, launch the app normally and control MCP from Settings.
 
-Launch an EXE that includes MCP support:
+1. Open **Settings → MCP server**.
+2. Enter a **Port** and select **Open MCP**. The default is `8192`.
+3. In an MCP-capable AI app on the same PC, choose **Streamable HTTP** and register the **Connection URL** shown in Settings. The default is `http://127.0.0.1:8192/mcp`.
+4. Close Settings before asking the AI to configure events. The server stays open when Settings closes.
+5. To disconnect, choose **Settings → MCP server → Close MCP**.
 
-```powershell
-.\Macro-3.3.1-win-x64.exe --mcp
-```
-
-In an MCP-capable AI application on the same PC, select **Streamable HTTP** and connect to `http://127.0.0.1:8192/mcp`. Stdio transport is not provided. If the port is in use, launch with `--mcp --mcp-port=8193` and update the connection URL.
+Change the port while the server is closed, using an integer from `1024` to `65535`. **Open MCP** immediately uses the entered port; **Save** stores the port for future launches. The open state is not saved, so reopen the server from Settings after restarting the app. Update the AI app's connection URL when changing the port. Stdio transport is not provided.
 
 Example request:
 

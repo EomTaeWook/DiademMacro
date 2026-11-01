@@ -8,7 +8,7 @@
 
 ## 솔루션과 책임
 
-로컬 MCP 이벤트 구성은 [MCP 설계](Mcp.md)를 따른다. App이 `Mcp.Core` 서브모듈의 전송을 사용하며 `EventEditingService`의 단일 이벤트 목록·저장 경계를 UI와 공유한다. 실행·입력 도구는 공개하지 않는다. SDK 게시 시 MCP.Core의 MIT 라이선스도 내장한다.
+로컬 MCP 이벤트 구성은 [MCP 설계](Mcp.md)를 따른다. App이 `Mcp.Core` 서브모듈의 전송을 사용하며 `EventEditingService`의 단일 이벤트 목록·저장 경계를 UI와 공유한다. 설정의 열기·닫기도 기존 UIManager 큐와 MacroMcpService의 서버 수명을 사용하며 설정 창을 닫아도 서버를 유지한다. 실행·입력 도구는 공개하지 않는다. SDK 게시 시 MCP.Core의 MIT 라이선스도 내장한다.
 
 | 프로젝트 | 책임 | 참조 |
 | --- | --- | --- |

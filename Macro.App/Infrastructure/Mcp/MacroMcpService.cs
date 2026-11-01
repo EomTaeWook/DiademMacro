@@ -46,14 +46,52 @@ namespace Macro.Infrastructure.Mcp
             _desktop = desktop;
         }
 
-        public async Task StartAsync()
+        public event Action StateChanged;
+
+        public bool IsRunning
+        {
+            get
+            {
+                if (_server == null)
+                {
+                    return false;
+                }
+                return _server.IsRunning;
+            }
+        }
+
+        public string Endpoint
+        {
+            get
+            {
+                if (_server == null)
+                {
+                    return string.Empty;
+                }
+                return _server.Endpoint.AbsoluteUri;
+            }
+        }
+
+        public int Port
+        {
+            get
+            {
+                if (_server == null)
+                {
+                    return _config.McpPort;
+                }
+                return _server.Endpoint.Port;
+            }
+        }
+
+        public Task StartFromArgumentsAsync()
         {
             string[] arguments = Environment.GetCommandLineArgs();
             if (Array.IndexOf(arguments, "--mcp") < 0)
             {
-                return;
+                return Task.CompletedTask;
             }
-            int port = 8192;
+            int port = _config.McpPort;
             foreach (string argument in arguments)
             {
                 if (argument.StartsWith("--mcp-port=", StringComparison.Ordinal) == false)
@@ -64,14 +102,34 @@ namespace Macro.Infrastructure.Mcp
                 {
                     throw new ArgumentException("The MCP port must be an integer.");
                 }
-                if (port < 1024)
+            }
+            return StartAsync(port);
+        }
+
+        public async Task StartAsync(int port)
+        {
+            Dispatcher.UIThread.VerifyAccess();
+            GetWindow().EnsureMcpAvailable(false);
+            if (port < 1024)
+            {
+                throw new ArgumentException("The MCP port must be between 1024 and 65535.");
+            }
+            if (port > 65535)
+            {
+                throw new ArgumentException("The MCP port must be between 1024 and 65535.");
+            }
+            if (IsRunning == true)
+            {
+                if (Port != port)
                 {
-                    throw new ArgumentException("The MCP port must be between 1024 and 65535.");
+                    throw new InvalidOperationException("Close the MCP server before changing its port.");
                 }
-                if (port > 65535)
-                {
-                    throw new ArgumentException("The MCP port must be between 1024 and 65535.");
-                }
+                return;
+            }
+            if (_server != null)
+            {
+                await StopAsync();
+                GetWindow().EnsureMcpAvailable(false);
             }
             _server = new McpHttpServer(new McpServerOptions
             {
@@ -81,6 +139,7 @@ namespace Macro.Infrastructure.Mcp
                 AccessToken = Environment.GetEnvironmentVariable("DIADEM_MCP_TOKEN") ?? string.Empty,
                 Instructions = "Configure Diadem events using the tools. Read the event tree and target window before editing. Parent-child events form sequential AND conditions in the parent's process window; siblings are independent. A child's stored process name does not switch target windows. Use physical_click for Unity. Coordinates are capture-image pixels, not desktop screen coordinates. Edits are saved automatically; inspect saved=false errors. No tool starts macro execution or sends input. The user starts execution in the app."
             }, CreateTools(), exception => LogHelper.Error(exception));
+            _server.StateChanged += OnServerStateChanged;
             try
             {
                 await _server.StartAsync();
@@ -95,12 +154,26 @@ namespace Macro.Infrastructure.Mcp
 
         public async Task StopAsync()
         {
+            Dispatcher.UIThread.VerifyAccess();
             McpHttpServer server = _server;
             _server = null;
             if (server != null)
             {
-                await server.DisposeAsync();
+                server.StateChanged -= OnServerStateChanged;
+                try
+                {
+                    await server.DisposeAsync();
+                }
+                finally
+                {
+                    StateChanged?.Invoke();
+                }
             }
+        }
+
+        private void OnServerStateChanged()
+        {
+            StateChanged?.Invoke();
         }
 
         private IReadOnlyList<McpTool> CreateTools()

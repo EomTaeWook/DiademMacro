@@ -70,6 +70,62 @@ namespace Macro.Models
         {
             get => GetString(1087);
         }
+        public string McpServer
+        {
+            get
+            {
+                return GetString(1088);
+            }
+        }
+        public string McpOpen
+        {
+            get
+            {
+                return GetString(1089);
+            }
+        }
+        public string McpClose
+        {
+            get
+            {
+                return GetString(1090);
+            }
+        }
+        public string McpConnectionAddress
+        {
+            get
+            {
+                return GetString(1091);
+            }
+        }
+        public string McpPort
+        {
+            get
+            {
+                return GetString(1097);
+            }
+        }
+        public string McpOpenStatus
+        {
+            get
+            {
+                return GetString(1092);
+            }
+        }
+        public string McpClosedStatus
+        {
+            get
+            {
+                return GetString(1093);
+            }
+        }
+        public string McpDescription
+        {
+            get
+            {
+                return GetString(1094);
+            }
+        }
         public string Language
         {
             get => GetString(1018);

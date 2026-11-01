@@ -30,6 +30,7 @@ namespace Macro.Models
             ProcessLocationY = source.ProcessLocationY;
             AccessKey = source.AccessKey;
             MacroMode = source.MacroMode;
+            McpPort = source.McpPort;
         }
 
         private LanguageType _language = LanguageType.Kor;
@@ -156,6 +157,20 @@ namespace Macro.Models
                 OnPropertyChanged(nameof(MacroMode));
             }
         }
+        private int _mcpPort = 8192;
+        public int McpPort
+        {
+            get
+            {
+                return _mcpPort;
+            }
+            set
+            {
+                _mcpPort = value;
+                OnPropertyChanged(nameof(McpPort));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName)

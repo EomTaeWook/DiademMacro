@@ -81,6 +81,31 @@
           </StackPanel>
         </Border>
         <Border Classes="card">
+          <StackPanel Spacing="14">
+            <Grid ColumnDefinitions="*,Auto">
+              <StackPanel Orientation="Horizontal" Spacing="9">
+                <PathIcon Width="17" Height="17" Foreground="{StaticResource AccentTextBrush}" Data="M8,3 H16 V7 H20 V17 H16 V21 H8 V17 H4 V7 H8 Z M10,5 V9 H6 V15 H10 V19 H14 V15 H18 V9 H14 V5 Z" />
+                <TextBlock Classes="section" Text="{Binding McpServer, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="mcpOpenStatusText" Text="{Binding McpOpenStatus, Source={StaticResource LabelLocator}}" Foreground="{StaticResource AccentTextBrush}" IsVisible="False" />
+                <TextBlock x:Name="mcpClosedStatusText" Classes="caption" Text="{Binding McpClosedStatus, Source={StaticResource LabelLocator}}" />
+              </StackPanel>
+            </Grid>
+            <TextBlock Classes="caption" Text="{Binding McpDescription, Source={StaticResource LabelLocator}}" TextWrapping="Wrap" />
+            <Grid ColumnDefinitions="230,*" RowDefinitions="Auto,Auto">
+              <Label Content="{Binding McpPort, Source={StaticResource LabelLocator}}" Margin="0,0,16,12" />
+              <TextBox Grid.Column="1" x:Name="mcpPortTextBox" Text="{Binding Config.McpPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{Binding McpPort, Source={StaticResource LabelLocator}}" Margin="0,0,0,12" />
+              <Label Grid.Row="1" Content="{Binding McpConnectionAddress, Source={StaticResource LabelLocator}}" Margin="0,0,16,0" />
+              <TextBox Grid.Row="1" Grid.Column="1" x:Name="mcpEndpointTextBox" IsReadOnly="True" AutomationProperties.Name="{Binding McpConnectionAddress, Source={StaticResource LabelLocator}}" />
+            </Grid>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <Button x:Name="openMcpButton" Classes="accent" Content="{Binding McpOpen, Source={StaticResource LabelLocator}}" />
+              <Button x:Name="closeMcpButton" Content="{Binding McpClose, Source={StaticResource LabelLocator}}" IsEnabled="False" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <Border Classes="card">
           <view:AppUpdateView x:Name="appUpdateView" />
         </Border>
       </StackPanel>

@@ -190,7 +190,7 @@ namespace Macro
             _coroutineTimer.Start();
             try
             {
-                await _mcpService.StartAsync();
+                await _mcpService.StartFromArgumentsAsync();
             }
             catch (Exception exception)
             {

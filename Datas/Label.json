@@ -520,5 +520,65 @@
     "Name": "1087",
     "Kor": "\uB85C\uADF8 \uD3F4\uB354 \uC5F4\uAE30",
     "Eng": "Open log folder"
+  },
+  {
+    "Id": 1088,
+    "Name": "1088",
+    "Kor": "MCP \uC11C\uBC84",
+    "Eng": "MCP server"
+  },
+  {
+    "Id": 1089,
+    "Name": "1089",
+    "Kor": "MCP \uC5F4\uAE30",
+    "Eng": "Open MCP"
+  },
+  {
+    "Id": 1090,
+    "Name": "1090",
+    "Kor": "MCP \uB2EB\uAE30",
+    "Eng": "Close MCP"
+  },
+  {
+    "Id": 1091,
+    "Name": "1091",
+    "Kor": "\uC5F0\uACB0 \uC8FC\uC18C",
+    "Eng": "Connection URL"
+  },
+  {
+    "Id": 1092,
+    "Name": "1092",
+    "Kor": "\uC5F4\uB9BC",
+    "Eng": "Open"
+  },
+  {
+    "Id": 1093,
+    "Name": "1093",
+    "Kor": "\uB2EB\uD798",
+    "Eng": "Closed"
+  },
+  {
+    "Id": 1094,
+    "Name": "1094",
+    "Kor": "\uAC19\uC740 PC\uC758 AI \uC571\uC744 \uC5F0\uACB0\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC774\uBCA4\uD2B8\uB97C \uD3B8\uC9D1\uD558\uB824\uBA74 \uC11C\uBC84\uB97C \uC5F0 \uB4A4 \uC124\uC815 \uCC3D\uC744 \uB2EB\uC73C\uC138\uC694.",
+    "Eng": "Connect an AI app on the same PC. After opening the server, close Settings to edit events."
+  },
+  {
+    "Id": 1095,
+    "Name": "1095",
+    "Kor": "MCP \uC11C\uBC84\uB97C \uC5F4\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.",
+    "Eng": "Could not open the MCP server."
+  },
+  {
+    "Id": 1096,
+    "Name": "1096",
+    "Kor": "MCP \uC11C\uBC84\uB97C \uB2EB\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4.",
+    "Eng": "Could not close the MCP server."
+  },
+  {
+    "Id": 1097,
+    "Name": "1097",
+    "Kor": "\uD3EC\uD2B8",
+    "Eng": "Port"
   }
 ]

@@ -292,5 +292,11 @@
     "Name": "1048",
     "Kor": "\uC5C5\uB370\uC774\uD2B8 \uC791\uC5C5\uC744 \uC644\uB8CC\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uB85C\uADF8\uB97C \uD655\uC778\uD558\uC138\uC694.",
     "Eng": "The update operation failed. Check the log for details."
+  },
+  {
+    "Id": 1049,
+    "Name": "1049",
+    "Kor": "MCP \uD3EC\uD2B8\uB294 1024~65535 \uC0AC\uC774\uC758 \uC815\uC218\uC5EC\uC57C \uD569\uB2C8\uB2E4.",
+    "Eng": "The MCP port must be an integer from 1024 to 65535."
   }
 ]
