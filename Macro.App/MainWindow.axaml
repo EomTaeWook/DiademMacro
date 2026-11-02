@@ -2,11 +2,7 @@
   <Grid Margin="24" RowDefinitions="Auto,Auto,Auto,*">
     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,22">
       <StackPanel Orientation="Horizontal" Spacing="14">
-        <Image Source="/Assets/AppIcon.png" Width="48" Height="48" Stretch="Uniform" VerticalAlignment="Center">
-          <Image.Clip>
-            <RectangleGeometry Rect="0,0,48,48" RadiusX="14" RadiusY="14" />
-          </Image.Clip>
-        </Image>
+        <Image Source="/Assets/AppIcon.png" Width="48" Height="48" Stretch="Uniform" VerticalAlignment="Center" />
         <StackPanel Spacing="4" VerticalAlignment="Center">
           <TextBlock Classes="heading" Text="{Binding Title, Source={StaticResource LabelLocator}}" />
           <TextBlock Classes="caption" Text="{Binding ExecutionHint, Source={StaticResource LabelLocator}}" />
