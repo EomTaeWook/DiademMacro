@@ -46,3 +46,5 @@ dotnet publish Macro.App/Macro.App.csproj -c Release -r osx-x64 -p:PublishProfil
 ```
 
 게시 타깃은 자체 포함 실행 파일과 네이티브 라이브러리를 Diadem Macro.app/Contents/MacOS 아래로 복사하고 Info.plist에 버전·앱 식별자를 설정한다. 마지막 서명은 로컬 ad-hoc 서명이며 Developer ID 서명·공증·Gatekeeper 통과나 권한 유지가 검증된 배포물이 아니다. .app 전체가 배포 단위이며 ditto로 Mac 메타데이터와 실행 권한을 보존하는 ZIP을 만든다. 게시 명령은 앱을 실행하지 않는다.
+
+3.3.1의 Mac ARM64·x64 게시·패키징은 [Actions 실행 41436121067](https://github.com/EomTaeWook/DiademMacro/actions/runs/41436121067)에서 성공했다. Windows와 Mac 배포 코드 커밋은 a0d0dfc24588d92c96b9b3b8900c5ad06190bc38이며 기존 태그는 이동하지 않는다. Mac ZIP의 해시, 필수 .app 파일과 앱 실행 파일의 CPU 타입은 확인했다. 앱 실행이나 권한 승인·캡처·입력의 동작 검증은 수행하지 않았다. 자산별 해시는 [3.3.1 릴리스 기록](releases/3.3.1.md)에 둔다.

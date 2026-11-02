@@ -6,17 +6,24 @@
   <img src="doc/images/macro-event-preview.png" width="960" alt="Diadem Macro showing a registered image event and a preview of the target window" />
 </p>
 
-Diadem Macro is a Windows desktop automation tool that finds registered images in application windows and repeats mouse and keyboard actions. It supports Korean and English.
+Diadem Macro is a desktop automation tool that finds registered images in application windows and repeats mouse and keyboard actions. It supports Korean and English.
 
 - Download: [GitHub Releases](https://github.com/EomTaeWook/DiademMacro/releases)
-- Supported system: Windows 10 version 2004 or later, x64
-- Distribution: one self-contained EXE
+- Targets: Windows 10 version 2004 or later (x64), macOS 14 or later (Apple Silicon and Intel)
+- Distribution: one self-contained Windows EXE, or a self-contained Mac `.app` in a ZIP
 
 Download the Windows x64 EXE, place it in a writable folder, and run it. No installer or separate .NET installation is required. Settings, captured images, and logs are created as separate files during use.
 
 ## macOS
 
-Source implementations for capture, input, and permissions target macOS 14 or later. **Mac builds and execution have not been verified. Current GitHub release downloads are for Windows.**
+Download the ZIP for your Mac, extract it, move `Diadem Macro.app` to Applications, and open it. No separate .NET installation is required.
+
+| Mac type | Download |
+| --- | --- |
+| Apple Silicon (M series) | [Macro-3.3.1-osx-arm64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.3.1/Macro-3.3.1-osx-arm64.zip) |
+| Intel | [Macro-3.3.1-osx-x64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.3.1/Macro-3.3.1-osx-x64.zip) |
+
+Publishing and packaging completed for both architectures on GitHub macOS runners. **App startup, permission approval, actual capture, and input have not been verified.** Mac packages use ad-hoc signing and have not been notarized by Apple.
 
 When using a Mac build of `Diadem Macro.app`, open **Settings → macOS permissions** and press **Allow input control** and **Allow screen capture**, then approve the requests in macOS System Settings. Permission status refreshes when you return to the app. A restart may be required after granting permission.
 

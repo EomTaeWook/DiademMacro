@@ -6,17 +6,24 @@
   <img src="doc/images/macro-event-preview.png" width="960" alt="등록된 이미지 이벤트와 대상 화면 미리보기가 표시된 Diadem Macro" />
 </p>
 
-Diadem Macro는 Windows 프로그램의 화면에서 등록한 이미지를 찾고 마우스·키보드 입력을 반복하는 데스크톱 자동화 도구입니다. Avalonia와 .NET 10으로 동작하며 한국어와 영어 UI를 제공합니다.
+Diadem Macro는 프로그램의 화면에서 등록한 이미지를 찾고 마우스·키보드 입력을 반복하는 데스크톱 자동화 도구입니다. Avalonia와 .NET 10으로 동작하며 한국어와 영어 UI를 제공합니다.
 
 - 다운로드: [GitHub Releases](https://github.com/EomTaeWook/DiademMacro/releases)
-- 지원 운영체제: Windows 10 버전 2004 이상, x64
-- 배포 형식: 자체 포함 단일 `Macro.exe`
+- 지원 대상: Windows 10 버전 2004 이상(x64), macOS 14 이상(Apple Silicon·Intel)
+- 배포 형식: Windows 자체 포함 단일 EXE, Mac 자체 포함 `.app` ZIP
 
 GitHub Releases에서 Windows x64용 EXE 하나를 내려받아 쓰기 가능한 폴더에 두고 실행하세요. 설치 프로그램이나 별도 .NET 설치는 필요하지 않습니다. 설정·저장 이미지·로그는 사용 중에 별도 파일로 생성됩니다.
 
 ## macOS
 
-macOS 14 이상을 대상으로 캡처·입력·권한 처리 소스를 추가했습니다. **Mac 빌드·실행은 아직 검증하지 않았으며, 현재 GitHub 배포 파일은 Windows용입니다.**
+사용 중인 Mac에 맞는 ZIP을 내려받아 압축을 풀고 `Diadem Macro.app`을 응용 프로그램 폴더로 옮긴 뒤 실행하세요. 별도 .NET 설치는 필요하지 않습니다.
+
+| Mac 종류 | 다운로드 |
+| --- | --- |
+| Apple Silicon(M 시리즈) | [Macro-3.3.1-osx-arm64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.3.1/Macro-3.3.1-osx-arm64.zip) |
+| Intel | [Macro-3.3.1-osx-x64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.3.1/Macro-3.3.1-osx-x64.zip) |
+
+Mac 두 아키텍처의 게시·패키징은 GitHub macOS 러너에서 완료했습니다. **앱 실행·권한 승인·실제 캡처와 입력은 아직 검증하지 않았습니다.** Mac 배포본은 ad-hoc 서명을 사용하며 Apple 공증은 받지 않았습니다.
 
 Mac용 `Diadem Macro.app`을 사용하는 경우 앱을 열고 **설정 → macOS 권한**에서 **입력 제어 허용**과 **화면 캡처 허용**을 누른 뒤 macOS 시스템 설정에서 승인합니다. 앱으로 돌아오면 권한 상태를 다시 표시합니다. 권한을 허용한 뒤 앱 재실행이 필요할 수 있습니다.
 

@@ -10,6 +10,8 @@
 
 Windows x64 자산 이름은 `Macro-{tag}-win-x64.exe` 또는 `Macro.exe`다. 해당 이름과 일치하는 자산은 하나여야 하며 업로드 상태, 크기, 공식 저장소의 정확한 다운로드 경로와 `sha256:<해시>` digest를 확인한다. ZIP이나 digest 없는 자산은 자동 교체하지 않는다. 조회 실패·정식 릴리스 없음·최신 버전·설치 불가 사유를 구분해 표시한다.
 
+같은 릴리스의 Mac 수동 배포 파일은 `Macro-{tag}-osx-arm64.zip`, `Macro-{tag}-osx-x64.zip`과 각 파일의 `.sha256`이다. ZIP에는 자체 포함 `Diadem Macro.app` 전체를 넣고 Mac 메타데이터와 실행 권한을 보존한다. Mac ZIP과 해시 파일은 Windows 자동 업데이트 자산 선택 대상이 아니다. macOS 자동 교체 설치는 제공하지 않는다.
+
 ## 단일 실행 파일
 
 `Macro.App/Properties/PublishProfiles/WindowsX64.pubxml`을 사용한다. 자체 포함 Windows x64 단일 파일, 네이티브 라이브러리 추출, 내장 디버그 정보와 트리밍 비활성화를 설정한다. 기본 SDK publish 출력의 `Macro.exe`가 배포 파일이며 별도 영구 패처는 제공하지 않는다. 기존 다중 파일 Release 복사 후처리 대신 SDK 게시 흐름을 사용한다.
