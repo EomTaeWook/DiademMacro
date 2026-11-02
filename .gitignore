@@ -14,3 +14,4 @@ Macro.App/Macro.App.csproj.user
 Release/Install/
 **/obj/*
 **/bin/*
+/.codex-attachments/*
