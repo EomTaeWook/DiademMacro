@@ -25,8 +25,8 @@ using Windows.Storage.Streams;
 
 namespace Macro.Infrastructure.Manager
 {
-    [Injectable(Dignus.DependencyInjection.LifeScope.Singleton)]
-    public class ScreenCaptureManager
+    [Injectable(Dignus.DependencyInjection.LifeScope.Singleton, typeof(Macro.Infrastructure.Interface.IScreenCaptureManager))]
+    public class ScreenCaptureManager : Macro.Infrastructure.Interface.IScreenCaptureManager
     {
         private const int CaptureFrameTimeoutMilliseconds = 2000;
         private const uint Direct3D11SdkVersion = 7;
@@ -102,6 +102,23 @@ namespace Macro.Infrastructure.Manager
                 return false;
             }
             return CaptureWindowWithDPI(targetHandle, useMonitorDPI, out bitmap);
+        }
+
+        public Bitmap CaptureScreenRegion(MonitorInfo monitor, IntRect region, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            Bitmap bitmap = new(region.Width, region.Height);
+            try
+            {
+                using Graphics graphics = Graphics.FromImage(bitmap);
+                graphics.CopyFromScreen(monitor.Rect.Left + region.Left, monitor.Rect.Top + region.Top, 0, 0, new System.Drawing.Size(region.Width, region.Height), CopyPixelOperation.SourceCopy);
+                return bitmap;
+            }
+            catch
+            {
+                bitmap.Dispose();
+                throw;
+            }
         }
 
         public IntRect AdjustRectForDPI(Utils.Infrastructure.Rectangle rect, MonitorInfo monitorInfo)

@@ -15,11 +15,13 @@
 | `Macro.App` | Avalonia 시작, 화면·창 수명, 지역화, 후원·웹 표시, 정식 릴리스 조회·다운로드·설치·재시작 | Core, DataContainer, Utils |
 | `Macro.Core` | 매크로 실행, 키보드·마우스 입력, 이미지 검색·캡처, 설정·트리거 모델, 저장 파일 읽기·쓰기 | DataContainer, Utils |
 | `DataContainer` | 기존 Excel 생성 템플릿과 로더 | .NET |
-| `Utils` | Win32 연동, 공용 좌표·상수, JSON·이미지 파일 변환 | .NET |
+| `Utils` | OS 연동, 공용 좌표·상수, JSON·이미지 파일 변환 | .NET, macOS 이미지 구현의 Avalonia |
 
-`Macro.slnx`는 App/Core를 최상위에 두고 DataContainer와 Utils를 Shared에 둔다. Core는 Avalonia와 App을 참조하지 않는다. 대상은 .NET 10이며 캡처·입력·이미지와 내장 웹 표시 때문에 Windows 전용이다. 실행 파일의 어셈블리 이름은 `Macro`를 유지한다.
+`Macro.slnx`는 App/Core를 최상위에 두고 DataContainer와 Utils를 Shared에 둔다. Core는 Avalonia와 App을 직접 참조하지 않는다. 대상은 .NET 10이며 Windows와 macOS 캡처·입력 구현은 [macOS 구현 경계](MacOS.md)에 따라 구분한다. 실행 파일의 어셈블리 이름은 `Macro`를 유지한다. macOS 대상의 Utils 이미지 구현에 한해 기존 Avalonia 패키지를 사용한다.
 
 Windows x64 자체 포함 단일 실행 파일은 `WindowsX64.pubxml`과 SDK 게시 흐름으로 구성한다. 필요한 템플릿·로그 기본 설정은 내장하며 사용자 설정과 저장 데이터는 기존 정책을 유지한다. 배포 산출물 생성과 릴리스 게시는 사용자 요청 범위에서 수행한다.
+
+macOS 14 이상을 위한 App 대상은 `net10.0`이며 AppKit·CoreGraphics·ScreenCaptureKit·WebKit 공개 API를 Swift C ABI로 연결한다. `IDesktopPlatform`, `IScreenCaptureManager`, 기존 입력 인터페이스의 OS 구현은 대상 프레임워크에 따라 DI로 등록한다. Mac은 창 캡처와 실제 입력만 제공하며 기존 Windows 메시지 입력·WGC·DWM 구현은 Windows 대상에 유지한다. macOS용 소스와 게시 프로필은 빌드·실행·배포가 검증된 상태를 뜻하지 않는다.
 
 ## 시작과 실행
 
@@ -49,7 +51,7 @@ App·Core assembly는 각각 한 번 자동 등록한다. `FileService`, 키보�
 
 ## 저장과 의존성
 
-설정의 기존 작업 디렉터리와 `SavePath` 정책, `save.dll` 이름, JSON 속성과 숫자형 enum, `img/img-<sha256>.png` 참조를 유지한다. `Utils.JsonHelper`가 `System.Text.Json`을 사용한다. Bitmap 파일, Drawing.Point의 기존 문자열과 enum 문자열 입력은 해당 변환기가 처리한다.
+Windows 설정의 기존 작업 디렉터리와 `SavePath` 정책, `save.dll` 이름, JSON 속성과 숫자형 enum, `img/img-<sha256>.png` 참조를 유지한다. macOS는 Finder 실행 시 쓰기 권한이 있는 사용자 Application Support/DiademMacro를 작업 디렉터리로 사용한다. `Utils.JsonHelper`가 `System.Text.Json`을 사용한다. Bitmap 파일, Drawing.Point의 기존 문자열과 enum 문자열 입력은 해당 변환기가 처리한다.
 
 이전 바이너리 형식은 기존 순서 기반 직렬화 경로를 유지한다. Microsoft의 `System.Runtime.Serialization.Formatters` 호환 패키지와 앱 런타임 설정을 사용한다. `TypeRedirectBinder`는 기존 Macro 어셈블리와 WPF Point를 현재 Core 모델로 연결한다. 저장 데이터를 일괄 변환하거나 덮어쓰는 별도 마이그레이션은 실행하지 않는다.
 

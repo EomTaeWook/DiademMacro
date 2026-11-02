@@ -1,0 +1,51 @@
+name: Publish macOS packages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish ${{ matrix.runtime }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            runtime: osx-arm64
+            profile: MacOSArm64
+          - runner: macos-15-intel
+            runtime: osx-x64
+            profile: MacOSX64
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.401
+      - name: Publish application bundle
+        shell: bash
+        run: |
+          printf '%s\n' '{"sdk":{"version":"10.0.401","rollForward":"disable","allowPrerelease":false}}' > global.json
+          dotnet publish Macro.App/Macro.App.csproj --configuration Release --runtime "${{ matrix.runtime }}" -p:PublishProfile="${{ matrix.profile }}" -p:UseSharedCompilation=false --output "$RUNNER_TEMP/diadem-publish" --verbosity minimal
+      - name: Package application bundle
+        shell: bash
+        run: |
+          version="$(dotnet msbuild Macro.App/Macro.App.csproj -getProperty:Version -nologo)"
+          mkdir -p output
+          ditto -c -k --sequesterRsrc --keepParent "$RUNNER_TEMP/diadem-publish/Diadem Macro.app" "output/Macro-${version}-${{ matrix.runtime }}.zip"
+          cd output
+          shasum -a 256 "Macro-${version}-${{ matrix.runtime }}.zip" > "Macro-${version}-${{ matrix.runtime }}.zip.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Macro-${{ matrix.runtime }}
+          path: output/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7

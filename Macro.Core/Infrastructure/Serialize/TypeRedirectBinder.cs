@@ -1,5 +1,6 @@
 using Macro.Models;
 using System;
+using System.Drawing;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -24,13 +25,21 @@ namespace Macro.Infrastructure.Serialize
             }
             if (assemblyName.Name == "System.Drawing")
             {
-                return typeof(System.Drawing.Bitmap).Assembly;
+                return typeof(Bitmap).Assembly;
+            }
+            if (assemblyName.Name == "System.Drawing.Common")
+            {
+                return typeof(Bitmap).Assembly;
             }
             return Assembly.Load(assemblyName);
         }
 
         private static Type ResolveType(Assembly assembly, string typeName, bool ignoreCase)
         {
+            if (typeName == "System.Drawing.Bitmap")
+            {
+                return typeof(Bitmap);
+            }
             if (typeName == "Macro.Models.MouseTriggerInfo")
             {
                 return typeof(MouseEventInfo);

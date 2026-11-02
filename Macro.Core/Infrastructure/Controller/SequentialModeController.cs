@@ -3,6 +3,7 @@ using Dignus.Collections;
 using Dignus.DependencyInjection.Attributes;
 using Dignus.Log;
 using Macro.Infrastructure.Manager;
+using Macro.Infrastructure.Interface;
 using Macro.Models;
 using System;
 using System.Diagnostics;
@@ -19,9 +20,7 @@ namespace Macro.Infrastructure.Controller
     {
         private readonly InputEventExecutor _eventProcessorHandler;
         private CacheDataManager _cacheDataManager;
-        public SequentialModeController(Config config,
-            InputEventExecutor inputEventProcessor,
-            CacheDataManager cacheDataManager, ScreenCaptureManager screenCaptureManager) : base(config, screenCaptureManager)
+        public SequentialModeController(Config config, InputEventExecutor inputEventProcessor, CacheDataManager cacheDataManager, IScreenCaptureManager screenCaptureManager, IDesktopPlatform desktopPlatform) : base(config, screenCaptureManager, desktopPlatform)
         {
             _eventProcessorHandler = inputEventProcessor;
             _cacheDataManager = cacheDataManager;
@@ -64,13 +63,13 @@ namespace Macro.Infrastructure.Controller
 
             if (string.IsNullOrEmpty(template.HandleName))
             {
-                windowHandle = process.MainWindowHandle;
+                windowHandle = _desktopPlatform.GetMainWindow(process);
             }
             else
             {
-                var item = NativeHelper.GetChildHandles(process.MainWindowHandle).Where(r => r.Item1.Equals(template.HandleName)).FirstOrDefault();
+                var item = _desktopPlatform.GetChildHandles(_desktopPlatform.GetMainWindow(process)).Where(r => r.Item1.Equals(template.HandleName)).FirstOrDefault();
 
-                windowHandle = item != null ? item.Item2 : process.MainWindowHandle;
+                windowHandle = item != null ? item.Item2 : _desktopPlatform.GetMainWindow(process);
             }
 
             var matchResult = CalculateSimilarityAndLocation(eventInfoModel.Image, capturedImage, eventInfoModel, cancellationToken);
@@ -116,7 +115,7 @@ namespace Macro.Infrastructure.Controller
                         endPoint.X += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Width / 2);
                         endPoint.Y += _eventProcessorHandler.GetRandomValue(0, eventInfoModel.Image.Height / 2);
 
-                        _eventProcessorHandler.ProcessSameImageMouseDragEvent(windowHandle, startPoint, endPoint, eventInfoModel, _config.DragDelay, cancellationToken);
+                        _eventProcessorHandler.ProcessSameImageMouseDragEvent(windowHandle, startPoint, endPoint, eventInfoModel, capturedImage.Size, _config.DragDelay, cancellationToken);
                     }
                     else
                     {

@@ -1,0 +1,37 @@
+<Project>
+  <PropertyGroup>
+    <MacOSNativeDirectory>$(MSBuildProjectDirectory)/obj/macos-native/$(Configuration)/$(RuntimeIdentifier)</MacOSNativeDirectory>
+    <MacOSNativeLibrary>$(MacOSNativeDirectory)/libDiademMac.dylib</MacOSNativeLibrary>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="$(MacOSNativeLibrary)" Link="libDiademMac.dylib" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+  <Target Name="RequireMacOSBuildHost">
+    <Error Condition="!$([MSBuild]::IsOSPlatform('OSX'))" Text="The macOS app requires a Mac with the Xcode command line tools to compile its native bridge." />
+    <Error Condition="'$(RuntimeIdentifier)' != 'osx-arm64' and '$(RuntimeIdentifier)' != 'osx-x64'" Text="Choose the osx-arm64 or osx-x64 runtime identifier." />
+  </Target>
+  <Target Name="CompileMacOSNative" BeforeTargets="PrepareForBuild" DependsOnTargets="RequireMacOSBuildHost" Inputs="$(MSBuildThisFileDirectory)DiademMac.swift;$(MSBuildThisFileFullPath)" Outputs="$(MacOSNativeLibrary)">
+    <PropertyGroup>
+      <MacOSNativeArchitecture Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">arm64</MacOSNativeArchitecture>
+      <MacOSNativeArchitecture Condition="'$(RuntimeIdentifier)' == 'osx-x64'">x86_64</MacOSNativeArchitecture>
+    </PropertyGroup>
+    <MakeDir Directories="$(MacOSNativeDirectory)" />
+    <Exec Command="xcrun --sdk macosx swiftc -swift-version 5 -emit-library -module-name DiademMac -target $(MacOSNativeArchitecture)-apple-macos14.0 -Xlinker -install_name -Xlinker @rpath/libDiademMac.dylib &quot;$(MSBuildThisFileDirectory)DiademMac.swift&quot; -o &quot;$(MacOSNativeLibrary)&quot;" />
+  </Target>
+  <Target Name="CreateMacOSApplicationBundle" AfterTargets="Publish" Condition="'$(CreateMacOSBundle)' == 'true'">
+    <PropertyGroup>
+      <MacOSBundleDirectory>$(PublishDir)Diadem Macro.app</MacOSBundleDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <MacOSPublishedFile Include="$(PublishDir)**/*" Exclude="$(MacOSBundleDirectory)/**/*" />
+    </ItemGroup>
+    <MakeDir Directories="$(MacOSBundleDirectory)/Contents/MacOS;$(MacOSBundleDirectory)/Contents/Resources" />
+    <Copy SourceFiles="@(MacOSPublishedFile)" DestinationFiles="@(MacOSPublishedFile->'$(MacOSBundleDirectory)/Contents/MacOS/%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)Info.plist" DestinationFiles="$(MacOSBundleDirectory)/Contents/Info.plist" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)/Assets/AppIcon.png" DestinationFiles="$(MacOSBundleDirectory)/Contents/Resources/AppIcon.png" />
+    <Exec Command="/usr/libexec/PlistBuddy -c &quot;Set :CFBundleShortVersionString $(Version)&quot; &quot;$(MacOSBundleDirectory)/Contents/Info.plist&quot;" />
+    <Exec Command="/usr/libexec/PlistBuddy -c &quot;Set :CFBundleVersion $(Version)&quot; &quot;$(MacOSBundleDirectory)/Contents/Info.plist&quot;" />
+    <Exec Command="chmod +x &quot;$(MacOSBundleDirectory)/Contents/MacOS/$(AssemblyName)&quot;" />
+    <Exec Command="codesign --force --deep --sign - &quot;$(MacOSBundleDirectory)&quot;" />
+  </Target>
+</Project>

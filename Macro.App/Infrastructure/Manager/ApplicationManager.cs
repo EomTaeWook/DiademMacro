@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using Dignus.Collections;
 using Dignus.Framework;
 using Macro.Infrastructure.Controller;
+using Macro.Infrastructure.Interface;
 using Macro.View;
 using System;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Macro.Infrastructure.Manager
         private readonly ChildWindow _drawWindow = new();
         private readonly ArrayQueue<CaptureView> _captureViews = new();
         private readonly ArrayQueue<MousePositionView> _mouseInteractionViews = new();
-        private ScreenCaptureManager _screenCaptureManager;
+        private IScreenCaptureManager _screenCaptureManager;
 
         public bool HasActiveInputOverlay
         {
@@ -90,10 +91,13 @@ namespace Macro.Infrastructure.Manager
 
         public void Init()
         {
-            _screenCaptureManager = ServiceResolver.GetService<ScreenCaptureManager>();
-            _drawWindow.Opacity = 0;
-            _drawWindow.Show();
-            _screenCaptureManager.SetDrawWindowHandle(_drawWindow.TryGetPlatformHandle().Handle);
+            _screenCaptureManager = ServiceResolver.GetService<IScreenCaptureManager>();
+            if (OperatingSystem.IsWindows() == true)
+            {
+                _drawWindow.Opacity = 0;
+                _drawWindow.Show();
+                _screenCaptureManager.SetDrawWindowHandle(_drawWindow.TryGetPlatformHandle().Handle);
+            }
             ResetMonitorViews();
         }
 
@@ -135,6 +139,12 @@ namespace Macro.Infrastructure.Manager
 
         public void ShowCaptureImageViews()
         {
+            IDesktopPlatform desktopPlatform = ServiceResolver.GetService<IDesktopPlatform>();
+            if (desktopPlatform.HasCapturePermission == false)
+            {
+                desktopPlatform.RequestCapturePermission();
+                return;
+            }
             ResetMonitorViews();
             foreach (CaptureView view in _captureViews)
             {
@@ -164,7 +174,10 @@ namespace Macro.Infrastructure.Manager
 
         public void Dispose()
         {
-            _screenCaptureManager?.SetDrawWindowHandle(IntPtr.Zero);
+            if (OperatingSystem.IsWindows() == true)
+            {
+                _screenCaptureManager?.SetDrawWindowHandle(IntPtr.Zero);
+            }
             _drawWindow.Close();
             _progress.Close();
             CoroutineRunner.Dispose();

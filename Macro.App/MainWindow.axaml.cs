@@ -12,6 +12,7 @@ using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Updates;
 using Macro.Infrastructure.Services;
+using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Mcp;
 using Macro.Models;
 using Macro.Models.Protocols;
@@ -82,6 +83,7 @@ namespace Macro
         private AdManager _adManager;
         private EventEditingService _eventEditingService;
         private MacroMcpService _mcpService;
+        private IDesktopPlatform _desktopPlatform;
         private bool _isEventItemMoveButtonPressed;
         private bool _eventItemOrderChanged;
         private WebViewWindow _webViewWindow;
@@ -177,6 +179,7 @@ namespace Macro
             _config = ServiceResolver.GetService<Config>();
             _eventEditingService = ServiceResolver.GetService<EventEditingService>();
             _mcpService = ServiceResolver.GetService<MacroMcpService>();
+            _desktopPlatform = ServiceResolver.GetService<IDesktopPlatform>();
             _webApiManager = ServiceResolver.GetService<WebApiManager>();
             _adManager = ServiceResolver.GetService<AdManager>();
             _macroExecutionController = ServiceResolver.GetService<MacroExecutionController>();
@@ -564,8 +567,7 @@ namespace Macro
             {
                 return null;
             }
-            IntRect rectangle = new();
-            NativeHelper.GetWindowRect(processItem.Process.MainWindowHandle, ref rectangle);
+            _desktopPlatform.TryGetWindowBounds(_desktopPlatform.GetMainWindow(processItem.Process), out IntRect rectangle);
             return new ProcessInfo { ProcessName = processItem.Process.ProcessName, Position = rectangle };
         }
 
@@ -664,6 +666,16 @@ namespace Macro
         {
             if (CanEditEvents() == false)
             {
+                return;
+            }
+            if (_desktopPlatform.HasInputPermission == false)
+            {
+                _desktopPlatform.RequestInputPermission();
+                return;
+            }
+            if (_desktopPlatform.HasCapturePermission == false)
+            {
+                _desktopPlatform.RequestCapturePermission();
                 return;
             }
             SelectionStateController selection = ServiceResolver.GetService<SelectionStateController>();
@@ -884,7 +896,7 @@ namespace Macro
             {
                 try
                 {
-                    if (process.MainWindowHandle == IntPtr.Zero)
+                    if (_desktopPlatform.GetMainWindow(process) == IntPtr.Zero)
                     {
                         process.Dispose();
                         continue;

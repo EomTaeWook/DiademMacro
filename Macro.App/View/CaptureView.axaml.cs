@@ -5,9 +5,13 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Dignus.Log;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Interface;
+using Macro.Infrastructure.Manager;
 using Macro.Models;
 using System;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using Utils;
 using Utils.Infrastructure;
 using Point = Avalonia.Point;
@@ -30,10 +34,14 @@ namespace Macro.View
         private readonly MonitorInfo _monitorInfo;
         private Border _dragBorder;
         private CaptureModeType _captureMode;
+        private readonly IScreenCaptureManager _screenCaptureManager;
+        private readonly IDesktopPlatform _desktopPlatform;
 
         public CaptureView(MonitorInfo monitorInfo)
         {
             _monitorInfo = monitorInfo;
+            _screenCaptureManager = ServiceResolver.GetService<IScreenCaptureManager>();
+            _desktopPlatform = ServiceResolver.GetService<IDesktopPlatform>();
             InitializeComponent();
             captureZone.PointerPressed += CaptureZone_PointerPressed;
             captureZone.PointerMoved += CaptureZone_PointerMoved;
@@ -50,8 +58,16 @@ namespace Macro.View
             _captureMode = captureModeType;
             Position = new PixelPoint(_monitorInfo.Rect.Left, _monitorInfo.Rect.Top);
             Show();
-            Width = _monitorInfo.Rect.Width / RenderScaling;
-            Height = _monitorInfo.Rect.Height / RenderScaling;
+            if (OperatingSystem.IsMacOS() == true)
+            {
+                Width = _monitorInfo.Rect.Width;
+                Height = _monitorInfo.Rect.Height;
+            }
+            else
+            {
+                Width = _monitorInfo.Rect.Width / RenderScaling;
+                Height = _monitorInfo.Rect.Height / RenderScaling;
+            }
             Position = new PixelPoint(_monitorInfo.Rect.Left, _monitorInfo.Rect.Top);
             Activate();
             Clear();
@@ -124,20 +140,19 @@ namespace Macro.View
             _dragBorder.Height = Math.Abs(current.Y - origin.Y);
         }
 
-        private Bitmap CaptureScreenRegion(IntRect rectangle)
+        private async Task CaptureScreenRegionAsync(IntRect rectangle)
         {
+            Bitmap captureImage = null;
             try
             {
-                Bitmap bitmap = new(rectangle.Width, rectangle.Height);
-                using Graphics graphics = Graphics.FromImage(bitmap);
-                graphics.CopyFromScreen(_monitorInfo.Rect.Left + rectangle.Left, _monitorInfo.Rect.Top + rectangle.Top, 0, 0, new System.Drawing.Size(rectangle.Width, rectangle.Height), CopyPixelOperation.SourceCopy);
-                return bitmap;
+                await Task.Delay(80);
+                captureImage = await Task.Run(() => _screenCaptureManager.CaptureScreenRegion(_monitorInfo, rectangle, CancellationToken.None));
             }
             catch (Exception exception)
             {
                 LogHelper.Error(exception);
-                return null;
             }
+            NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureCompleted, new CaptureCompletedEventArgs { MonitorInfo = _monitorInfo, CaptureImage = captureImage, Position = rectangle });
         }
 
         private void CaptureZone_PointerReleased(object sender, PointerReleasedEventArgs eventArgs)
@@ -166,14 +181,23 @@ namespace Macro.View
             PixelPoint origin = captureZone.PointToScreen(new Point(Canvas.GetLeft(_dragBorder), Canvas.GetTop(_dragBorder)));
             PixelPoint end = captureZone.PointToScreen(new Point(Canvas.GetLeft(_dragBorder) + _dragBorder.Width, Canvas.GetTop(_dragBorder) + _dragBorder.Height));
             IntRect rectangle = new() { Left = origin.X - _monitorInfo.Rect.Left, Top = origin.Y - _monitorInfo.Rect.Top, Right = end.X - _monitorInfo.Rect.Left, Bottom = end.Y - _monitorInfo.Rect.Top };
+            if (OperatingSystem.IsMacOS() == true)
+            {
+                rectangle = new IntRect { Left = (int)Math.Round(Canvas.GetLeft(_dragBorder) * RenderScaling), Top = (int)Math.Round(Canvas.GetTop(_dragBorder) * RenderScaling), Right = (int)Math.Round((Canvas.GetLeft(_dragBorder) + _dragBorder.Width) * RenderScaling), Bottom = (int)Math.Round((Canvas.GetTop(_dragBorder) + _dragBorder.Height) * RenderScaling) };
+            }
             Hide();
             if (_captureMode == CaptureModeType.ImageCapture)
             {
-                NotifyHelper.InvokeNotify(NotifyEventType.ScreenCaptureCompleted, new CaptureCompletedEventArgs { MonitorInfo = _monitorInfo, CaptureImage = CaptureScreenRegion(rectangle), Position = rectangle });
+                UIManager.Instance.EnqueueButtonAction(() => CaptureScreenRegionAsync(rectangle));
             }
             else
             {
-                System.Drawing.Point systemDpi = NativeHelper.GetSystemDPI();
+                if (OperatingSystem.IsMacOS() == true)
+                {
+                    NotifyHelper.InvokeNotify(NotifyEventType.ROICaptureCompleted, new ROICaptureCompletedEventArgs { MonitorInfo = _monitorInfo, RoiRect = rectangle });
+                    return;
+                }
+                System.Drawing.Point systemDpi = _desktopPlatform.GetSystemDpi();
                 double horizontalFactor = (double)_monitorInfo.Dpi.X / systemDpi.X;
                 double verticalFactor = (double)_monitorInfo.Dpi.Y / systemDpi.Y;
                 IntRect roiRectangle = new() { Left = (int)Math.Round(rectangle.Left * horizontalFactor), Right = (int)Math.Round(rectangle.Right * horizontalFactor), Top = (int)Math.Round(rectangle.Top * verticalFactor), Bottom = (int)Math.Round(rectangle.Bottom * verticalFactor) };

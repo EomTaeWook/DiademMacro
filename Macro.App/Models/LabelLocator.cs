@@ -77,6 +77,48 @@ namespace Macro.Models
                 return GetString(1088);
             }
         }
+        public string MacPermissions
+        {
+            get
+            {
+                return GetString(1098);
+            }
+        }
+        public string RequestInputPermission
+        {
+            get
+            {
+                return GetString(1099);
+            }
+        }
+        public string RequestCapturePermission
+        {
+            get
+            {
+                return GetString(1100);
+            }
+        }
+        public string PermissionGranted
+        {
+            get
+            {
+                return GetString(1101);
+            }
+        }
+        public string PermissionRequired
+        {
+            get
+            {
+                return GetString(1102);
+            }
+        }
+        public string MacPermissionDescription
+        {
+            get
+            {
+                return GetString(1103);
+            }
+        }
         public string McpOpen
         {
             get

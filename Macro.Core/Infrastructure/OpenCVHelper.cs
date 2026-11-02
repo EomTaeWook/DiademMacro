@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+#if WINDOWS
 using System.Drawing.Imaging;
+#endif
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -67,10 +69,14 @@ namespace Macro.Infrastructure
                     break;
                 }
                 locations.Add(location);
+#if WINDOWS
                 using (Graphics graphics = Graphics.FromImage(searchImage))
                 {
                     graphics.FillRectangle(Brushes.Black, location.X, location.Y, target.Width, target.Height);
                 }
+#else
+                searchImage.FillRectangle(new Rectangle(location.X, location.Y, target.Width, target.Height), Color.Black);
+#endif
                 if (isResultDisplay == true)
                 {
                     DrawMatch(source, target, location);
@@ -460,6 +466,7 @@ namespace Macro.Infrastructure
         private static float[] ReadPixels(Bitmap bitmap, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+#if WINDOWS
             using Bitmap normalizedBitmap = new(bitmap.Width, bitmap.Height, PixelFormat.Format32bppArgb);
             using (Graphics graphics = Graphics.FromImage(normalizedBitmap))
             {
@@ -488,13 +495,30 @@ namespace Macro.Infrastructure
             {
                 normalizedBitmap.UnlockBits(bitmapData);
             }
+#else
+            ReadOnlySpan<byte> bitmapPixels = bitmap.GetPixels();
+            float[] pixels = new float[bitmapPixels.Length];
+            for (int pixelIndex = 0; pixelIndex < bitmapPixels.Length; pixelIndex++)
+            {
+                if (pixelIndex % 4096 == 0)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+                pixels[pixelIndex] = bitmapPixels[pixelIndex];
+            }
+            return pixels;
+#endif
         }
 
         private static void DrawMatch(Bitmap source, Bitmap target, Point2D location)
         {
+#if WINDOWS
             using Graphics graphics = Graphics.FromImage(source);
             using Pen pen = new(Color.Red, 2);
             graphics.DrawRectangle(pen, location.X, location.Y, target.Width, target.Height);
+#else
+            source.DrawRectangle(new Rectangle(location.X, location.Y, target.Width, target.Height), Color.Red, 2);
+#endif
         }
 
         public static Bitmap CropImage(Bitmap source, IntRect roiRect)
@@ -508,10 +532,15 @@ namespace Macro.Infrastructure
                 return source;
             }
             Rectangle rectangle = new(roiRect.Left, roiRect.Top, roiRect.Width, roiRect.Height);
+#if WINDOWS
             Bitmap croppedImage = source.Clone(rectangle, source.PixelFormat);
             using Graphics graphics = Graphics.FromImage(source);
             using Pen pen = new(Color.LightPink);
             graphics.DrawRectangle(pen, rectangle);
+#else
+            Bitmap croppedImage = source.Clone(rectangle);
+            source.DrawRectangle(rectangle, Color.LightPink, 1);
+#endif
             return croppedImage;
         }
 

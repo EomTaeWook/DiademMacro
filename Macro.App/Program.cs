@@ -2,6 +2,7 @@ using Avalonia;
 using Macro.Infrastructure.Updates;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Macro
@@ -11,6 +12,7 @@ namespace Macro
         [STAThread]
         public static void Main(string[] arguments)
         {
+#if WINDOWS
             if (arguments.Length > 0)
             {
                 if (arguments[0] == "--macro-update-helper")
@@ -24,6 +26,19 @@ namespace Macro
                 }
             }
             System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.PerMonitorV2);
+#else
+            if (OperatingSystem.IsMacOS() == false)
+            {
+                throw new PlatformNotSupportedException("This build requires macOS 14 or later.");
+            }
+            if (OperatingSystem.IsMacOSVersionAtLeast(14) == false)
+            {
+                throw new PlatformNotSupportedException("Diadem Macro requires macOS 14 or later.");
+            }
+            string applicationDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DiademMacro");
+            Directory.CreateDirectory(applicationDataDirectory);
+            Environment.CurrentDirectory = applicationDataDirectory;
+#endif
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(arguments);
             if (Application.Current is App application)
             {
@@ -33,6 +48,10 @@ namespace Macro
 
         internal static Task StartUpdateCleanupAsync(string[] arguments)
         {
+            if (OperatingSystem.IsWindows() == false)
+            {
+                return Task.CompletedTask;
+            }
             if (arguments == null)
             {
                 return Task.CompletedTask;

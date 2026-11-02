@@ -2,6 +2,7 @@ using Dignus.Collections;
 using Dignus.Log;
 using Macro.Infrastructure.Interfaces;
 using Macro.Infrastructure.Manager;
+using Macro.Infrastructure.Interface;
 using Macro.Models;
 using System;
 using System.Diagnostics;
@@ -16,11 +17,13 @@ namespace Macro.Infrastructure.Controller
         protected Config _config;
         private Action<Bitmap> _drawImageCallback;
         private Action<EventInfoModel, string> _statusCallback;
-        protected ScreenCaptureManager _screenCaptureManager;
-        public MacroModeControllerBase(Config config, ScreenCaptureManager screenCaptureManager)
+        protected IScreenCaptureManager _screenCaptureManager;
+        protected readonly IDesktopPlatform _desktopPlatform;
+        public MacroModeControllerBase(Config config, IScreenCaptureManager screenCaptureManager, IDesktopPlatform desktopPlatform)
         {
             _config = config;
             _screenCaptureManager = screenCaptureManager;
+            _desktopPlatform = desktopPlatform;
         }
         public abstract void Execute(
             ArrayQueue<Process> processes,

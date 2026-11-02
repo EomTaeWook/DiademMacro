@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
+    <TargetFramework Condition="'$(TargetFramework)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">net10.0</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and $([MSBuild]::IsOSPlatform('OSX'))">$(NETCoreSdkRuntimeIdentifier)</RuntimeIdentifier>
+    <UseWindowsForms Condition="'$(TargetFramework)' != 'net10.0'">true</UseWindowsForms>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <Version>3.3.1</Version>
@@ -13,7 +15,7 @@
     <Copyright>Copyright ©  2018</Copyright>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <RootNamespace>Macro</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest Condition="'$(TargetFramework)' != 'net10.0'">app.manifest</ApplicationManifest>
     <AvaloniaNameGeneratorIsEnabled>false</AvaloniaNameGeneratorIsEnabled>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
@@ -27,6 +29,7 @@
     <AssemblyMetadata Include="MacroPublishedSingleFile" Value="true" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Utils\Imaging\PlatformImageAliases.cs" Link="Infrastructure\PlatformImageAliases.cs" />
     <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <ProjectReference Include="..\Macro.Core\Macro.Core.csproj" />
@@ -34,6 +37,13 @@
     <ProjectReference Include="..\Utils\Utils.csproj" />
     <ProjectReference Include="..\Mcp.Core\MCP.Core.csproj" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <Compile Remove="UI\WebViewControl.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net10.0'">
+    <Compile Remove="Platforms\MacOS\**\*.cs" />
+  </ItemGroup>
+  <Import Project="Platforms\MacOS\MacOS.targets" Condition="'$(TargetFramework)' == 'net10.0'" />
   <ItemGroup>
     <AvaloniaResource Include="Assets\AppIcon.ico" />
     <AvaloniaResource Include="Assets\AppIcon.png" />

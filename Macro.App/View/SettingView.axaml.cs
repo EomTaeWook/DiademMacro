@@ -1,6 +1,7 @@
 using DataContainer.Generated;
 using Macro.Extensions;
 using Macro.Infrastructure;
+using Macro.Infrastructure.Interface;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Mcp;
 using Macro.Models;
@@ -37,6 +38,14 @@ namespace Macro.View
         private TextBox _mcpEndpointTextBox;
         private TextBox _mcpPortTextBox;
         private MacroMcpService _mcpService;
+        private IDesktopPlatform _desktopPlatform;
+        private Border _macPermissionsCard;
+        private Button _requestInputPermissionButton;
+        private Button _requestCapturePermissionButton;
+        private TextBlock _inputPermissionGrantedText;
+        private TextBlock _inputPermissionRequiredText;
+        private TextBlock _capturePermissionGrantedText;
+        private TextBlock _capturePermissionRequiredText;
         internal Avalonia.Controls.NumericUpDown numPeriod;
         internal Avalonia.Controls.NumericUpDown numDelay;
         internal Avalonia.Controls.NumericUpDown numSimilarity;
@@ -61,6 +70,13 @@ namespace Macro.View
             _mcpClosedStatusText = this.FindControl<TextBlock>("mcpClosedStatusText");
             _mcpEndpointTextBox = this.FindControl<TextBox>("mcpEndpointTextBox");
             _mcpPortTextBox = this.FindControl<TextBox>("mcpPortTextBox");
+            _macPermissionsCard = this.FindControl<Border>("macPermissionsCard");
+            _requestInputPermissionButton = this.FindControl<Button>("requestInputPermissionButton");
+            _requestCapturePermissionButton = this.FindControl<Button>("requestCapturePermissionButton");
+            _inputPermissionGrantedText = this.FindControl<TextBlock>("inputPermissionGrantedText");
+            _inputPermissionRequiredText = this.FindControl<TextBlock>("inputPermissionRequiredText");
+            _capturePermissionGrantedText = this.FindControl<TextBlock>("capturePermissionGrantedText");
+            _capturePermissionRequiredText = this.FindControl<TextBlock>("capturePermissionRequiredText");
             numPeriod = this.FindControl<Avalonia.Controls.NumericUpDown>("numPeriod");
             numDelay = this.FindControl<Avalonia.Controls.NumericUpDown>("numDelay");
             numSimilarity = this.FindControl<Avalonia.Controls.NumericUpDown>("numSimilarity");
@@ -112,6 +128,7 @@ namespace Macro.View
         {
             IsEnabled = false;
             UIManager.Instance.ButtonActionStateChanged -= UpdateEditState;
+            Activated -= RefreshMacPermissions;
             if (_mcpService != null)
             {
                 _mcpService.StateChanged -= McpStateChanged;
@@ -165,6 +182,9 @@ namespace Macro.View
             numProcessLocationY.IsEnabled = canEdit;
             comboMacroMode.IsEnabled = canEdit;
             btnSave.IsEnabled = canEdit;
+            _requestInputPermissionButton.IsEnabled = canEdit;
+            _requestCapturePermissionButton.IsEnabled = canEdit;
+            RefreshMacPermissions(this, EventArgs.Empty);
         }
         private void Init()
         {
@@ -177,6 +197,10 @@ namespace Macro.View
             DataContext = ServiceResolver.GetService<SettingViewModel>();
             _updates = ServiceResolver.GetService<AppUpdateViewModel>();
             _mcpService = ServiceResolver.GetService<MacroMcpService>();
+            _desktopPlatform = ServiceResolver.GetService<IDesktopPlatform>();
+            _macPermissionsCard.IsVisible = OperatingSystem.IsMacOS();
+            Activated += RefreshMacPermissions;
+            RefreshMacPermissions(this, EventArgs.Empty);
             _mcpService.StateChanged += McpStateChanged;
             this.FindControl<AppUpdateView>("appUpdateView").DataContext = _updates;
             _updates.PropertyChanged += UpdateStateChanged;
@@ -195,6 +219,8 @@ namespace Macro.View
             _openLogFolderButton.Click += Button_Click;
             _openMcpButton.Click += Button_Click;
             _closeMcpButton.Click += Button_Click;
+            _requestInputPermissionButton.Click += Button_Click;
+            _requestCapturePermissionButton.Click += Button_Click;
         }
 
         private void Button_Click(object sender, RoutedEventArgs eventArgs)
@@ -219,6 +245,59 @@ namespace Macro.View
             else if (sender == _closeMcpButton)
             {
                 UIManager.Instance.EnqueueButtonAction(() => SetMcpOpenAsync(false));
+            }
+            else if (sender == _requestInputPermissionButton)
+            {
+                UIManager.Instance.EnqueueButtonAction(() =>
+                {
+                    _desktopPlatform.RequestInputPermission();
+                    RefreshMacPermissions(this, EventArgs.Empty);
+                });
+            }
+            else if (sender == _requestCapturePermissionButton)
+            {
+                UIManager.Instance.EnqueueButtonAction(() =>
+                {
+                    _desktopPlatform.RequestCapturePermission();
+                    RefreshMacPermissions(this, EventArgs.Empty);
+                });
+            }
+        }
+
+        private void RefreshMacPermissions(object sender, EventArgs eventArgs)
+        {
+            if (OperatingSystem.IsMacOS() == false)
+            {
+                return;
+            }
+            if (_desktopPlatform == null)
+            {
+                return;
+            }
+            if (_prepareCloseTask != null)
+            {
+                return;
+            }
+            bool inputAllowed = _desktopPlatform.HasInputPermission;
+            bool captureAllowed = _desktopPlatform.HasCapturePermission;
+            bool canRequestPermission = UIManager.Instance.IsProcessingButtonActions == false;
+            if (_updates.IsInstalling == true)
+            {
+                canRequestPermission = false;
+            }
+            _requestInputPermissionButton.IsEnabled = canRequestPermission;
+            _requestCapturePermissionButton.IsEnabled = canRequestPermission;
+            _inputPermissionGrantedText.IsVisible = inputAllowed;
+            _inputPermissionRequiredText.IsVisible = inputAllowed == false;
+            _capturePermissionGrantedText.IsVisible = captureAllowed;
+            _capturePermissionRequiredText.IsVisible = captureAllowed == false;
+            if (inputAllowed == true)
+            {
+                _requestInputPermissionButton.IsEnabled = false;
+            }
+            if (captureAllowed == true)
+            {
+                _requestCapturePermissionButton.IsEnabled = false;
             }
         }
 

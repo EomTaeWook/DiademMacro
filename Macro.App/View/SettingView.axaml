@@ -108,6 +108,24 @@
         <Border Classes="card">
           <view:AppUpdateView x:Name="appUpdateView" />
         </Border>
+        <Border x:Name="macPermissionsCard" Classes="card" IsVisible="False">
+          <StackPanel Spacing="14">
+            <TextBlock Classes="section" Text="{Binding MacPermissions, Source={StaticResource LabelLocator}}" />
+            <TextBlock Classes="caption" Text="{Binding MacPermissionDescription, Source={StaticResource LabelLocator}}" TextWrapping="Wrap" />
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+              <Button x:Name="requestInputPermissionButton" HorizontalAlignment="Left" Content="{Binding RequestInputPermission, Source={StaticResource LabelLocator}}" Margin="0,0,12,10" />
+              <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,10">
+                <TextBlock x:Name="inputPermissionGrantedText" Text="{Binding PermissionGranted, Source={StaticResource LabelLocator}}" Foreground="{StaticResource AccentTextBrush}" IsVisible="False" />
+                <TextBlock x:Name="inputPermissionRequiredText" Classes="caption" Text="{Binding PermissionRequired, Source={StaticResource LabelLocator}}" />
+              </StackPanel>
+              <Button Grid.Row="1" x:Name="requestCapturePermissionButton" HorizontalAlignment="Left" Content="{Binding RequestCapturePermission, Source={StaticResource LabelLocator}}" Margin="0,0,12,0" />
+              <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="capturePermissionGrantedText" Text="{Binding PermissionGranted, Source={StaticResource LabelLocator}}" Foreground="{StaticResource AccentTextBrush}" IsVisible="False" />
+                <TextBlock x:Name="capturePermissionRequiredText" Classes="caption" Text="{Binding PermissionRequired, Source={StaticResource LabelLocator}}" />
+              </StackPanel>
+            </Grid>
+          </StackPanel>
+        </Border>
       </StackPanel>
     </ScrollViewer>
     <Border Grid.Row="2" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,16,0,0">

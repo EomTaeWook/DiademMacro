@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Macro.Infrastructure;
 using Macro.Models;
+using System;
 using System.Linq;
 using Utils.Infrastructure;
 
@@ -44,8 +45,16 @@ namespace Macro.View
             _isDragging = false;
             Position = new PixelPoint(_monitorInfo.Rect.Left, _monitorInfo.Rect.Top);
             Show();
-            Width = _monitorInfo.Rect.Width / RenderScaling;
-            Height = _monitorInfo.Rect.Height / RenderScaling;
+            if (OperatingSystem.IsMacOS() == true)
+            {
+                Width = _monitorInfo.Rect.Width;
+                Height = _monitorInfo.Rect.Height;
+            }
+            else
+            {
+                Width = _monitorInfo.Rect.Width / RenderScaling;
+                Height = _monitorInfo.Rect.Height / RenderScaling;
+            }
             Position = new PixelPoint(_monitorInfo.Rect.Left, _monitorInfo.Rect.Top);
             Activate();
         }
@@ -79,6 +88,10 @@ namespace Macro.View
 
         private Point2D ToScreenPoint(Point point)
         {
+            if (OperatingSystem.IsMacOS() == true)
+            {
+                return new Point2D(_monitorInfo.Rect.Left + point.X, _monitorInfo.Rect.Top + point.Y);
+            }
             PixelPoint screenPoint = this.PointToScreen(point);
             return new Point2D(screenPoint.X, screenPoint.Y);
         }

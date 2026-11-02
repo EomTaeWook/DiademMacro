@@ -580,5 +580,41 @@
     "Name": "1097",
     "Kor": "\uD3EC\uD2B8",
     "Eng": "Port"
+  },
+  {
+    "Id": 1098,
+    "Name": "1098",
+    "Kor": "macOS \uAD8C\uD55C",
+    "Eng": "macOS permissions"
+  },
+  {
+    "Id": 1099,
+    "Name": "1099",
+    "Kor": "\uC785\uB825 \uC81C\uC5B4 \uD5C8\uC6A9",
+    "Eng": "Allow input control"
+  },
+  {
+    "Id": 1100,
+    "Name": "1100",
+    "Kor": "\uD654\uBA74 \uCEA1\uCC98 \uD5C8\uC6A9",
+    "Eng": "Allow screen capture"
+  },
+  {
+    "Id": 1101,
+    "Name": "1101",
+    "Kor": "\uD5C8\uC6A9\uB428",
+    "Eng": "Allowed"
+  },
+  {
+    "Id": 1102,
+    "Name": "1102",
+    "Kor": "\uD5C8\uC6A9 \uD544\uC694",
+    "Eng": "Permission required"
+  },
+  {
+    "Id": 1103,
+    "Name": "1103",
+    "Kor": "macOS \uC2DC\uC2A4\uD15C \uC124\uC815\uC5D0\uC11C Diadem Macro\uC758 \uC785\uB825 \uC81C\uC5B4\uC640 \uD654\uBA74 \uCEA1\uCC98\uB97C \uD5C8\uC6A9\uD558\uC138\uC694. Mac\uC5D0\uC11C\uB294 \uB300\uC0C1 \uCC3D\uC744 \uD45C\uC2DC\uD558\uACE0 \uC2E4\uC81C \uB9C8\uC6B0\uC2A4\uC640 \uD0A4\uBCF4\uB4DC\uB85C \uC785\uB825\uD569\uB2C8\uB2E4. \uAD8C\uD55C \uD5C8\uC6A9 \uD6C4 \uC571\uC744 \uB2E4\uC2DC \uC2E4\uD589\uD574\uC57C \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+    "Eng": "Allow input control and screen capture for Diadem Macro in macOS System Settings. On Mac, keep the target window visible; input uses the real mouse and keyboard. You may need to restart the app after granting permission."
   }
 ]

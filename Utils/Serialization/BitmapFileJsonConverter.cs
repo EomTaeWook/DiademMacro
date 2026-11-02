@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
+#if WINDOWS
 using System.Drawing.Imaging;
+#endif
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -41,7 +43,11 @@ namespace Utils.Serialization
             }
             Directory.CreateDirectory(ImageDirectoryPath);
             using MemoryStream memoryStream = new();
+#if WINDOWS
             value.Save(memoryStream, ImageFormat.Png);
+#else
+            value.Save(memoryStream);
+#endif
             byte[] pngBytes = memoryStream.ToArray();
             string fileHash = Convert.ToHexString(SHA256.HashData(pngBytes)).ToLowerInvariant();
             string fileName = $"img-{fileHash}.png";

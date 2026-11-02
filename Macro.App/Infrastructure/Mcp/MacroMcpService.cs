@@ -6,6 +6,7 @@ using Macro.Extensions;
 using Macro.Infrastructure.Controller;
 using Macro.Infrastructure.Manager;
 using Macro.Infrastructure.Services;
+using Macro.Infrastructure.Interface;
 using Macro.Models;
 using MCP.Core.Models.Server;
 using MCP.Core.Models.Tools;
@@ -15,7 +16,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+#if WINDOWS
 using System.Drawing.Imaging;
+#endif
 using System.IO;
 using System.Text.Json.Nodes;
 using System.Threading;
@@ -31,19 +34,21 @@ namespace Macro.Infrastructure.Mcp
     public class MacroMcpService
     {
         private readonly EventEditingService _events;
-        private readonly ScreenCaptureManager _capture;
+        private readonly IScreenCaptureManager _capture;
+        private readonly IDesktopPlatform _desktopPlatform;
         private readonly BatchModeController _search;
         private readonly Config _config;
         private readonly IClassicDesktopStyleApplicationLifetime _desktop;
         private McpHttpServer _server;
 
-        public MacroMcpService(EventEditingService eventEditingService, ScreenCaptureManager screenCaptureManager, BatchModeController imageSearchController, Config config, IClassicDesktopStyleApplicationLifetime desktop)
+        public MacroMcpService(EventEditingService eventEditingService, IScreenCaptureManager screenCaptureManager, BatchModeController imageSearchController, Config config, IClassicDesktopStyleApplicationLifetime desktop, IDesktopPlatform desktopPlatform)
         {
             _events = eventEditingService;
             _capture = screenCaptureManager;
             _search = imageSearchController;
             _config = config;
             _desktop = desktop;
+            _desktopPlatform = desktopPlatform;
         }
 
         public event Action StateChanged;
@@ -275,11 +280,11 @@ namespace Macro.Infrastructure.Mcp
                             cancellationToken.ThrowIfCancellationRequested();
                             try
                             {
-                                if (process.MainWindowHandle == IntPtr.Zero)
+                                if (_desktopPlatform.GetMainWindow(process) == IntPtr.Zero)
                                 {
                                     continue;
                                 }
-                                items.Add(new JsonObject { ["process_id"] = process.Id, ["name"] = process.ProcessName, ["title"] = process.MainWindowTitle });
+                                items.Add(new JsonObject { ["process_id"] = process.Id, ["name"] = process.ProcessName, ["title"] = _desktopPlatform.GetWindowTitle(process) });
                             }
                             catch (InvalidOperationException)
                             {
@@ -370,7 +375,11 @@ namespace Macro.Infrastructure.Mcp
                         {
                             throw new ArgumentException("The capture region exceeds the image height.");
                         }
+#if WINDOWS
                         eventInfo.Image = capture.Clone(region, PixelFormat.Format32bppArgb);
+#else
+                        eventInfo.Image = capture.Clone(region);
+#endif
                     }
                     ApplySettings(eventInfo, arguments["settings"] as JsonObject);
                     cancellationToken.ThrowIfCancellationRequested();
@@ -493,12 +502,12 @@ namespace Macro.Infrastructure.Mcp
             }, cancellationToken);
         }
 
-        private static Process OpenProcess(int processId)
+        private Process OpenProcess(int processId)
         {
             Process process = Process.GetProcessById(processId);
             try
             {
-                if (process.MainWindowHandle == IntPtr.Zero)
+                if (_desktopPlatform.GetMainWindow(process) == IntPtr.Zero)
                 {
                     throw new ArgumentException("The target process has no main window.");
                 }
@@ -513,8 +522,7 @@ namespace Macro.Infrastructure.Mcp
 
         private void SetProcess(EventInfoModel eventInfo, Process process)
         {
-            IntRect bounds = new();
-            if (NativeHelper.GetWindowRect(process.MainWindowHandle, ref bounds) == IntPtr.Zero)
+            if (_desktopPlatform.TryGetWindowBounds(_desktopPlatform.GetMainWindow(process), out IntRect bounds) == false)
             {
                 throw new InvalidOperationException("The target window position is unavailable.");
             }
@@ -549,7 +557,11 @@ namespace Macro.Infrastructure.Mcp
                 throw new InvalidOperationException("The event has no registered image.");
             }
             using MemoryStream stream = new();
+#if WINDOWS
             image.Save(stream, ImageFormat.Png);
+#else
+            image.Save(stream);
+#endif
             metadata["width"] = image.Width;
             metadata["height"] = image.Height;
             metadata["mime_type"] = "image/png";
@@ -699,7 +711,7 @@ namespace Macro.Infrastructure.Mcp
                 eventInfo.RoiDataInfo = new RoiModel
                 {
                     RoiRect = new Utils.Infrastructure.Rectangle { Left = rectangle.Left, Top = rectangle.Top, Right = rectangle.Right, Bottom = rectangle.Bottom },
-                    MonitorInfo = new MonitorInfo { Dpi = NativeHelper.GetSystemDPI() }
+                    MonitorInfo = new MonitorInfo { Dpi = _desktopPlatform.GetSystemDpi() }
                 };
             }
             if (eventInfo.Image == null)

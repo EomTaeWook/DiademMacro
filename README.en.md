@@ -14,6 +14,16 @@ Diadem Macro is a Windows desktop automation tool that finds registered images i
 
 Download the Windows x64 EXE, place it in a writable folder, and run it. No installer or separate .NET installation is required. Settings, captured images, and logs are created as separate files during use.
 
+## macOS
+
+Source implementations for capture, input, and permissions target macOS 14 or later. **Mac builds and execution have not been verified. Current GitHub release downloads are for Windows.**
+
+When using a Mac build of `Diadem Macro.app`, open **Settings → macOS permissions** and press **Allow input control** and **Allow screen capture**, then approve the requests in macOS System Settings. Permission status refreshes when you return to the app. A restart may be required after granting permission.
+
+Keep the target window visible. All mouse input on Mac uses the real cursor and activates the target window. Minimized windows and Win32 background messages are unsupported. The keyboard setting `LWIN` maps to Command: `LWIN+A` sends Command+A.
+
+Settings, captured images, and logs are created under `~/Library/Application Support/DiademMacro`. To move existing JSON events, copy `save.dll` together with its `img` folder and select the save path in Settings. Different capture scales or shortcuts may require new captures or key changes. Mac automatic updates are not provided. The Unity and Physical Click instructions below describe the Windows release.
+
 ## Features
 
 - Capture application windows and search for registered images

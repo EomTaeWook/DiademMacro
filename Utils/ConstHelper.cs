@@ -1,9 +1,9 @@
-
+using System.IO;
 namespace Utils
 {
     public class ConstHelper
     {
-        public static readonly string DefaultSavePath = @".\Save\";
+        public static readonly string DefaultSavePath = Path.Combine(".", "Save") + Path.DirectorySeparatorChar;
         public static readonly string DefaultSaveFileName = "save.dll";
         public static readonly string DefaultConfigFile = "config.json";
 

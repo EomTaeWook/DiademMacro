@@ -1,7 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Macro.Extensions;
-using Bitmap = Avalonia.Media.Imaging.Bitmap;
+using System.Drawing;
+using PreviewBitmap = Avalonia.Media.Imaging.Bitmap;
 
 namespace Macro.View
 {
@@ -9,7 +10,7 @@ namespace Macro.View
     {
         internal Avalonia.Controls.Image previewImage;
 
-        private Bitmap _previewBitmap;
+        private PreviewBitmap _previewBitmap;
         private bool _isDisposed;
 
         private void InitializeComponent()
@@ -23,14 +24,14 @@ namespace Macro.View
             InitializeComponent();
         }
 
-        public void DrawImage(System.Drawing.Bitmap bitmap)
+        public void DrawImage(Bitmap bitmap)
         {
             if (bitmap == null)
             {
                 ClearImage();
                 return;
             }
-            Bitmap previewBitmap = bitmap.ToBitmapSource();
+            PreviewBitmap previewBitmap = bitmap.ToBitmapSource();
             Dispatcher.UIThread.Post(() =>
             {
                 if (_isDisposed == true)
