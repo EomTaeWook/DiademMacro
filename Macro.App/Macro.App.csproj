@@ -39,9 +39,11 @@
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <Compile Remove="UI\WebViewControl.cs" />
+    <Compile Remove="Infrastructure\Updates\WindowsApplicationUpdatePlatform.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' != 'net10.0'">
     <Compile Remove="Platforms\MacOS\**\*.cs" />
+    <Compile Remove="Infrastructure\Updates\MacOSApplicationUpdatePlatform.cs" />
   </ItemGroup>
   <Import Project="Platforms\MacOS\MacOS.targets" Condition="'$(TargetFramework)' == 'net10.0'" />
   <ItemGroup>

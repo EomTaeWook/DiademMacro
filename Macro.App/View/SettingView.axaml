@@ -97,7 +97,18 @@
               <Label Content="{Binding McpPort, Source={StaticResource LabelLocator}}" Margin="0,0,16,12" />
               <TextBox Grid.Column="1" x:Name="mcpPortTextBox" Text="{Binding Config.McpPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{Binding McpPort, Source={StaticResource LabelLocator}}" Margin="0,0,0,12" />
               <Label Grid.Row="1" Content="{Binding McpConnectionAddress, Source={StaticResource LabelLocator}}" Margin="0,0,16,0" />
-              <TextBox Grid.Row="1" Grid.Column="1" x:Name="mcpEndpointTextBox" IsReadOnly="True" AutomationProperties.Name="{Binding McpConnectionAddress, Source={StaticResource LabelLocator}}" />
+              <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto">
+                <TextBox x:Name="mcpEndpointTextBox" IsReadOnly="True" AutomationProperties.Name="{Binding McpConnectionAddress, Source={StaticResource LabelLocator}}" />
+                <Button Grid.Column="1" x:Name="copyMcpAddressButton" MinWidth="96" Margin="8,0,0,0" IsEnabled="False" ToolTip.Tip="{Binding CopyMcpAddress, Source={StaticResource LabelLocator}}" AutomationProperties.Name="{Binding CopyMcpAddress, Source={StaticResource LabelLocator}}">
+                  <StackPanel Orientation="Horizontal" Spacing="7">
+                    <PathIcon Width="14" Height="14" Data="M8,5 H20 A2,2 0 0 1 22,7 V21 A2,2 0 0 1 20,23 H8 A2,2 0 0 1 6,21 V7 A2,2 0 0 1 8,5 Z M8,7 V21 H20 V7 Z M4,1 H16 V3 H4 V17 H2 V3 A2,2 0 0 1 4,1 Z" />
+                    <Grid>
+                      <TextBlock x:Name="copyMcpAddressText" Text="{Binding Copy, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+                      <TextBlock x:Name="mcpAddressCopiedText" Text="{Binding Copied, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" IsVisible="False" />
+                    </Grid>
+                  </StackPanel>
+                </Button>
+              </Grid>
             </Grid>
             <StackPanel Orientation="Horizontal" Spacing="8">
               <Button x:Name="openMcpButton" Classes="accent" Content="{Binding McpOpen, Source={StaticResource LabelLocator}}" />

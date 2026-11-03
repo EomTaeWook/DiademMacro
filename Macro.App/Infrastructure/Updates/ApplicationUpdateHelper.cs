@@ -12,21 +12,36 @@ namespace Macro.Infrastructure.Updates
     public class ApplicationUpdateHelper
     {
         private readonly ApplicationUpdateFiles _files;
+        private readonly IApplicationUpdatePlatform _platform;
+        private static readonly StringComparison _pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        public ApplicationUpdateHelper(ApplicationUpdateFiles files)
+        public ApplicationUpdateHelper(ApplicationUpdateFiles files, IApplicationUpdatePlatform platform)
         {
             _files = files;
+            _platform = platform;
         }
 
         public static Task<int> RunHelperAsync(string manifestPath)
         {
-            ApplicationUpdateHelper helper = new ApplicationUpdateHelper(new ApplicationUpdateFiles());
+            ApplicationUpdateFiles files = new ApplicationUpdateFiles();
+#if WINDOWS
+            IApplicationUpdatePlatform platform = new WindowsApplicationUpdatePlatform(files);
+#else
+            IApplicationUpdatePlatform platform = new MacOSApplicationUpdatePlatform(files);
+#endif
+            ApplicationUpdateHelper helper = new ApplicationUpdateHelper(files, platform);
             return helper.RunAsync(manifestPath);
         }
 
         public static Task CleanupAfterHelperAsync(string directory, int helperPid)
         {
-            ApplicationUpdateHelper helper = new ApplicationUpdateHelper(new ApplicationUpdateFiles());
+            ApplicationUpdateFiles files = new ApplicationUpdateFiles();
+#if WINDOWS
+            IApplicationUpdatePlatform platform = new WindowsApplicationUpdatePlatform(files);
+#else
+            IApplicationUpdatePlatform platform = new MacOSApplicationUpdatePlatform(files);
+#endif
+            ApplicationUpdateHelper helper = new ApplicationUpdateHelper(files, platform);
             return helper.CleanupAsync(directory, helperPid);
         }
 
@@ -34,11 +49,7 @@ namespace Macro.Infrastructure.Updates
         {
             string directory = null;
             ApplicationUpdateInstallManifest manifest = null;
-            string backup = null;
-            string incoming = null;
-            bool replaced = false;
             bool canRestart = false;
-            ApplicationUpdateMessageCode failureCode = ApplicationUpdateMessageCode.None;
             try
             {
                 directory = Path.GetDirectoryName(Path.GetFullPath(manifestPath));
@@ -47,8 +58,8 @@ namespace Macro.Infrastructure.Updates
                 {
                     return 1;
                 }
-                string helperPath = Path.Combine(directory, "helper.exe");
-                if (string.Equals(Environment.ProcessPath, helperPath, StringComparison.OrdinalIgnoreCase) == false)
+                string helperPath = _platform.GetHelperPath(directory);
+                if (string.Equals(Environment.ProcessPath, helperPath, _pathComparison) == false)
                 {
                     return 1;
                 }
@@ -69,7 +80,7 @@ namespace Macro.Infrastructure.Updates
                 {
                     return 1;
                 }
-                if (string.Equals(original.MainModule.FileName, manifest.InstallPath, StringComparison.OrdinalIgnoreCase) == false)
+                if (string.Equals(original.MainModule.FileName, manifest.InstallPath, _pathComparison) == false)
                 {
                     return 1;
                 }
@@ -106,76 +117,36 @@ namespace Macro.Infrastructure.Updates
                 // Fixed target must still be the original executable, not a replaced path or link.
                 _files.ValidatePlainFile(manifest.InstallPath);
                 await _files.VerifyHashAsync(manifest.InstallPath, manifest.InstalledSha256, CancellationToken.None).ConfigureAwait(false);
-                string candidate = Path.Combine(directory, "verified.exe");
+                string candidate = Path.Combine(directory, _platform.DownloadFileName);
                 _files.ValidatePlainFile(candidate);
                 if (new FileInfo(candidate).Length != manifest.CandidateSize)
                 {
                     throw new ApplicationUpdateException(ApplicationUpdateMessageCode.DownloadIncomplete, null, Array.Empty<object>());
                 }
                 await _files.VerifyHashAsync(candidate, manifest.CandidateSha256, CancellationToken.None).ConfigureAwait(false);
-                string unique = Guid.NewGuid().ToString("N");
-                incoming = Path.Combine(Path.GetDirectoryName(manifest.InstallPath), ".macro-update-" + unique + ".new");
-                backup = Path.Combine(Path.GetDirectoryName(manifest.InstallPath), ".macro-update-" + unique + ".backup");
-                File.Copy(candidate, incoming, false);
-                await _files.VerifyHashAsync(incoming, manifest.CandidateSha256, CancellationToken.None).ConfigureAwait(false);
-                File.Replace(incoming, manifest.InstallPath, backup);
-                replaced = true;
-                StartInstalled(manifest, directory, ApplicationUpdateMessageCode.None);
-                // Keep the original until launching the replacement has succeeded.
-                _files.TryDeleteFile(backup);
-                backup = null;
-                return 0;
+                return await _platform.InstallAndRestartAsync(manifest, directory).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
-                RecordFailure(directory, exception);
-                failureCode = ApplicationUpdateMessageCode.ReplaceFailed;
-                if (replaced == true)
-                {
-                    failureCode = ApplicationUpdateMessageCode.LaunchFailed;
-                    try
-                    {
-                        File.Replace(backup, manifest.InstallPath, null);
-                        backup = null;
-                    }
-                    catch (Exception rollbackException)
-                    {
-                        RecordFailure(directory, rollbackException);
-                        // Retain the original backup if the OS prevents restoration.
-                        failureCode = ApplicationUpdateMessageCode.RollbackFailed;
-                    }
-                }
+                RecordFailure(_files, directory, exception);
                 if (canRestart == true)
                 {
-                    if (failureCode != ApplicationUpdateMessageCode.RollbackFailed)
+                    try
                     {
-                        try
-                        {
-                            _files.ValidatePlainFile(manifest.InstallPath);
-                            await _files.VerifyHashAsync(manifest.InstallPath, manifest.InstalledSha256, CancellationToken.None).ConfigureAwait(false);
-                            StartInstalled(manifest, directory, failureCode);
-                        }
-                        catch (Exception restartException)
-                        {
-                            RecordFailure(directory, restartException);
-                            // No arbitrary alternate executable, elevation, or reboot scheduling.
-                        }
+                        _files.ValidatePlainFile(manifest.InstallPath);
+                        await _files.VerifyHashAsync(manifest.InstallPath, manifest.InstalledSha256, CancellationToken.None).ConfigureAwait(false);
+                        await _platform.RestartAsync(manifest, directory, ApplicationUpdateMessageCode.ReplaceFailed).ConfigureAwait(false);
+                    }
+                    catch (Exception restartException)
+                    {
+                        RecordFailure(_files, directory, restartException);
                     }
                 }
                 return 1;
             }
-            finally
-            {
-                if (incoming != null)
-                {
-                    _files.TryDeleteFile(incoming);
-                }
-                // The running helper cannot delete itself on Windows. The relaunched app removes
-                // this fixed request directory after the helper PID exits; no shared temp sweep.
-            }
         }
 
-        private void RecordFailure(string directory, Exception exception)
+        internal static void RecordFailure(ApplicationUpdateFiles files, string directory, Exception exception)
         {
             try
             {
@@ -190,7 +161,7 @@ namespace Macro.Infrastructure.Updates
             }
             try
             {
-                _files.WriteHelperFailure(directory, exception);
+                files.WriteHelperFailure(directory, exception);
             }
             catch (Exception diagnosticException)
             {
@@ -257,10 +228,7 @@ namespace Macro.Infrastructure.Updates
             {
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
             }
-            if (Path.GetExtension(manifest.InstallPath).Equals(".exe", StringComparison.OrdinalIgnoreCase) == false)
-            {
-                throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
-            }
+            _platform.ValidateInstallPath(manifest.InstallPath);
             if (Path.IsPathFullyQualified(manifest.WorkingDirectory) == false)
             {
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
@@ -270,7 +238,7 @@ namespace Macro.Infrastructure.Updates
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
             }
             _files.ValidateNoLink(manifest.WorkingDirectory);
-            if (manifest.InstallPath.StartsWith(_files.UpdateRoot + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) == true)
+            if (manifest.InstallPath.StartsWith(_files.UpdateRoot + Path.DirectorySeparatorChar, _pathComparison) == true)
             {
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
             }
@@ -290,26 +258,7 @@ namespace Macro.Infrastructure.Updates
             {
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
             }
-            _files.ValidatePlainFile(Path.Combine(directory, "verified.exe"));
-        }
-
-        private void StartInstalled(ApplicationUpdateInstallManifest manifest, string directory, ApplicationUpdateMessageCode failureCode)
-        {
-            ProcessStartInfo start = new ProcessStartInfo(manifest.InstallPath);
-            start.UseShellExecute = false;
-            start.WorkingDirectory = manifest.WorkingDirectory;
-            start.ArgumentList.Add("--macro-update-cleanup");
-            start.ArgumentList.Add(directory);
-            start.ArgumentList.Add(Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture));
-            if (failureCode != ApplicationUpdateMessageCode.None)
-            {
-                start.ArgumentList.Add(failureCode.ToString());
-            }
-            using Process relaunched = Process.Start(start);
-            if (relaunched == null)
-            {
-                throw new ApplicationUpdateException(ApplicationUpdateMessageCode.LaunchFailed, null, Array.Empty<object>());
-            }
+            _files.ValidatePlainFile(Path.Combine(directory, _platform.DownloadFileName));
         }
 
     }

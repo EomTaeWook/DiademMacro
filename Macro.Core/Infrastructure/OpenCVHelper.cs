@@ -510,7 +510,7 @@ namespace Macro.Infrastructure
 #endif
         }
 
-        private static void DrawMatch(Bitmap source, Bitmap target, Point2D location)
+        public static void DrawMatch(Bitmap source, Bitmap target, Point2D location)
         {
 #if WINDOWS
             using Graphics graphics = Graphics.FromImage(source);

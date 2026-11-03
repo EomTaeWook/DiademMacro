@@ -14,11 +14,13 @@ namespace Macro.Infrastructure.Updates
     {
         private readonly ApplicationUpdateService _updates;
         private readonly ApplicationUpdateFiles _files;
+        private readonly IApplicationUpdatePlatform _platform;
 
-        public ApplicationUpdateInstaller(ApplicationUpdateService updates, ApplicationUpdateFiles files)
+        public ApplicationUpdateInstaller(ApplicationUpdateService updates, ApplicationUpdateFiles files, IApplicationUpdatePlatform platform)
         {
             _updates = updates;
             _files = files;
+            _platform = platform;
         }
 
         public Task<ApplicationUpdateInstallPlan> PrepareAsync(VerifiedApplicationUpdate update, CancellationToken cancellationToken = default)
@@ -41,13 +43,14 @@ namespace Macro.Infrastructure.Updates
                     throw new ApplicationUpdateException(ApplicationUpdateMessageCode.DownloadIncomplete, null, Array.Empty<object>());
                 }
                 string installed = Path.GetFullPath(_updates.Environment.ExecutablePath);
+                _platform.ValidateInstallPath(installed);
                 _files.ValidatePlainFile(installed);
                 using Process original = Process.GetCurrentProcess();
                 string installedHash = await _files.GetHashAsync(installed, cancellationToken).ConfigureAwait(false);
                 directory = _files.CreateOwnedDirectory();
-                string candidate = Path.Combine(directory, "verified.exe");
+                string candidate = Path.Combine(directory, _platform.DownloadFileName);
                 File.Copy(update.FilePath, candidate, false);
-                File.Copy(installed, Path.Combine(directory, "helper.exe"), false);
+                await _platform.PrepareHelperAsync(installed, directory, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
                 ApplicationUpdateInstallManifest manifest = new ApplicationUpdateInstallManifest();
                 manifest.OriginalPid = original.Id;
@@ -56,6 +59,7 @@ namespace Macro.Infrastructure.Updates
                 manifest.InstalledSha256 = installedHash;
                 manifest.CandidateSha256 = update.Release.Sha256;
                 manifest.CandidateSize = update.Release.Size;
+                manifest.CandidateVersion = update.Release.Version;
                 manifest.Nonce = Guid.NewGuid().ToString("N");
                 manifest.WorkingDirectory = Path.GetFullPath(System.Environment.CurrentDirectory);
                 await File.WriteAllTextAsync(Path.Combine(directory, "install.json"), JsonSerializer.Serialize(manifest), cancellationToken).ConfigureAwait(false);
@@ -94,7 +98,7 @@ namespace Macro.Infrastructure.Updates
             {
                 _files.ValidateOwnedDirectory(plan.Directory);
                 cancellationToken.ThrowIfCancellationRequested();
-                ProcessStartInfo start = new ProcessStartInfo(Path.Combine(plan.Directory, "helper.exe"));
+                ProcessStartInfo start = new ProcessStartInfo(_platform.GetHelperPath(plan.Directory));
                 start.UseShellExecute = false;
                 start.CreateNoWindow = true;
                 start.WorkingDirectory = plan.Directory;

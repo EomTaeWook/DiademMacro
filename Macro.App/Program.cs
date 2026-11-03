@@ -12,7 +12,6 @@ namespace Macro
         [STAThread]
         public static void Main(string[] arguments)
         {
-#if WINDOWS
             if (arguments.Length > 0)
             {
                 if (arguments[0] == "--macro-update-helper")
@@ -25,6 +24,7 @@ namespace Macro
                     return;
                 }
             }
+#if WINDOWS
             System.Windows.Forms.Application.SetHighDpiMode(System.Windows.Forms.HighDpiMode.PerMonitorV2);
 #else
             if (OperatingSystem.IsMacOS() == false)
@@ -48,10 +48,6 @@ namespace Macro
 
         internal static Task StartUpdateCleanupAsync(string[] arguments)
         {
-            if (OperatingSystem.IsWindows() == false)
-            {
-                return Task.CompletedTask;
-            }
             if (arguments == null)
             {
                 return Task.CompletedTask;

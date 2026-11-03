@@ -26,7 +26,9 @@ macOS 입력은 사용자가 허용한 접근성 권한으로 실제 포인터·
 
 배포는 사용자가 지정한 기존 3.3.1 릴리스에 Windows EXE와 Mac .app ZIP을 함께 게시한다. Windows 산출물은 로컬 SDK 게시로 만들고 Mac ARM64·x64 산출물은 수동 실행하는 GitHub Actions의 macOS 러너에서 만든다. 버전은 App 프로젝트를 원본으로 사용한다. 기존 태그를 강제로 이동하거나 새 릴리스를 만들지 않는다.
 
-게시 산출물 생성과 앱 실행 검증은 구분한다. 앱 시작·권한 승인·Retina/다중 모니터·Unity 입력·구형 저장 파일 호환과 업데이트 설치는 직접 검증하지 않는다. 기존 Windows 자동 업데이트 계약은 유지하고 macOS 자동 교체 설치를 제공한다고 표시하지 않는다.
+게시 산출물 생성과 앱 실행 검증은 구분한다. 앱 시작·권한 승인·Retina/다중 모니터·Unity 입력·구형 저장 파일 호환과 업데이트 설치는 직접 검증하지 않는다. 기존 Windows 자동 업데이트 계약은 유지한다.
+
+업데이트 조회·설치는 App DI에서 `MacOSApplicationUpdatePlatform`을 주입해 실행 프로세스의 아키텍처에 맞는 `osx-arm64` 또는 `osx-x64` ZIP을 사용한다. ARM64 Mac에서 x64 앱을 실행하는 경우에는 실행 중인 x64 앱에 맞는 ZIP을 선택한다. 배포된 자체 포함 `.app`에서 GitHub digest 검증·정상 종료 승인 뒤 번들 전체를 교환하고 LaunchServices로 다시 연다. 기존 앱 백업과 실패 복원, 설치 폴더 쓰기 권한·AppTranslocation·서명 검사의 경계는 [업데이트 계약](ApplicationUpdate.md)을 따른다. 사용자 데이터는 번들 밖의 기존 Application Support/DiademMacro에 유지한다. 이 변경의 빌드·앱 실행·실제 교체·권한 유지는 검증하지 않았다.
 
 ## 데이터와 권한 UI
 

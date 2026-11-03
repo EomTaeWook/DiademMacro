@@ -1,10 +1,8 @@
 using Macro.Infrastructure.Models.Updates;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,12 +19,14 @@ namespace Macro.Infrastructure.Updates
         private readonly HttpClient _client;
         private readonly ApplicationUpdateFiles _files;
         private readonly ApplicationUpdateEnvironment _environment;
+        private readonly IApplicationUpdatePlatform _platform;
 
-        public ApplicationUpdateService(ApplicationUpdateEnvironment environment, HttpClient client, ApplicationUpdateFiles files)
+        public ApplicationUpdateService(ApplicationUpdateEnvironment environment, HttpClient client, ApplicationUpdateFiles files, IApplicationUpdatePlatform platform)
         {
             _environment = environment;
             _client = client;
             _files = files;
+            _platform = platform;
         }
 
         public string CurrentVersion
@@ -56,50 +56,7 @@ namespace Macro.Infrastructure.Updates
 
         internal ApplicationUpdateMessageCode GetInstallBlockedCode()
         {
-            if (OperatingSystem.IsWindows() == false)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            if (_environment.PublishedSingleFile == false)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            if (Debugger.IsAttached == true)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            string path = _environment.ExecutablePath;
-            if (string.IsNullOrWhiteSpace(path) == true)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            if (Path.IsPathFullyQualified(path) == false)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            string name = Path.GetFileNameWithoutExtension(path);
-            if (name.Equals("dotnet", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            if (Path.GetExtension(path).Equals(".exe", StringComparison.OrdinalIgnoreCase) == false)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            string directory = Path.GetDirectoryName(path);
-            if (File.Exists(Path.Combine(directory, "Macro.dll")) == true)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            if (File.Exists(Path.Combine(directory, "Macro.deps.json")) == true)
-            {
-                return ApplicationUpdateMessageCode.DeploymentRequired;
-            }
-            return ApplicationUpdateMessageCode.None;
+            return _platform.GetInstallBlockedCode(_environment);
         }
 
         internal void ValidateInstallEnvironment()
@@ -207,20 +164,16 @@ namespace Macro.Infrastructure.Updates
             }
         }
 
-        private static ApplicationUpdateRelease ReadAsset(JsonElement root, string tag, string version, Uri page)
+        private ApplicationUpdateRelease ReadAsset(JsonElement root, string tag, string version, Uri page)
         {
-            string expectedName = "Macro-" + tag + "-win-x64.exe";
             JsonElement selected = default;
             int matches = 0;
             foreach (JsonElement asset in root.GetProperty("assets").EnumerateArray())
             {
                 string name = asset.GetProperty("name").GetString();
-                if (name != expectedName)
+                if (_platform.IsAssetName(name, tag) == false)
                 {
-                    if (name != "Macro.exe")
-                    {
-                        continue;
-                    }
+                    continue;
                 }
                 selected = asset;
                 matches++;
@@ -330,7 +283,7 @@ namespace Macro.Infrastructure.Updates
                         throw new ApplicationUpdateException(ApplicationUpdateMessageCode.DownloadIncomplete, null, Array.Empty<object>());
                     }
                 }
-                string verified = Path.Combine(directory, "verified.exe");
+                string verified = Path.Combine(directory, _platform.DownloadFileName);
                 await _files.VerifyHashAsync(partial, release.Sha256, downloadToken).ConfigureAwait(false);
                 downloadToken.ThrowIfCancellationRequested();
                 File.Move(partial, verified);

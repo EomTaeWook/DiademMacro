@@ -59,10 +59,11 @@ namespace Macro.Infrastructure.Controller
             _drawImageCallback?.Invoke(bitmap);
         }
 
-        public Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel, CancellationToken cancellationToken)
+        public Tuple<int, Point2D> CalculateSimilarityAndLocation(Bitmap searchImage, Bitmap sourceBmp, EventInfoModel eventInfoModel, CancellationToken cancellationToken, bool? displaySearchResult = null)
         {
             var similarity = 0;
             Point2D matchedLocation = new Point2D(0, 0);
+            bool isResultDisplay = displaySearchResult ?? _config.SearchImageResultDisplay;
 
             if (eventInfoModel.RoiDataInfo.IsExists() == true)
             {
@@ -117,7 +118,7 @@ namespace Macro.Infrastructure.Controller
                 {
                     try
                     {
-                        similarity = OpenCVHelper.Search(regionImage, searchImage, out matchedLocation, cancellationToken, _config.SearchImageResultDisplay);
+                        similarity = OpenCVHelper.Search(regionImage, searchImage, out matchedLocation, cancellationToken, isResultDisplay);
                         matchedLocation.X += newRect.Left;
                         matchedLocation.Y += newRect.Top;
                     }
@@ -132,7 +133,7 @@ namespace Macro.Infrastructure.Controller
             }
             else
             {
-                similarity = OpenCVHelper.Search(sourceBmp, searchImage, out matchedLocation, cancellationToken, _config.SearchImageResultDisplay);
+                similarity = OpenCVHelper.Search(sourceBmp, searchImage, out matchedLocation, cancellationToken, isResultDisplay);
             }
             return Tuple.Create(similarity, matchedLocation);
         }

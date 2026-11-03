@@ -14,6 +14,7 @@ namespace Macro.Infrastructure.Models.Updates
         public string InstalledSha256 { get; set; }
         public string CandidateSha256 { get; set; }
         public long CandidateSize { get; set; }
+        public string CandidateVersion { get; set; }
         public string Nonce { get; set; }
     }
 }

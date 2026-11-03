@@ -26,6 +26,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 using Utils.Infrastructure;
@@ -45,6 +47,7 @@ namespace Macro
         internal Avalonia.Controls.Button btnAddEventItem;
         internal Avalonia.Controls.Button btnRemoveEventItem;
         internal Avalonia.Controls.Button btnCopyEventItem;
+        private Button _searchTestButton;
         internal Avalonia.Controls.Button btnUpEventItem;
         internal Avalonia.Controls.Button btnDownEventItem;
         internal Avalonia.Controls.Button btnOptionEventItem;
@@ -64,6 +67,7 @@ namespace Macro
             btnAddEventItem = this.FindControl<Avalonia.Controls.Button>("btnAddEventItem");
             btnRemoveEventItem = this.FindControl<Avalonia.Controls.Button>("btnRemoveEventItem");
             btnCopyEventItem = this.FindControl<Avalonia.Controls.Button>("btnCopyEventItem");
+            _searchTestButton = this.FindControl<Button>("btnSearchTest");
             btnUpEventItem = this.FindControl<Avalonia.Controls.Button>("btnUpEventItem");
             btnDownEventItem = this.FindControl<Avalonia.Controls.Button>("btnDownEventItem");
             btnOptionEventItem = this.FindControl<Avalonia.Controls.Button>("btnOptionEventItem");
@@ -92,6 +96,7 @@ namespace Macro
         private bool _isRunning;
         private bool _applicationUpdateInProgress;
         private bool _shutdownCompleted;
+        private CancellationTokenSource _searchTestCancellation;
 
         public bool ShutdownInProgress
         {
@@ -252,6 +257,7 @@ namespace Macro
                 return;
             }
             _isShutdownHandled = true;
+            _searchTestCancellation?.Cancel();
             _isEventItemMoveButtonPressed = false;
             IsEnabled = false;
             _ = ShutdownAsync();
@@ -329,6 +335,7 @@ namespace Macro
             btnAddEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnAddEventItemAsync(sender, eventArgs));
             btnRemoveEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnRemoveEventItemAsync(sender, eventArgs));
             btnCopyEventItem.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(() => BtnCopyEventItemAsync(sender, eventArgs));
+            _searchTestButton.Click += (sender, eventArgs) => UIManager.Instance.EnqueueButtonAction(SearchSelectedEventAsync);
             btnDownEventItem.AddHandler(PointerPressedEvent, BtnDownEventItem_PointerPressed, RoutingStrategies.Tunnel);
             btnDownEventItem.AddHandler(PointerReleasedEvent, MoveEventItem_PointerReleased, RoutingStrategies.Tunnel);
             btnUpEventItem.AddHandler(PointerPressedEvent, BtnUpEventItem_PointerPressed, RoutingStrategies.Tunnel);
@@ -545,6 +552,7 @@ namespace Macro
             btnUpEventItem.IsEnabled = false;
             btnDownEventItem.IsEnabled = false;
             btnOptionEventItem.IsEnabled = false;
+            _searchTestButton.IsEnabled = false;
             if (CanEditEvents() == false)
             {
                 return;
@@ -556,6 +564,120 @@ namespace Macro
             btnUpEventItem.IsEnabled = hasSelection;
             btnDownEventItem.IsEnabled = hasSelection;
             btnOptionEventItem.IsEnabled = hasSelection;
+            UpdateSearchTestButton();
+        }
+
+        private void UpdateSearchTestButton()
+        {
+            _searchTestButton.IsEnabled = false;
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
+            if (UIManager.Instance.IsProcessingButtonActions == true)
+            {
+                return;
+            }
+            if (comboProcess.SelectedItem is ProcessItem == false)
+            {
+                return;
+            }
+            TreeGridViewItem selectedItem = ServiceResolver.GetService<SelectionStateController>().SelectTreeGridViewItem;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            _searchTestButton.IsEnabled = selectedItem.DataContext<EventInfoModel>().Image != null;
+        }
+
+        private async Task SearchSelectedEventAsync()
+        {
+            if (CanEditEvents() == false)
+            {
+                return;
+            }
+            TreeGridViewItem selectedItem = ServiceResolver.GetService<SelectionStateController>().SelectTreeGridViewItem;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            if (comboProcess.SelectedItem is ProcessItem processItem == false)
+            {
+                return;
+            }
+            EventInfoModel selectedEvent = selectedItem.DataContext<EventInfoModel>();
+            if (selectedEvent.Image == null)
+            {
+                return;
+            }
+            if (_desktopPlatform.HasCapturePermission == false)
+            {
+                _desktopPlatform.RequestCapturePermission();
+                return;
+            }
+            using CancellationTokenSource searchTestCancellation = new();
+            _searchTestCancellation = searchTestCancellation;
+            CancellationToken cancellationToken = searchTestCancellation.Token;
+            imagePreviewView.ShowSearchResult(null, TemplateContainer<LabelTemplate>.Find(1114).GetString());
+            try
+            {
+                using EventInfoModel searchEvent = new(selectedEvent);
+                using Process process = Process.GetProcessById(processItem.Process.Id);
+                string processName = process.ProcessName;
+                int threshold = _config.Similarity;
+                if (searchEvent.Similarity > 0)
+                {
+                    threshold = searchEvent.Similarity;
+                }
+                IScreenCaptureManager screenCaptureManager = ServiceResolver.GetService<IScreenCaptureManager>();
+                using Bitmap capturedImage = await Task.Run(() =>
+                {
+                    if (screenCaptureManager.CaptureProcessWindow(process, cancellationToken, out Bitmap image) == false)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        throw new InvalidOperationException("The target window could not be captured.");
+                    }
+                    return image;
+                }, cancellationToken);
+                BatchModeController searchController = ServiceResolver.GetService<BatchModeController>();
+                Tuple<int, Point2D> match = await Task.Run(() => searchController.CalculateSimilarityAndLocation(searchEvent.Image, capturedImage, searchEvent, cancellationToken, false), cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (_isShutdownHandled == true)
+                {
+                    return;
+                }
+                string resultDescription;
+                if (match.Item1 >= threshold)
+                {
+                    OpenCVHelper.DrawMatch(capturedImage, searchEvent.Image, match.Item2);
+                    resultDescription = string.Format(CultureInfo.CurrentCulture, TemplateContainer<LabelTemplate>.Find(1115).GetString(), match.Item1, threshold, match.Item2.X, match.Item2.Y, processName);
+                }
+                else
+                {
+                    resultDescription = string.Format(CultureInfo.CurrentCulture, TemplateContainer<LabelTemplate>.Find(1116).GetString(), match.Item1, threshold, processName);
+                }
+                imagePreviewView.ShowSearchResult(capturedImage, resultDescription);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested == true)
+            {
+                if (_isShutdownHandled == false)
+                {
+                    imagePreviewView.ShowSearchResult(null, TemplateContainer<LabelTemplate>.Find(1118).GetString());
+                }
+            }
+            catch (Exception exception)
+            {
+                LogHelper.Error(exception);
+                if (_isShutdownHandled == false)
+                {
+                    imagePreviewView.ShowSearchResult(null, TemplateContainer<LabelTemplate>.Find(1117).GetString());
+                }
+            }
+            finally
+            {
+                _searchTestCancellation = null;
+                RefreshEventItemButton();
+            }
         }
 
         private ProcessInfo GetSelectedProcessInfo()
@@ -725,6 +847,7 @@ namespace Macro
 
         private void RequestStop()
         {
+            _searchTestCancellation?.Cancel();
             MacroExecutionController executionController = _runningExecutionController;
             if (executionController == null)
             {
@@ -809,6 +932,7 @@ namespace Macro
             comboProcess.IsEnabled = canUseInputs;
             checkFix.IsEnabled = canUseInputs;
             eventListView.IsEnabled = canUseInputs;
+            UpdateSearchTestButton();
         }
 
         private void UpdateStatus(EventInfoModel eventInfo, string status)
@@ -931,6 +1055,7 @@ namespace Macro
         private void ComboProcess_SelectionChanged(object sender, SelectionChangedEventArgs eventArgs)
         {
             CheckFix_Click(checkFix, null);
+            UpdateSearchTestButton();
         }
 
         public void LoadSaveFile(string path)

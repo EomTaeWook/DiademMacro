@@ -4,6 +4,7 @@ using System.Threading;
 using System.IO;
 using System;
 using System.Security.Cryptography;
+using System.Runtime.InteropServices;
 using Dignus.DependencyInjection.Attributes;
 
 namespace Macro.Infrastructure.Updates
@@ -11,12 +12,38 @@ namespace Macro.Infrastructure.Updates
     [Injectable(Dignus.DependencyInjection.LifeScope.Singleton)]
     public class ApplicationUpdateFiles
     {
-        private static readonly string[] _ownedNames = { "download.partial", "verified.exe", "helper.exe", "install.json", "ready", "authorized", "cancel", "helper-error.log" };
+        private static readonly string[] _ownedNames = { "download.partial", "verified.exe", "verified.zip", "helper.exe", "install.json", "ready", "authorized", "cancel", "helper-error.log" };
+        private static readonly string[] _ownedDirectoryNames = { "helper.app", "candidate" };
+        private static readonly StringComparison _pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         private readonly string _updateRoot;
+
+#if !WINDOWS
+        [DllImport("/usr/lib/libSystem.B.dylib", EntryPoint = "realpath", SetLastError = true)]
+        private static extern IntPtr ResolvePath([MarshalAs(UnmanagedType.LPUTF8Str)] string path, IntPtr buffer);
+
+        [DllImport("/usr/lib/libSystem.B.dylib", EntryPoint = "free")]
+        private static extern void FreePath(IntPtr buffer);
+#endif
 
         public ApplicationUpdateFiles()
         {
-            _updateRoot = Path.Combine(Path.GetTempPath(), "Macro", "application-update");
+            string temporaryDirectory = Path.GetTempPath();
+#if !WINDOWS
+            IntPtr resolvedPath = ResolvePath(temporaryDirectory, IntPtr.Zero);
+            if (resolvedPath == IntPtr.Zero)
+            {
+                throw new IOException("The update temporary directory could not be resolved.");
+            }
+            try
+            {
+                temporaryDirectory = Marshal.PtrToStringUTF8(resolvedPath);
+            }
+            finally
+            {
+                FreePath(resolvedPath);
+            }
+#endif
+            _updateRoot = Path.Combine(temporaryDirectory, "Macro", "application-update");
         }
 
         internal string UpdateRoot
@@ -53,6 +80,10 @@ namespace Macro.Infrastructure.Updates
             foreach (string name in _ownedNames)
             {
                 TryDeleteFile(Path.Combine(directory, name));
+            }
+            foreach (string name in _ownedDirectoryNames)
+            {
+                DeletePlainDirectory(Path.Combine(directory, name));
             }
             try
             {
@@ -109,7 +140,7 @@ namespace Macro.Infrastructure.Updates
         {
             string full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(directory));
             string parent = Path.GetDirectoryName(full);
-            if (string.Equals(parent, _updateRoot, StringComparison.OrdinalIgnoreCase) == false)
+            if (string.Equals(parent, _updateRoot, _pathComparison) == false)
             {
                 throw new ApplicationUpdateException(ApplicationUpdateMessageCode.PrepareFailed, null, Array.Empty<object>());
             }
@@ -151,6 +182,25 @@ namespace Macro.Infrastructure.Updates
             catch (UnauthorizedAccessException)
             {
             }
+        }
+
+        internal void DeletePlainDirectory(string directory)
+        {
+            if (Directory.Exists(directory) == false)
+            {
+                return;
+            }
+            ValidateNoLink(directory);
+            foreach (string childDirectory in Directory.EnumerateDirectories(directory))
+            {
+                DeletePlainDirectory(childDirectory);
+            }
+            foreach (string filePath in Directory.EnumerateFiles(directory))
+            {
+                ValidateNoLink(filePath);
+                File.Delete(filePath);
+            }
+            Directory.Delete(directory, false);
         }
 
     }

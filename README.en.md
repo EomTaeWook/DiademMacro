@@ -88,6 +88,17 @@ Visible windows use Windows Graphics Capture first, including GPU-rendered Unity
 
 For faster searches, use an ROI and capture only the relevant target element.
 
+### Search without clicking
+
+This feature is being prepared for a future release.
+
+1. Select the target window under **Connected Process** and select one event in the list.
+2. Press **Test search** to search once using that event's image, ROI, and similarity settings.
+3. Check the similarity and threshold in the right preview. A match highlights the region and shows its X/Y coordinates in the captured image. A failed match shows the maximum similarity.
+4. Press **Esc** during the search to cancel.
+
+The test sends no mouse or keyboard input, runs no child events, and does not save changes. It searches the currently selected process, and coordinates refer to the captured image rather than the desktop.
+
 ## Child triggers and AND conditions
 
 Drag one trigger onto another to make it a child. A child is checked only after its parent image passes the similarity threshold, providing a **parent condition AND child condition**. A parent with children acts as a condition and does not perform its own click.
@@ -152,7 +163,9 @@ When reporting a problem, include the steps to reproduce it, the target applicat
 
 ## Updates
 
-Use the update section in Settings to check for the latest stable GitHub release. In-app replacement requires a newer Windows x64 single-file EXE and matching SHA-256 information.
+Use the update section in Settings to check for the latest stable GitHub release. Choose **Update and restart** when a newer Windows x64 single-file EXE or a ZIP matching the running Mac app's ARM64 or x64 architecture has verified SHA-256 information. Mac updates replace the complete `.app`; settings and save data remain in the existing user folder.
+
+Mac automatic updates are planned for the next distribution. Existing Mac releases require one manual `.app` replacement through **Open releases** to gain this feature. If automatic installation is unavailable on Mac, move the app to a writable installation location such as Applications and open it there.
 
 Older ZIP releases do not support this replacement flow. When moving from a ZIP release, download the new EXE manually and keep your existing settings and save files. Future single-file releases can use the update feature in Settings.
 
@@ -191,6 +204,8 @@ Starting with `3.3.1`, launch the app normally and control MCP from Settings.
 5. To disconnect, choose **Settings → MCP server → Close MCP**.
 
 Change the port while the server is closed, using an integer from `1024` to `65535`. **Open MCP** immediately uses the entered port; **Save** stores the port for future launches. The open state is not saved, so reopen the server from Settings after restarting the app. Update the AI app's connection URL when changing the port. Stdio transport is not provided.
+
+A **Copy** button beside the connection URL is being prepared for a future release. It displays **Copied** for two seconds after a successful copy. The button is disabled when the server is closed or no URL is available.
 
 Example request:
 

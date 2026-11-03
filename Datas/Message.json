@@ -158,8 +158,8 @@
   {
     "Id": 1026,
     "Name": "1026",
-    "Kor": "\uC790\uB3D9 \uC124\uCE58\uB294 Windows x64 \uB2E8\uC77C \uC2E4\uD589 \uD30C\uC77C \uBC30\uD3EC\uC5D0\uC11C \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
-    "Eng": "Automatic installation requires a published Windows x64 single executable."
+    "Kor": "\uC790\uB3D9 \uC124\uCE58\uB97C \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uB294 \uC2E4\uD589 \uD615\uC2DD\uC785\uB2C8\uB2E4. Windows\uB294 \uBC30\uD3EC\uC6A9 \uB2E8\uC77C EXE\uB97C \uC2E4\uD589\uD558\uACE0, Mac\uC740 \uC555\uCD95\uC744 \uD47C .app\uC744 \uC751\uC6A9 \uD504\uB85C\uADF8\uB7A8 \uD3F4\uB354\uB85C \uC62E\uACA8 \uC2E4\uD589\uD558\uC138\uC694.",
+    "Eng": "Automatic installation is unavailable for this launch. On Windows, use the published single EXE. On Mac, extract the .app, move it to Applications, and open it."
   },
   {
     "Id": 1027,

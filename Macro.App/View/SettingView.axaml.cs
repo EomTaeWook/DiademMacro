@@ -14,6 +14,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Avalonia.Interactivity;
+using Avalonia.Input.Platform;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Dignus.Log;
@@ -33,6 +34,10 @@ namespace Macro.View
         private Button _openLogFolderButton;
         private Button _openMcpButton;
         private Button _closeMcpButton;
+        private Button _copyMcpAddressButton;
+        private TextBlock _copyMcpAddressText;
+        private TextBlock _mcpAddressCopiedText;
+        private readonly DispatcherTimer _mcpCopyFeedbackTimer = new() { Interval = TimeSpan.FromSeconds(2) };
         private TextBlock _mcpOpenStatusText;
         private TextBlock _mcpClosedStatusText;
         private TextBox _mcpEndpointTextBox;
@@ -66,6 +71,9 @@ namespace Macro.View
             _openLogFolderButton = this.FindControl<Button>("openLogFolderButton");
             _openMcpButton = this.FindControl<Button>("openMcpButton");
             _closeMcpButton = this.FindControl<Button>("closeMcpButton");
+            _copyMcpAddressButton = this.FindControl<Button>("copyMcpAddressButton");
+            _copyMcpAddressText = this.FindControl<TextBlock>("copyMcpAddressText");
+            _mcpAddressCopiedText = this.FindControl<TextBlock>("mcpAddressCopiedText");
             _mcpOpenStatusText = this.FindControl<TextBlock>("mcpOpenStatusText");
             _mcpClosedStatusText = this.FindControl<TextBlock>("mcpClosedStatusText");
             _mcpEndpointTextBox = this.FindControl<TextBox>("mcpEndpointTextBox");
@@ -101,6 +109,7 @@ namespace Macro.View
         {
             InitializeComponent();
             Opened += SettingView_Loaded;
+            _mcpCopyFeedbackTimer.Tick += McpCopyFeedbackExpired;
         }
 
         protected override async void OnClosing(WindowClosingEventArgs eventArgs)
@@ -127,6 +136,8 @@ namespace Macro.View
         private async Task PrepareCloseCoreAsync()
         {
             IsEnabled = false;
+            _mcpCopyFeedbackTimer.Stop();
+            _mcpCopyFeedbackTimer.Tick -= McpCopyFeedbackExpired;
             UIManager.Instance.ButtonActionStateChanged -= UpdateEditState;
             Activated -= RefreshMacPermissions;
             if (_mcpService != null)
@@ -164,6 +175,7 @@ namespace Macro.View
             _openMcpButton.IsEnabled = canEdit;
             _closeMcpButton.IsEnabled = canEdit;
             _mcpPortTextBox.IsEnabled = canEdit;
+            _copyMcpAddressButton.IsEnabled = canEdit;
             if (_mcpService.IsRunning == true)
             {
                 _openMcpButton.IsEnabled = false;
@@ -172,6 +184,11 @@ namespace Macro.View
             else
             {
                 _closeMcpButton.IsEnabled = false;
+                _copyMcpAddressButton.IsEnabled = false;
+            }
+            if (string.IsNullOrWhiteSpace(_mcpEndpointTextBox.Text) == true)
+            {
+                _copyMcpAddressButton.IsEnabled = false;
             }
             numPeriod.IsEnabled = canEdit;
             numDelay.IsEnabled = canEdit;
@@ -219,6 +236,7 @@ namespace Macro.View
             _openLogFolderButton.Click += Button_Click;
             _openMcpButton.Click += Button_Click;
             _closeMcpButton.Click += Button_Click;
+            _copyMcpAddressButton.Click += Button_Click;
             _requestInputPermissionButton.Click += Button_Click;
             _requestCapturePermissionButton.Click += Button_Click;
         }
@@ -245,6 +263,10 @@ namespace Macro.View
             else if (sender == _closeMcpButton)
             {
                 UIManager.Instance.EnqueueButtonAction(() => SetMcpOpenAsync(false));
+            }
+            else if (sender == _copyMcpAddressButton)
+            {
+                UIManager.Instance.EnqueueButtonAction(CopyMcpAddressAsync);
             }
             else if (sender == _requestInputPermissionButton)
             {
@@ -322,8 +344,75 @@ namespace Macro.View
             }
             _mcpOpenStatusText.IsVisible = isRunning;
             _mcpClosedStatusText.IsVisible = isRunning == false;
-            _mcpEndpointTextBox.Text = _mcpService.Endpoint;
+            string endpoint = _mcpService.Endpoint;
+            if (_mcpEndpointTextBox.Text != endpoint)
+            {
+                ResetMcpCopyFeedback();
+            }
+            _mcpEndpointTextBox.Text = endpoint;
             UpdateEditState();
+        }
+
+        private async Task CopyMcpAddressAsync()
+        {
+            if (_prepareCloseTask != null)
+            {
+                return;
+            }
+            if (_mcpService.IsRunning == false)
+            {
+                return;
+            }
+            string endpoint = _mcpService.Endpoint;
+            if (string.IsNullOrWhiteSpace(endpoint) == true)
+            {
+                return;
+            }
+            ResetMcpCopyFeedback();
+            try
+            {
+                var clipboard = Clipboard;
+                if (clipboard == null)
+                {
+                    throw new InvalidOperationException("The system clipboard is unavailable.");
+                }
+                await clipboard.SetTextAsync(endpoint);
+                if (_prepareCloseTask != null)
+                {
+                    return;
+                }
+                if (_mcpService.IsRunning == false)
+                {
+                    return;
+                }
+                if (_mcpService.Endpoint != endpoint)
+                {
+                    return;
+                }
+                _copyMcpAddressText.IsVisible = false;
+                _mcpAddressCopiedText.IsVisible = true;
+                _mcpCopyFeedbackTimer.Start();
+            }
+            catch (Exception exception)
+            {
+                LogHelper.Error(exception);
+                if (_prepareCloseTask == null)
+                {
+                    await ApplicationManager.ShowMessageDialog(TemplateContainer<LabelTemplate>.Find(1062).GetString(), TemplateContainer<LabelTemplate>.Find(1111).GetString());
+                }
+            }
+        }
+
+        private void McpCopyFeedbackExpired(object sender, EventArgs eventArgs)
+        {
+            ResetMcpCopyFeedback();
+        }
+
+        private void ResetMcpCopyFeedback()
+        {
+            _mcpCopyFeedbackTimer.Stop();
+            _copyMcpAddressText.IsVisible = true;
+            _mcpAddressCopiedText.IsVisible = false;
         }
 
         private async Task SetMcpOpenAsync(bool isOpen)

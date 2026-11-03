@@ -12,11 +12,15 @@ namespace Macro.View
 
         private PreviewBitmap _previewBitmap;
         private bool _isDisposed;
+        private Border _searchResultBorder;
+        private TextBlock _searchResultText;
 
         private void InitializeComponent()
         {
             Avalonia.Markup.Xaml.AvaloniaXamlLoader.Load(this);
             previewImage = this.FindControl<Avalonia.Controls.Image>("previewImage");
+            _searchResultBorder = this.FindControl<Border>("searchResultBorder");
+            _searchResultText = this.FindControl<TextBlock>("searchResultText");
         }
 
         public ImagePreviewView()
@@ -42,6 +46,7 @@ namespace Macro.View
                 previewImage.Source = previewBitmap;
                 _previewBitmap?.Dispose();
                 _previewBitmap = previewBitmap;
+                _searchResultBorder.IsVisible = false;
             });
         }
 
@@ -56,6 +61,21 @@ namespace Macro.View
                 previewImage.Source = null;
                 _previewBitmap?.Dispose();
                 _previewBitmap = null;
+                _searchResultBorder.IsVisible = false;
+            });
+        }
+
+        public void ShowSearchResult(Bitmap bitmap, string description)
+        {
+            DrawImage(bitmap);
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (_isDisposed == true)
+                {
+                    return;
+                }
+                _searchResultText.Text = description;
+                _searchResultBorder.IsVisible = true;
             });
         }
 

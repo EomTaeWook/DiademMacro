@@ -175,6 +175,34 @@ namespace Macro.Models
                 return GetString(1097);
             }
         }
+        public string CopyMcpAddress
+        {
+            get
+            {
+                return GetString(1109);
+            }
+        }
+        public string Copied
+        {
+            get
+            {
+                return GetString(1110);
+            }
+        }
+        public string SearchTest
+        {
+            get
+            {
+                return GetString(1112);
+            }
+        }
+        public string SearchTestHint
+        {
+            get
+            {
+                return GetString(1113);
+            }
+        }
         public string McpOpenStatus
         {
             get
