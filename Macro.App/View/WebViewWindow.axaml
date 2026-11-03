@@ -1,3 +1,38 @@
-<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:Macro.UI" x:Class="Macro.View.WebViewWindow" Title="Web" WindowDecorations="BorderOnly" WindowStartupLocation="CenterOwner" CanResize="False" Width="600" Height="600">
-  <ui:WebViewControl x:Name="webViewControl" />
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ui="clr-namespace:Macro.UI" x:Class="Macro.View.WebViewWindow" Title="{Binding AdvertisementTitle, Source={StaticResource LabelLocator}}" Icon="/Assets/AppIcon.ico" WindowDecorations="BorderOnly" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" CanResize="False" Width="640" Height="560">
+  <Border Classes="card" Padding="0" Margin="12">
+    <Grid RowDefinitions="Auto,*,Auto">
+      <Border BorderBrush="{StaticResource OutlineBrush}" BorderThickness="0,0,0,1" Padding="18,16">
+        <StackPanel Spacing="14">
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <Image Source="/Assets/AppIcon.png" Width="36" Height="36" Stretch="Uniform" Margin="0,0,12,0" VerticalAlignment="Center" />
+            <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+              <TextBlock Classes="section" FontSize="16" Text="{Binding AdvertisementTitle, Source={StaticResource LabelLocator}}" />
+              <Grid>
+                <TextBlock x:Name="countdownText" Classes="caption" />
+                <TextBlock x:Name="advertisementReadyText" Classes="caption" Text="{Binding AdvertisementReady, Source={StaticResource LabelLocator}}" IsVisible="False" />
+              </Grid>
+            </StackPanel>
+            <Button Grid.Column="2" x:Name="closeAdvertisementButton" Classes="icon" VerticalAlignment="Center" IsEnabled="False" AutomationProperties.Name="{Binding Close, Source={StaticResource LabelLocator}}" ToolTip.Tip="{Binding Close, Source={StaticResource LabelLocator}}" Click="CloseAdvertisement_Click">
+              <PathIcon Width="16" Height="16" Data="M6,4 L12,10 L18,4 L20,6 L14,12 L20,18 L18,20 L12,14 L6,20 L4,18 L10,12 L4,6 Z" />
+            </Button>
+          </Grid>
+          <ProgressBar x:Name="advertisementProgress" Minimum="0" Maximum="1" Value="0" Height="3" Foreground="{StaticResource AccentTextBrush}" Background="{StaticResource AccentSurfaceBrush}" />
+        </StackPanel>
+      </Border>
+      <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" Margin="16">
+        <ui:WebViewControl x:Name="webViewControl" />
+      </Border>
+      <Border Grid.Row="2" BorderBrush="{StaticResource OutlineBrush}" BorderThickness="0,1,0,0" Padding="18,12">
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBlock Text="{Binding Advertisement, Source={StaticResource LabelLocator}}" FontSize="11" Foreground="#94A3B8" VerticalAlignment="Center" />
+          <Button Grid.Column="1" x:Name="advertisementDetailsButton" HorizontalAlignment="Right" IsEnabled="False" Click="AdvertisementDetails_Click">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="{Binding AdvertisementDetails, Source={StaticResource LabelLocator}}" VerticalAlignment="Center" />
+              <PathIcon Width="14" Height="14" Data="M13,3 H21 V11 H19 V6.4 L10,15.4 L8.6,14 L17.6,5 H13 Z M5,5 H10 V7 H5 V19 H17 V14 H19 V19 A2,2 0 0 1 17,21 H5 A2,2 0 0 1 3,19 V7 A2,2 0 0 1 5,5 Z" />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </Border>
+    </Grid>
+  </Border>
 </Window>

@@ -84,6 +84,34 @@ namespace Macro.Models
                 return GetString(1098);
             }
         }
+        public string Advertisement
+        {
+            get
+            {
+                return GetString(1104);
+            }
+        }
+        public string AdvertisementTitle
+        {
+            get
+            {
+                return GetString(1108);
+            }
+        }
+        public string AdvertisementDetails
+        {
+            get
+            {
+                return GetString(1105);
+            }
+        }
+        public string AdvertisementReady
+        {
+            get
+            {
+                return GetString(1107);
+            }
+        }
         public string RequestInputPermission
         {
             get

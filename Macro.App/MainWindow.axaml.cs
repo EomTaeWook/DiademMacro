@@ -73,7 +73,6 @@ namespace Macro
 
         private ProcessItem[] _processes;
         private Config _config;
-        private CloseButtonWindow _closeButtonWindow;
         private readonly CoroutineHandler _coroutineHandler = new();
         private readonly DispatcherTimer _coroutineTimer = new() { Interval = TimeSpan.FromMilliseconds(33) };
         private readonly Stopwatch _coroutineClock = new();
@@ -175,7 +174,6 @@ namespace Macro
         private async void MainWindow_Opened(object sender, EventArgs eventArgs)
         {
             _webViewWindow = new WebViewWindow();
-            _closeButtonWindow = new CloseButtonWindow(() => _webViewWindow.Hide());
             _config = ServiceResolver.GetService<Config>();
             _eventEditingService = ServiceResolver.GetService<EventEditingService>();
             _mcpService = ServiceResolver.GetService<MacroMcpService>();
@@ -309,8 +307,7 @@ namespace Macro
             NotifyHelper.ScreenCaptureCompleted -= ScreenCaptureCompleted;
             NotifyHelper.EventTriggerSaved -= NotifyHelper_EventTriggerSaved;
             ApplicationManager.Instance.Dispose();
-            _closeButtonWindow?.Close();
-            _webViewWindow?.Close();
+            _webViewWindow?.CloseForShutdown();
             imagePreviewView.Dispose();
             DisposeEventItems();
             DisposeProcessItems(_processes);
@@ -1001,18 +998,41 @@ namespace Macro
                     return;
                 }
             }
+            TimeSpan advertisementDelay = TimeSpan.FromSeconds(3.5);
+            _webViewWindow.PrepareAdvertisement(isCloseButtonShow, advertisementDelay);
             if (_webViewWindow.IsVisible == false)
             {
                 _webViewWindow.Show(this);
             }
             await _webViewWindow.LoadUrlAsync(address);
-            await Task.Delay(TimeSpan.FromSeconds(3.5));
+            Stopwatch advertisementClock = Stopwatch.StartNew();
+            while (advertisementClock.Elapsed < advertisementDelay)
+            {
+                if (isCloseButtonShow == true)
+                {
+                    if (_isShutdownHandled == true)
+                    {
+                        return;
+                    }
+                }
+                TimeSpan remainingTime = advertisementDelay - advertisementClock.Elapsed;
+                if (remainingTime <= TimeSpan.Zero)
+                {
+                    break;
+                }
+                _webViewWindow.UpdateCountdown(remainingTime, advertisementClock.Elapsed.TotalSeconds / advertisementDelay.TotalSeconds);
+                TimeSpan updateDelay = TimeSpan.FromMilliseconds(100);
+                if (remainingTime < updateDelay)
+                {
+                    updateDelay = remainingTime;
+                }
+                await Task.Delay(updateDelay);
+            }
             if (isCloseButtonShow == true)
             {
                 if (_isShutdownHandled == false)
                 {
-                    _closeButtonWindow.SetOwner(_webViewWindow);
-                    _closeButtonWindow.Show(_webViewWindow);
+                    _webViewWindow.AllowAdvertisementClose();
                 }
             }
 #endif
