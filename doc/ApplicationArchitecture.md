@@ -84,3 +84,5 @@ OpenCV 대신 기존 `OpenCVHelper` API 안에서 .NET Bitmap, 적분 합과 SIM
 ### 검증 상태
 
 3.3.1 추가 배포에서 Windows 단일 EXE의 로컬 SDK 게시와 Mac ARM64·x64의 GitHub macOS 러너 게시·패키징이 성공했다. Mac ZIP의 SHA-256, 필수 .app 파일과 실행 파일의 CPU 아키텍처를 확인했다. 앱 실행·권한 승인·실제 캡처·입력과 자동 업데이트 설치는 직접 검증하지 않았다. 이전 Windows Unity GPU 창 캡처와 물리 클릭은 사용자 실행에서 확인했으며 구형 바이너리 파일 읽기, 검색 성능, 최소화 DWM 캡처, 모니터 DPI와 웹 페이지 동작은 미확인이다.
+
+3.4.0은 플랫폼 업데이트 DI 분리 이후 Windows EXE와 Mac 두 아키텍처의 SDK 게시가 성공했다. 같은 앱 소스에서 생성한 패키지의 버전·필수 파일·CPU·SHA-256을 확인했다. Mac 게시 경고와 앱 실행·자동 업데이트 설치 미검증 범위는 [3.4.0 릴리스 기록](releases/3.4.0.md)을 따른다.

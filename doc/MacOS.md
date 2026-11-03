@@ -24,7 +24,7 @@ macOS 입력은 사용자가 허용한 접근성 권한으로 실제 포인터·
 
 ## 검증과 배포
 
-배포는 사용자가 지정한 기존 3.3.1 릴리스에 Windows EXE와 Mac .app ZIP을 함께 게시한다. Windows 산출물은 로컬 SDK 게시로 만들고 Mac ARM64·x64 산출물은 수동 실행하는 GitHub Actions의 macOS 러너에서 만든다. 버전은 App 프로젝트를 원본으로 사용한다. 기존 태그를 강제로 이동하거나 새 릴리스를 만들지 않는다.
+초기 Mac 배포는 사용자가 지정한 기존 3.3.1 릴리스에 추가했다. 이후 요청된 버전의 정식 릴리스에도 Windows EXE와 Mac .app ZIP을 함께 게시한다. Windows 산출물은 로컬 SDK 게시로 만들고 Mac ARM64·x64 산출물은 수동 실행하는 GitHub Actions의 macOS 러너에서 만든다. 버전은 App 프로젝트를 원본으로 사용하며 기존 태그를 강제로 이동하지 않는다.
 
 게시 산출물 생성과 앱 실행 검증은 구분한다. 앱 시작·권한 승인·Retina/다중 모니터·Unity 입력·구형 저장 파일 호환과 업데이트 설치는 직접 검증하지 않는다. 기존 Windows 자동 업데이트 계약은 유지한다.
 
@@ -50,3 +50,5 @@ dotnet publish Macro.App/Macro.App.csproj -c Release -r osx-x64 -p:PublishProfil
 게시 타깃은 자체 포함 실행 파일과 네이티브 라이브러리를 Diadem Macro.app/Contents/MacOS 아래로 복사하고 Info.plist에 버전·앱 식별자를 설정한다. 마지막 서명은 로컬 ad-hoc 서명이며 Developer ID 서명·공증·Gatekeeper 통과나 권한 유지가 검증된 배포물이 아니다. .app 전체가 배포 단위이며 ditto로 Mac 메타데이터와 실행 권한을 보존하는 ZIP을 만든다. 게시 명령은 앱을 실행하지 않는다.
 
 3.3.1의 Mac ARM64·x64 게시·패키징은 [Actions 실행 41436121067](https://github.com/EomTaeWook/DiademMacro/actions/runs/41436121067)에서 성공했다. Windows와 Mac 배포 코드 커밋은 a0d0dfc24588d92c96b9b3b8900c5ad06190bc38이며 기존 태그는 이동하지 않는다. Mac ZIP의 해시, 필수 .app 파일과 앱 실행 파일의 CPU 타입은 확인했다. 앱 실행이나 권한 승인·캡처·입력의 동작 검증은 수행하지 않았다. 자산별 해시는 [3.3.1 릴리스 기록](releases/3.3.1.md)에 둔다.
+
+2026-11-04 3.4.0의 Mac Intel 게시와 ARM64 교차 게시가 성공했다. ARM64 기본 러너의 장기 배정을 우회하는 일회성 CI 분기는 앱 소스를 4719820으로 고정하고 가용 Intel Mac 러너에서 ARM64 패키지를 생성했다. 두 ZIP의 버전·필수 파일·실행 권한·앱과 네이티브 라이브러리의 CPU·SHA-256을 확인했다. 실제 Mac 실행과 자동 교체·복원·권한 유지는 미검증이며 게시 로그에 CS0618·CA1416 경고가 있다. 작업 링크와 해시는 [3.4.0 릴리스 기록](releases/3.4.0.md)에 둔다.
