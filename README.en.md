@@ -20,8 +20,8 @@ Download the ZIP for your Mac, extract it, move `Diadem Macro.app` to Applicatio
 
 | Mac type | Download |
 | --- | --- |
-| Apple Silicon (M series) | [Macro-3.3.1-osx-arm64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.3.1/Macro-3.3.1-osx-arm64.zip) |
-| Intel | [Macro-3.3.1-osx-x64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.3.1/Macro-3.3.1-osx-x64.zip) |
+| Apple Silicon (M series) | [Macro-3.4.0-osx-arm64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.4.0/Macro-3.4.0-osx-arm64.zip) |
+| Intel | [Macro-3.4.0-osx-x64.zip](https://github.com/EomTaeWook/DiademMacro/releases/download/3.4.0/Macro-3.4.0-osx-x64.zip) |
 
 Publishing and packaging completed for both architectures on GitHub macOS runners. **App startup, permission approval, actual capture, and input have not been verified.** Mac packages use ad-hoc signing and have not been notarized by Apple.
 
@@ -29,7 +29,7 @@ When using a Mac build of `Diadem Macro.app`, open **Settings → macOS permissi
 
 Keep the target window visible. All mouse input on Mac uses the real cursor and activates the target window. Minimized windows and Win32 background messages are unsupported. The keyboard setting `LWIN` maps to Command: `LWIN+A` sends Command+A.
 
-Settings, captured images, and logs are created under `~/Library/Application Support/DiademMacro`. To move existing JSON events, copy `save.dll` together with its `img` folder and select the save path in Settings. Different capture scales or shortcuts may require new captures or key changes. Mac automatic updates are not provided. The Unity and Physical Click instructions below describe the Windows release.
+Settings, captured images, and logs are created under `~/Library/Application Support/DiademMacro`. To move existing JSON events, copy `save.dll` together with its `img` folder and select the save path in Settings. Different capture scales or shortcuts may require new captures or key changes. Mac automatic updates are available starting with 3.4.0. The Unity and Physical Click instructions below describe the Windows release.
 
 ## Features
 
@@ -90,7 +90,7 @@ For faster searches, use an ROI and capture only the relevant target element.
 
 ### Search without clicking
 
-This feature is being prepared for a future release.
+Available starting with 3.4.0.
 
 1. Select the target window under **Connected Process** and select one event in the list.
 2. Press **Test search** to search once using that event's image, ROI, and similarity settings.
@@ -165,7 +165,7 @@ When reporting a problem, include the steps to reproduce it, the target applicat
 
 Use the update section in Settings to check for the latest stable GitHub release. Choose **Update and restart** when a newer Windows x64 single-file EXE or a ZIP matching the running Mac app's ARM64 or x64 architecture has verified SHA-256 information. Mac updates replace the complete `.app`; settings and save data remain in the existing user folder.
 
-Mac automatic updates are planned for the next distribution. Existing Mac releases require one manual `.app` replacement through **Open releases** to gain this feature. If automatic installation is unavailable on Mac, move the app to a writable installation location such as Applications and open it there.
+Mac automatic updates are available starting with 3.4.0. Earlier Mac releases require one manual `.app` replacement through **Open releases** to gain this feature. If automatic installation is unavailable on Mac, move the app to a writable installation location such as Applications and open it there.
 
 Older ZIP releases do not support this replacement flow. When moving from a ZIP release, download the new EXE manually and keep your existing settings and save files. Future single-file releases can use the update feature in Settings.
 
@@ -205,7 +205,7 @@ Starting with `3.3.1`, launch the app normally and control MCP from Settings.
 
 Change the port while the server is closed, using an integer from `1024` to `65535`. **Open MCP** immediately uses the entered port; **Save** stores the port for future launches. The open state is not saved, so reopen the server from Settings after restarting the app. Update the AI app's connection URL when changing the port. Stdio transport is not provided.
 
-A **Copy** button beside the connection URL is being prepared for a future release. It displays **Copied** for two seconds after a successful copy. The button is disabled when the server is closed or no URL is available.
+Starting with 3.4.0, use the **Copy** button beside the connection URL. It displays **Copied** for two seconds after a successful copy. The button is disabled when the server is closed or no URL is available.
 
 Example request:
 
