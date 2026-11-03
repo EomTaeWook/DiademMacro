@@ -15,15 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-15
+          - runner: macos-15-intel
             runtime: osx-arm64
             profile: MacOSArm64
-          - runner: macos-15-intel
-            runtime: osx-x64
-            profile: MacOSX64
     steps:
       - uses: actions/checkout@v5
         with:
+          ref: 4719820d027743df4506dbe535ca3970dcc96271
           submodules: recursive
           persist-credentials: false
       - uses: actions/setup-dotnet@v5
